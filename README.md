@@ -1,7 +1,7 @@
 # StreamDeco
  ESP32 8048s43c board touch screen keypad
 
- <img src="http://url/image.png" height="60" width="60" >
+ <img src="https://github.com/marceloh220/StreamDeco/blob/main/assets/main_screen.jpg" height="480" width="800" >
 
  Board Specs:
 
