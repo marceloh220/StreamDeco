@@ -72,10 +72,10 @@ static lv_position_t configButtons_position_map[]{
     {.x = 20, .y = 290}, {.x = 168, .y = 290}, {.x = 316, .y = 290},
 };
 
-class uiButton : public lvgl::Object {
+class mainButton : public lvgl::Object {
 
 public:
-  uiButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
+  mainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
       : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {}
 
   void create(uint8_t pos) {
@@ -268,21 +268,21 @@ public:
     }
   }
 
-  void fix() {
+  void fixe() {
     add_style(style_buttonFixed, LV_STATE_DEFAULT);
     add_style(style_buttonFixed, LV_STATE_PRESSED);
     icon.add_style(style_iconFixed, LV_PART_MAIN);
     fixed = true;
   }
 
-  void unfix() {
+  void unfixe() {
     remove_style(style_buttonFixed, LV_STATE_DEFAULT);
     remove_style(style_buttonFixed, LV_STATE_PRESSED);
     icon.remove_style(style_iconFixed, LV_PART_MAIN);
     fixed = false;
   }
 
-  bool is_fix() { return fixed; }
+  bool is_fixed() { return fixed; }
 
 protected:
   lvgl::Label label;
@@ -293,13 +293,13 @@ protected:
   const void *icon2_scr;
   lv_color_t saved_color;
   bool fixed = false;
-}; // class uiButton
+}; // class mainButton
 
-class layerButton : public uiButton {
+class layerButton : public mainButton {
 public:
   layerButton(const char *text, const void *icon1 = NULL,
               const void *icon2 = NULL)
-      : uiButton(text, icon1, icon2) {}
+      : mainButton(text, icon1, icon2) {}
 
   void create(Object &parent, uint8_t pos) {
     if (created)
@@ -364,11 +364,11 @@ public:
 
 }; // class layerButton
 
-class configButton : public uiButton {
+class configButton : public mainButton {
 public:
   configButton(const char *text, const void *icon1 = NULL,
                const void *icon2 = NULL)
-      : uiButton(text, icon1, icon2) {}
+      : mainButton(text, icon1, icon2) {}
 
   void create(Object &parent, uint8_t pos) {
     if (created)

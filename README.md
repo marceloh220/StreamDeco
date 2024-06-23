@@ -69,4 +69,13 @@
  the bright of backlight will be set to minimun after 30 seconds of inactivity.
  
  
- 
+Work on every system?
+   NO
+
+Can I change icons?
+   YES
+
+Can I change command shortcuts?
+   YES
+
+Some buttons may work without configurations, but the most part need be configured on system.

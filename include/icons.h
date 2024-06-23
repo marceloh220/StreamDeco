@@ -100,6 +100,7 @@ extern const lv_img_dsc_t process_simp;
 extern const lv_img_dsc_t switch_user_simp;
 extern const lv_img_dsc_t reboot_simp;
 extern const lv_img_dsc_t shutdown_simp;
+extern const lv_img_dsc_t logout_simp;
 
 extern const lv_img_dsc_t cut_simp;
 extern const lv_img_dsc_t copy_simp;
