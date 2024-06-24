@@ -37,7 +37,7 @@
  after 10 seconds of inactivity the Application Layer is hidden 
  and user interface return to Main Layer
  
- Long click on Application button fix the Application Layer on screen,
+ Long click on Application button fixe the Application Layer on screen,
  the fixed layer will not been hidden until a short click on Application Button.
  
  <img src="https://github.com/marceloh220/StreamDeco/blob/main/assets/app_layer_fixed.jpg" height="480" width="800" >
@@ -48,7 +48,7 @@
  after 10 seconds of inactivity the Multimedia Layer is hidden 
  and user interface return to Main Layer.
  
- Long click on Multimedia button fix the Multimedia Layer on screen,
+ Long click on Multimedia button fixe the Multimedia Layer on screen,
  the fixed layer will not been hidden until a short click on Multimedia Button.
 
  <img src="https://github.com/marceloh220/StreamDeco/blob/main/assets/mult_layer_fixed.jpg" height="480" width="800" >
@@ -70,12 +70,16 @@
  
  
 Work on every system?
+
    NO
 
 Can I change icons?
+
    YES
 
 Can I change command shortcuts?
+
    YES
 
-Some buttons may work without configurations, but the most part need be configured on system.
+Some buttons may work without configurations, but the most part need be configured on operational system.
+
