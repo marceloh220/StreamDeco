@@ -60,6 +60,8 @@ extern const lv_img_dsc_t build_simp;
 
 extern const lv_img_dsc_t undo_simp;
 extern const lv_img_dsc_t redo_simp;
+extern const lv_img_dsc_t pin_simp;
+extern const lv_img_dsc_t unpin_simp;
 
 extern const lv_img_dsc_t backward_simp;
 extern const lv_img_dsc_t seek_backward_simp;
@@ -111,6 +113,9 @@ extern const lv_img_dsc_t spreadsheet_simp;
 extern const lv_img_dsc_t presentation_simp;
 
 extern const lv_img_dsc_t keys_simp;
+extern const lv_img_dsc_t color_picker_simp;
+extern const lv_img_dsc_t pointer_simp;
+extern const lv_img_dsc_t ruler_simp;
 
 extern const lv_img_dsc_t add_clip_simp;
 extern const lv_img_dsc_t ripple_simp;
@@ -124,6 +129,9 @@ extern const lv_img_dsc_t serialport_simp;
 extern const lv_img_dsc_t cpu_simp;
 extern const lv_img_dsc_t steam_simp;
 extern const lv_img_dsc_t discord_simp;
-
+extern const lv_img_dsc_t gogcom_simp;
+extern const lv_img_dsc_t origin_simp;
+extern const lv_img_dsc_t ubisoft_simp;
+extern const lv_img_dsc_t epicgames_simp;
 
 #endif
