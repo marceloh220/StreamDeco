@@ -503,8 +503,10 @@ public:
     if (!created)
       return;
     port::mutex_take();
-    if (lv_obj_has_flag(object, LV_OBJ_FLAG_HIDDEN))
+    if (lv_obj_has_flag(object, LV_OBJ_FLAG_HIDDEN)) {
       lv_obj_clear_flag(object, LV_OBJ_FLAG_HIDDEN);
+      move_foreground();
+    }
     port::mutex_give();
   }
 

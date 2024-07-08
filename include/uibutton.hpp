@@ -34,11 +34,6 @@
 
 namespace streamDeco {
 
-static lvgl::Style style_button;
-static lvgl::Style style_buttonPressed;
-static lvgl::Style style_buttonFixed;
-static lvgl::Style style_iconFixed;
-
 typedef struct {
   lv_coord_t x;
   lv_coord_t y;
@@ -83,15 +78,12 @@ public:
       return;
     if (pos >= 15)
       return;
-    saved_color = lv_palette_main(LV_PALETTE_PURPLE);
     lvgl::port::mutex_take();
     lv_color_t color = lv_color_make(41, 45, 50);
     style_buttonFixed.set_bg_color(color);
     style_buttonFixed.set_bg_grad_color(color);
     style_buttonFixed.set_outline_color(color);
     style_buttonFixed.set_border_color(lv_color_black());
-    style_iconFixed.set_img_recolor(lv_color_white());
-    style_iconFixed.set_img_recolor_opa(100);
     style_button.set_radius(6);
     style_button.set_bg_opa(LV_OPA_100);
     style_button.set_bg_color(LV_PALETTE_PURPLE);
@@ -132,6 +124,8 @@ public:
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
+      style_icon.set_img_recolor(lv_color_white());
+      style_icon.set_img_recolor_opa(100);
     } else {
       label.create(*this);
       label.set_text(text_scr);
@@ -145,7 +139,6 @@ public:
       return;
     if (pos >= 15)
       return;
-    saved_color = lv_palette_main(LV_PALETTE_PURPLE);
     lvgl::port::mutex_take();
     lv_color_t color = lv_color_make(166, 166, 166);
     style_buttonFixed.set_bg_color(color);
@@ -191,6 +184,8 @@ public:
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
+      style_icon.set_img_recolor(lv_color_white());
+      style_icon.set_img_recolor_opa(100);
     } else {
       label.create(*this);
       label.set_text(text_scr);
@@ -228,13 +223,28 @@ public:
   void color(lv_palette_t color) {
     if (!created)
       return;
-    saved_color = lv_palette_main(color);
     lvgl::port::mutex_take();
     style_button.set_bg_color(lv_palette_main(color));
     style_button.set_bg_grad_color(lv_palette_darken(color, 2));
     style_button.set_outline_color(lv_palette_main(color));
     style_buttonPressed.set_bg_color(lv_palette_darken(color, 2));
     style_buttonPressed.set_bg_grad_color(lv_palette_darken(color, 4));
+    lvgl::port::mutex_give();
+  }
+
+  void iconColor(lv_palette_t color) {
+    if (!created)
+      return;
+    lvgl::port::mutex_take();
+    style_icon.set_img_recolor(color);
+    lvgl::port::mutex_give();
+  }
+
+  void iconColor(lv_color_t color) {
+    if (!created)
+      return;
+    lvgl::port::mutex_take();
+    style_icon.set_img_recolor(color);
     lvgl::port::mutex_give();
   }
 
@@ -271,14 +281,14 @@ public:
   void fixe() {
     add_style(style_buttonFixed, LV_STATE_DEFAULT);
     add_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.add_style(style_iconFixed, LV_PART_MAIN);
+    icon.add_style(style_icon, LV_PART_MAIN);
     fixed = true;
   }
 
   void unfixe() {
     remove_style(style_buttonFixed, LV_STATE_DEFAULT);
     remove_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.remove_style(style_iconFixed, LV_PART_MAIN);
+    icon.remove_style(style_icon, LV_PART_MAIN);
     fixed = false;
   }
 
@@ -287,11 +297,14 @@ public:
 protected:
   lvgl::Label label;
   lvgl::Image icon;
+  lvgl::Style style_button;
+  lvgl::Style style_buttonPressed;
+  lvgl::Style style_buttonFixed;
+  lvgl::Style style_icon;
   bool icon_now = false;
   const char *text_scr;
   const void *icon1_scr;
   const void *icon2_scr;
-  lv_color_t saved_color;
   bool fixed = false;
 }; // class mainButton
 
@@ -306,8 +319,11 @@ public:
       return;
     if (pos >= 9)
       return;
-    saved_color = lv_palette_main(LV_PALETTE_PURPLE);
     lvgl::port::mutex_take();
+    lv_color_t color = lv_color_make(166, 0, 0);
+    style_buttonFixed.set_bg_color(color);
+    style_buttonFixed.set_bg_grad_color(color);
+    style_buttonFixed.set_outline_color(color);
     style_button.set_radius(6);
     style_button.set_bg_opa(LV_OPA_100);
     style_button.set_bg_color(LV_PALETTE_PURPLE);
@@ -341,6 +357,8 @@ public:
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
+      style_icon.set_img_recolor(lv_color_white());
+      style_icon.set_img_recolor_opa(100);
     } else {
       label.create(*this);
       label.set_text(text_scr);
@@ -375,8 +393,11 @@ public:
       return;
     if (pos >= 9)
       return;
-    saved_color = lv_palette_main(LV_PALETTE_PURPLE);
     lvgl::port::mutex_take();
+    lv_color_t color = lv_color_make(0, 166, 0);
+    style_buttonFixed.set_bg_color(color);
+    style_buttonFixed.set_bg_grad_color(color);
+    style_buttonFixed.set_outline_color(color);
     style_button.set_radius(6);
     style_button.set_bg_opa(LV_OPA_100);
     style_button.set_bg_color(LV_PALETTE_PURPLE);
@@ -411,6 +432,8 @@ public:
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
+      style_icon.set_img_recolor(lv_color_white());
+      style_icon.set_img_recolor_opa(100);
     } else {
       label.create(*this);
       label.set_text(text_scr);

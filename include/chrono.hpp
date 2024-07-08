@@ -1,21 +1,21 @@
 /**
  * Copyright © 2024 Marcelo H Moraes
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of 
- * this software and associated documentation files (the “Software”), to deal in 
- * the Software without restriction, including without limitation the rights to 
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of 
- * the Software, and to permit persons to whom the Software is furnished to do so, 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the “Software”), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all 
+ *
+ * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
@@ -39,29 +39,41 @@ using std::chrono::seconds;
 
 #define CHRONO_TO_TICK(_time) (pdMS_TO_TICKS(_time.count()))
 
-template <typename t> [[nodiscard]] int64_t duration_cast(microseconds time) {
+template <typename t>
+[[nodiscard]] int64_t duration_cast(microseconds time)
+{
   return std::chrono::duration_cast<t>(time).count();
 }
 
-template <typename t> [[nodiscard]] int64_t duration_cast(milliseconds time) {
+template <typename t>
+[[nodiscard]] int64_t duration_cast(milliseconds time)
+{
   return std::chrono::duration_cast<t>(time).count();
 }
 
-template <typename t> [[nodiscard]] int64_t duration_cast(seconds time) {
+template <typename t>
+[[nodiscard]] int64_t duration_cast(seconds time)
+{
   return std::chrono::duration_cast<t>(time).count();
 }
 
-template <typename t> [[nodiscard]] int64_t duration_cast(minutes time) {
+template <typename t>
+[[nodiscard]] int64_t duration_cast(minutes time)
+{
   return std::chrono::duration_cast<t>(time).count();
 }
 
-template <typename t> [[nodiscard]] int64_t duration_cast(hours time) {
+template <typename t>
+[[nodiscard]] int64_t duration_cast(hours time)
+{
   return std::chrono::duration_cast<t>(time).count();
 }
 
 inline void delay(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
 
-template <typename t> [[nodiscard]] inline t time() {
+template <typename t>
+[[nodiscard]] inline t time()
+{
   microseconds micros(esp_timer_get_time());
   return std::chrono::duration_cast<t>(micros);
 }
