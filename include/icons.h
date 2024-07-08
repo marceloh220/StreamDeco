@@ -113,14 +113,6 @@ extern const lv_img_dsc_t spreadsheet_simp;
 extern const lv_img_dsc_t presentation_simp;
 
 extern const lv_img_dsc_t keys_simp;
-extern const lv_img_dsc_t color_picker_simp;
-extern const lv_img_dsc_t pointer_simp;
-extern const lv_img_dsc_t ruler_simp;
-
-extern const lv_img_dsc_t cam_on_simp;
-extern const lv_img_dsc_t cam_off_simp;
-extern const lv_img_dsc_t video_start_capt_simp;
-extern const lv_img_dsc_t video_pause_capt_simp;
 
 extern const lv_img_dsc_t add_clip_simp;
 extern const lv_img_dsc_t ripple_simp;
