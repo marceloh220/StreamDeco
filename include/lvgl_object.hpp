@@ -449,12 +449,12 @@ public:
    * @note            if the position or size of `base` changes `obj` needs to
    * be aligned manually again
    */
-  inline void align_to(Object *base, lv_align_t align, lv_coord_t x_ofs,
+  inline void align_to(Object &base, lv_align_t align, lv_coord_t x_ofs,
                        lv_coord_t y_ofs) {
     if (!created)
       return;
     port::mutex_take();
-    lv_obj_align_to(object, base->get_object(), align, x_ofs, y_ofs);
+    lv_obj_align_to(object, base.get_object(), align, x_ofs, y_ofs);
     port::mutex_give();
   }
 

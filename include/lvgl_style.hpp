@@ -268,6 +268,10 @@ public:
     lv_style_set_shadow_color(&_style, value);
   }
 
+  void set_shadow_color(lv_palette_t value) {
+    lv_style_set_shadow_color(&_style, lv_palette_main(value));
+  }
+
   void set_shadow_opa(lv_opa_t value) {
     lv_style_set_shadow_opa(&_style, value);
   }
@@ -306,6 +310,10 @@ public:
     lv_style_set_line_color(&_style, value);
   }
 
+  void set_line_color(lv_palette_t value) {
+    lv_style_set_line_color(&_style, lv_palette_main(value));
+  }
+
   void set_line_opa(lv_opa_t value) { lv_style_set_line_opa(&_style, value); }
 
   void set_arc_width(lv_coord_t value) {
@@ -318,6 +326,10 @@ public:
     lv_style_set_arc_color(&_style, value);
   }
 
+  void set_arc_color(lv_palette_t value) {
+    lv_style_set_arc_color(&_style, lv_palette_main(value));
+  }
+
   void set_arc_opa(lv_opa_t value) { lv_style_set_arc_opa(&_style, value); }
 
   void set_arc_img_src(const void *value) {
@@ -326,6 +338,10 @@ public:
 
   void set_text_color(lv_color_t value) {
     lv_style_set_text_color(&_style, value);
+  }
+
+  void set_text_color(lv_palette_t value) {
+    lv_style_set_text_color(&_style, lv_palette_main(value));
   }
 
   void set_text_opa(lv_opa_t value) { lv_style_set_text_opa(&_style, value); }

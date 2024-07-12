@@ -25,6 +25,8 @@
 namespace streamDeco
 {
 
+  Mutex mutex_serial;
+
   /* Handle the buttons task, made buttons configurations and manager buttons
    * events. This events can generate a keyboard code to send or change StreamDeco
    * configurations. */
@@ -34,17 +36,26 @@ namespace streamDeco
    * task to hidden additional layers and return to Main layer. */
   void handle_uiReset(arg_t arg);
 
+  /* Handle the monitor task, show computer metrics on configure fixed layer. */
+  void handle_monitor(arg_t arg);
+
+  /* Handle the monitor task, show computer metrics on configure fixed layer. */
+  void handle_clock(arg_t arg);
+
   /* Called in main_app or setup to init StreamDeco */
   void init()
   {
     task.buttons.attach(handle_buttons);
     task.uiReset.attach(handle_uiReset);
+    task.monitor.attach(handle_monitor);
+    task.clock.attach(handle_clock);
   }
   /* Called in main_app loop or loop to print memory usage of tasks */
   void print_task_memory_usage()
   {
     printf("Task Buttons mem usage %d\n", task.buttons.memUsage());
     printf("Task UI Reset mem usage %d\n", task.uiReset.memUsage());
+    printf("Task Monitor mem usage %d\n", task.monitor.memUsage());
   }
 
   /* Experimental, someday will roll. Gambare gambare senpai! */
@@ -55,7 +66,10 @@ namespace streamDeco
   {
     if (timer_ui.backlight.verifyID(arg))
     {
-      lvgl::port::backlight_set(.1);
+      if (!button.configurations_layer.is_fixed())
+      {
+        lvgl::port::backlight_set(.1);
+      }
     }
   }
 
@@ -76,7 +90,7 @@ namespace streamDeco
     task.buttons.sendNotify(lvgl::event::get_user_data<int>(e));
   }
 
-  /* Hnadler of UI reset task, hidden layers if they are not fixed. */
+  /* Handler of UI reset task, hidden layers if they are not fixed. */
   void handle_uiReset(arg_t arg)
   {
     while (1)
@@ -95,6 +109,182 @@ namespace streamDeco
         /* Configuration Layer don't*/
         layer.configurations.hidden();
       }
+    }
+  }
+
+  void synchro_clock(struct tm &tm_date)
+  {
+    while (1)
+    {
+      mutex_serial.take();
+      if (Serial.available())
+      {
+        String cpu_load = Serial.readStringUntil(',');
+        String cpu_temp = Serial.readStringUntil(',');
+        String cpu_freq = Serial.readStringUntil(',');
+
+        String gpu_load = Serial.readStringUntil(',');
+        String gpu_temp = Serial.readStringUntil(',');
+        String gpu_freq = Serial.readStringUntil(',');
+
+        String mem_used = Serial.readStringUntil(',');
+        String mem_max = Serial.readStringUntil(',');
+        String disk_used = Serial.readStringUntil(',');
+        String disk_max = Serial.readStringUntil(',');
+
+        String sec = Serial.readStringUntil(',');
+        String min = Serial.readStringUntil(',');
+        String hour = Serial.readStringUntil(',');
+        String day = Serial.readStringUntil(',');
+        String month = Serial.readStringUntil(',');
+        String year = Serial.readStringUntil('/');
+
+        tm_date.tm_sec = sec.toInt();
+        tm_date.tm_min = min.toInt();
+        tm_date.tm_hour = hour.toInt();
+        tm_date.tm_mday = day.toInt();
+        tm_date.tm_mon = month.toInt() - 1;
+        tm_date.tm_year = year.toInt() - 1900;
+
+        time_t time_local = mktime(&tm_date);
+
+        struct timeval time_epoch;
+        if (time_local > 2082758399)
+        {
+          time_local = time_local - 2082758399;
+        }
+        time_epoch.tv_sec = time_local;
+        time_epoch.tv_usec = micros();
+        settimeofday(&time_epoch, NULL);
+        mutex_serial.give();
+
+        break;
+      } // Serial.avaliable
+      mutex_serial.give();
+      delay(1s);
+    } // loop check time
+  }
+
+  /* Handle the clock task, update clock time. */
+  void handle_clock(arg_t arg)
+  {
+
+    struct tm tm_date = {0};
+    int count = 0;
+    synchro_clock(tm_date);
+    synchro_clock(tm_date);
+
+    while (1)
+    {
+
+      count++;
+
+      if(count == 3600) {
+        count = 0;
+        synchro_clock(tm_date);
+      }
+
+      getLocalTime(&tm_date);
+      monitor.clock.set_time(tm_date);
+
+      delay(1s);
+    }
+  }
+
+  /* Handle the monitor task, show computer metrics on configure fixed layer. */
+  void handle_monitor(arg_t arg)
+  {
+
+    /* --- MONITOR --- */
+
+    layer.style.set_pad_all(10);
+
+    layer.monitor.create();
+    layer.monitor.align(LV_ALIGN_CENTER, -74, 0);
+    layer.monitor.set_size(572, 470);
+    layer.monitor.set_bg_color(lv_color_make(41, 45, 50));
+    layer.monitor.add_style(layer.style, LV_PART_MAIN);
+    layer.monitor.hidden();
+
+    monitor.cpu.create(layer.monitor);
+    monitor.cpu.set_size(LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    monitor.cpu.set_pos(10, 15);
+    monitor.cpu.metric_label("CPU");
+
+    monitor.cpu.bar1_set_range(0, 100);
+    monitor.cpu.bar2_set_range(0, 3300);
+
+    monitor.cpu.arc_set_value(0);
+    monitor.cpu.bar1_set_value(0, "NA");
+    monitor.cpu.bar2_set_value(0, "NA");
+
+    monitor.gpu.create(layer.monitor);
+    monitor.gpu.set_size(LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    monitor.gpu.set_pos(10, 230);
+    monitor.gpu.metric_label("GPU");
+
+    monitor.gpu.bar1_set_range(0, 100);
+    monitor.gpu.bar2_set_range(0, 3300);
+
+    monitor.gpu.arc_set_value(0);
+    monitor.gpu.bar1_set_value(0, "NA");
+    monitor.gpu.bar2_set_value(0, "NA");
+
+    monitor.system.create(layer.monitor);
+    monitor.system.set_size(LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    monitor.system.set_pos(295, 15);
+    monitor.system.metric_label("System");
+
+    monitor.system.bar1_set_value(0, "NA");
+    monitor.system.bar2_set_value(0, 0, "NA");
+
+    monitor.clock.create(layer.monitor);
+    monitor.clock.set_size(245, 200);
+    monitor.clock.set_pos(295, 230);
+
+    while (1)
+    {
+
+      mutex_serial.take();
+      if (Serial.available())
+      {
+        String cpu_load = Serial.readStringUntil(',');
+        String cpu_temp = Serial.readStringUntil(',');
+        String cpu_freq = Serial.readStringUntil(',');
+
+        String gpu_load = Serial.readStringUntil(',');
+        String gpu_temp = Serial.readStringUntil(',');
+        String gpu_freq = Serial.readStringUntil(',');
+
+        String mem_used = Serial.readStringUntil(',');
+        String mem_max = Serial.readStringUntil(',');
+        String disk_used = Serial.readStringUntil(',');
+        String disk_max = Serial.readStringUntil(',');
+
+        String sec = Serial.readStringUntil(',');
+        String min = Serial.readStringUntil(',');
+        String hour = Serial.readStringUntil(',');
+        String day = Serial.readStringUntil(',');
+        String month = Serial.readStringUntil(',');
+        String year = Serial.readStringUntil('/');
+
+        monitor.cpu.arc_set_value(cpu_load.toInt());
+        monitor.cpu.bar1_set_value(cpu_temp.toInt(), "", "°C");
+        monitor.cpu.bar2_set_value(cpu_freq.toInt(), "", "MHz");
+
+        monitor.gpu.arc_set_value(gpu_load.toInt());
+        monitor.gpu.bar1_set_value(gpu_temp.toInt(), "", "°C");
+        monitor.gpu.bar2_set_value(gpu_freq.toInt(), "", "MHz");
+
+        monitor.system.bar1_set_range(0, mem_max.toInt());
+        monitor.system.bar2_set_range(0, disk_max.toInt());
+
+        monitor.system.bar1_set_value(mem_used.toInt(), "MEM:", "MB");
+        monitor.system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C:", "GB");
+      }
+      mutex_serial.give();
+
+      delay(2s);
     }
   }
 
@@ -154,6 +344,8 @@ namespace streamDeco
     startScreen_label.del();
     lvgl::screen::refresh();
 
+    layer.style.set_pad_all(10);
+
     /* --- MAIN --- */
 
     /* the class mainButton deal with position button on screen
@@ -205,8 +397,10 @@ namespace streamDeco
                                     right_workspace_event);
     button.pin.callback(buttons_callback, LV_EVENT_PRESSED, pin_window_event);
     button.lock.callback(buttons_callback, LV_EVENT_PRESSED, lock_computer_event);
-    button.configurations_layer.callback(buttons_callback, LV_EVENT_PRESSED,
+    button.configurations_layer.callback(buttons_callback, LV_EVENT_SHORT_CLICKED,
                                          configurations_layer_event);
+    button.configurations_layer.callback(buttons_callback, LV_EVENT_LONG_PRESSED,
+                                         configurations_layer_fix_event);
 
     /* --- APLICATIONS --- */
 
@@ -329,12 +523,12 @@ namespace streamDeco
     button.color_button.callback(buttons_callback, LV_EVENT_PRESSED,
                                  configuration_layer_colorbutton_event);
     button.rotation.callback(buttons_callback, LV_EVENT_PRESSED,
-                            configuration_layer_rotate_screen_event);
+                             configuration_layer_rotate_screen_event);
 
     button.sysmonitor.callback(buttons_callback, LV_EVENT_PRESSED,
-                           configuration_layer_sysmonitor_event);
+                               configuration_layer_sysmonitor_event);
     button.sysconfig.callback(buttons_callback, LV_EVENT_PRESSED,
-                           configuration_layer_sysconfig_event);
+                              configuration_layer_sysconfig_event);
     button.shutdown.callback(buttons_callback, LV_EVENT_PRESSED,
                              configuration_layer_shutdown_event);
 
@@ -370,7 +564,7 @@ namespace streamDeco
     {
 
       /* wait for a notification
-       * this hotification is sent by LVGL button with a event code */
+       * this notification is sent by LVGL button with a event code */
       uint32_t button_event = task.buttons.takeNotify();
 
       process_event(button_event, &settings);

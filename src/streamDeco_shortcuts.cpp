@@ -90,13 +90,14 @@ namespace streamDeco
          *  @note   Do nothing if Multimedia layer is fixed
          **/
         case applications_layer_event:
-            if (button.multimedia_layer.is_fixed())
+            if (button.multimedia_layer.is_fixed() || button.configurations_layer.is_fixed())
             {
                 break;
             }
             button.applications_layer.unfixe();
             layer.multimedia.hidden();
             layer.configurations.hidden();
+            layer.monitor.hidden();
             layer.applications.change_hidden();
             break;
 
@@ -108,14 +109,15 @@ namespace streamDeco
          *  @note   Do nothing if Multimedia layer is fixed
          **/
         case applications_layer_fix_event:
-            if (button.multimedia_layer.is_fixed())
+            if (button.multimedia_layer.is_fixed() || button.configurations_layer.is_fixed())
             {
                 break;
             }
             button.applications_layer.fixe();
-            layer.applications.unhidden();
             layer.multimedia.hidden();
+            layer.monitor.hidden();
             layer.configurations.hidden();
+            layer.applications.unhidden();
             break;
 
         /* --- MAIN MULTIMEDIA --- */
@@ -178,13 +180,14 @@ namespace streamDeco
          *  @note   Do nothing if Applications layer is fixed
          **/
         case multimedia_layer_event: /* multimedia button receive a short click */
-            if (button.applications_layer.is_fixed())
+            if (button.applications_layer.is_fixed() || button.configurations_layer.is_fixed())
             {
                 break;
             }
             button.multimedia_layer.unfixe();
             layer.applications.hidden();
             layer.configurations.hidden();
+            layer.monitor.hidden();
             layer.multimedia.change_hidden();
             break;
 
@@ -196,13 +199,14 @@ namespace streamDeco
              *  @note   Do nothing if Applications layer is fixed
              **/
         case multimedia_layer_fix_event:
-            if (button.applications_layer.is_fixed())
+            if (button.applications_layer.is_fixed() || button.configurations_layer.is_fixed())
             {
                 break;
             }
             button.multimedia_layer.fixe();
             layer.applications.hidden();
             layer.configurations.hidden();
+            layer.monitor.hidden();
             layer.multimedia.unhidden();
             break;
 
@@ -275,9 +279,27 @@ namespace streamDeco
             {
                 break;
             }
+            button.configurations_layer.unfixe();
             layer.applications.hidden();
             layer.multimedia.hidden();
-            layer.configurations.change_hidden();
+            if(layer.monitor.is_hidden()) {
+                layer.configurations.change_hidden();
+            } else {
+                layer.configurations.hidden();
+            }
+            layer.monitor.hidden();
+            break;
+        
+        case configurations_layer_fix_event: /* configuration button is pressed */
+            if (button.applications_layer.is_fixed() || button.multimedia_layer.is_fixed())
+            {
+                break;
+            }
+            button.configurations_layer.fixe();
+            layer.applications.hidden();
+            layer.multimedia.hidden();
+            layer.configurations.hidden();
+            layer.monitor.unhidden();
             break;
 
             /* --- LAYER APPLICATIONS --- */
@@ -532,25 +554,22 @@ namespace streamDeco
 
         /** @brief  colorbackground button is pressed
          *          Change background color
-         *  @note   Background colors are allocated in vector palette_bg in settings.cpp file
+         *  @note   Background colors are allocated in vector colors_background in settings.cpp file
          *          You can add colors in this vector
          **/
         case configuration_layer_colorbackground_event:
-            settings->color_background = lvgl::settings::bgColor();
+            settings->color_background = lvgl::settings::backgroundColor();
             lvgl::screen::set_bg_color(settings->color_background);
             break;
 
         /** @brief  colorbutton button is pressed
          *          Change button color
-         *  @note   Buttons colors are allocated in vector palette_button in settings.cpp file
+         *  @note   Buttons colors are allocated in vector colors_button in settings.cpp file
          *          You can add colors in this vector
          **/
         case configuration_layer_colorbutton_event:
             settings->color_buttons = lvgl::settings::buttonColor();
             change_color_buttons(settings->color_buttons);
-            slider.backlightbright_style.set_bg_color(settings->color_buttons);
-            slider.backlightbright_icon_style.set_img_recolor(settings->color_buttons);
-            slider.backlightbright_icon.update_layout();
             lvgl::screen::refresh();
             break;
 
@@ -595,8 +614,8 @@ namespace streamDeco
          **/
         case configuration_layer_shutdown_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('3');
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press('k');
             delay(10ms);
             bleKeyboard.releaseAll();
             break;

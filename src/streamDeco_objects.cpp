@@ -21,6 +21,7 @@
  */
 
 #include "streamDeco_objects.hpp"
+#include "streamDeco_monitor.hpp"
 
 namespace streamDeco
 {
@@ -52,7 +53,7 @@ namespace streamDeco
     /**
      * @brief  Edit icons herer
      * @code
-     * streamDeco::mainButton(
+     * mainButton(
      *          "Terminal",     // name, show name if icon not used
      *          &terminal_simp, // first icon
      *          NULL            // second icon, if used the icons can be swaped using swap_icon
@@ -63,86 +64,90 @@ namespace streamDeco
         /* ---   Main Layer buttons   --- */
 
         /* Applications line */
-        streamDeco::mainButton("Terminal", &terminal_simp, NULL),
-        streamDeco::mainButton("Files", &files_simp, NULL),
-        streamDeco::mainButton("Web", &web_simp, NULL),
-        streamDeco::mainButton("Search", &search_simp, NULL),
-        streamDeco::mainButton("Application", &applications_simp, NULL),
+        mainButton("Terminal", &terminal_simp, NULL),
+        mainButton("Files", &files_simp, NULL),
+        mainButton("Web", &web_simp, NULL),
+        mainButton("Search", &search_simp, NULL),
+        mainButton("Application", &applications_simp, NULL),
 
         /* Multimedia line */
-        streamDeco::mainButton("Prev", &backward_simp, NULL),
-        streamDeco::mainButton("Play/Pause", &play_simp, &pause_simp),
-        streamDeco::mainButton("Next", &forward_simp, NULL),
-        streamDeco::mainButton("Mic", &mic_on_simp, &mic_off_simp),
-        streamDeco::mainButton("Multimedia", &multimedia_simp, NULL),
+        mainButton("Prev", &backward_simp, NULL),
+        mainButton("Play/Pause", &play_simp, &pause_simp),
+        mainButton("Next", &forward_simp, NULL),
+        mainButton("Mic", &mic_on_simp, &mic_off_simp),
+        mainButton("Multimedia", &multimedia_simp, NULL),
 
         /* Configurations line */
-        streamDeco::mainButton("Left Workspace", &previous_workspace_simp, NULL),
-        streamDeco::mainButton("Right Workspace", &next_workspace_simp, NULL),
-        streamDeco::mainButton("Pin", &pin_simp, &unpin_simp),
-        streamDeco::mainButton("Lock", &locked_simp, NULL),
-        streamDeco::mainButton("Config", &config_simp, NULL),
+        mainButton("Left Workspace", &previous_workspace_simp, NULL),
+        mainButton("Right Workspace", &next_workspace_simp, NULL),
+        mainButton("Pin", &pin_simp, &unpin_simp),
+        mainButton("Lock", &locked_simp, NULL),
+        mainButton("Config", &config_simp, NULL),
 
         /* ---   Applications Layer buttons   --- */
 
         /* First line */
-        streamDeco::layerButton("app1", &gogcom_simp, NULL),
-        streamDeco::layerButton("app2", &discord_simp, NULL),
-        streamDeco::layerButton("app3", &fps_simp, NULL),
+        layerButton("app1", &gogcom_simp, NULL),
+        layerButton("app2", &discord_simp, NULL),
+        layerButton("app3", &fps_simp, NULL),
 
         /* Second line */
-        streamDeco::layerButton("app4", &code_simp, NULL),
-        streamDeco::layerButton("app5", &texcompiler_simp, NULL),
-        streamDeco::layerButton("app6", &calculator_simp, NULL),
+        layerButton("app4", &code_simp, NULL),
+        layerButton("app5", &texcompiler_simp, NULL),
+        layerButton("app6", &calculator_simp, NULL),
 
         /* Third line */
-        streamDeco::layerButton("app7", &build_simp, NULL),
-        streamDeco::layerButton("app8", &download_simp, NULL),
-        streamDeco::layerButton("app9", &serialport_simp, NULL),
+        layerButton("app7", &build_simp, NULL),
+        layerButton("app8", &download_simp, NULL),
+        layerButton("app9", &serialport_simp, NULL),
 
         /* ---   Multimedia Layer buttons   --- */
 
         /* First line */
-        streamDeco::layerButton("mult 1", &video_start_capt_simp, &video_pause_capt_simp),
-        streamDeco::layerButton("mult 2", &mic_off_simp, &mic_on_simp),
-        streamDeco::layerButton("mult 3", &cam_off_simp, &cam_on_simp),
+        layerButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
+        layerButton("mult 2", &mic_off_simp, &mic_on_simp),
+        layerButton("mult 3", &cam_off_simp, &cam_on_simp),
 
         /* Second line */
-        streamDeco::layerButton("mult 4", &add_clip_simp, NULL),
-        streamDeco::layerButton("mult 5", &ripple_simp, NULL),
-        streamDeco::layerButton("mult 6", &rolling_simp, NULL),
+        layerButton("mult 4", &add_clip_simp, NULL),
+        layerButton("mult 5", &ripple_simp, NULL),
+        layerButton("mult 6", &rolling_simp, NULL),
 
         /* Third line */
-        streamDeco::layerButton("mult 7", &seek_backward_simp, NULL),
-        streamDeco::layerButton("mult 8", &play_simp, NULL),
-        streamDeco::layerButton("mult 9", &seek_forward_simp, NULL),
+        layerButton("mult 7", &seek_backward_simp, NULL),
+        layerButton("mult 8", &play_simp, NULL),
+        layerButton("mult 9", &seek_forward_simp, NULL),
 
         /* ---   Configurations Layer buttons   --- */
 
         /* First line */
-        streamDeco::configButton("Vol Mute", &volume_mute_simp, NULL),
-        streamDeco::configButton("Vol Down", &volume_low_simp, NULL),
-        streamDeco::configButton("Vol Up", &volume_high_simp, NULL),
+        configButton("Vol Mute", &volume_mute_simp, NULL),
+        configButton("Vol Down", &volume_low_simp, NULL),
+        configButton("Vol Up", &volume_high_simp, NULL),
 
         /* Second line */
-        streamDeco::configButton("Color BG", &bgtheme_simp, NULL),
-        streamDeco::configButton("Color Buttons", &btntheme_simp, NULL),
-        streamDeco::configButton("Rotation", &rotation_simp, NULL),
+        configButton("Color BG", &bgtheme_simp, NULL),
+        configButton("Color Buttons", &btntheme_simp, NULL),
+        configButton("Rotation", &rotation_simp, NULL),
 
         /* Third line */
-        streamDeco::configButton("System Monitor", &sysmon_simp, NULL),
-        streamDeco::configButton("System Config", &config_simp, NULL),
-        streamDeco::configButton("Shutdown", &shutdown_simp, NULL),
+        configButton("System Monitor", &sysmon_simp, NULL),
+        configButton("System Config", &config_simp, NULL),
+        configButton("Shutdown", &shutdown_simp, NULL),
     };
 
     task_t task = {
         Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
         Task("Task reset screen", 3, 1024),
+        Task("Task Monitor", 5, 3 * 1024),
+        Task("Task Clock", 5, 3 * 1024),
     };
 
     layer_t layer;
-
     slider_t slider;
+    monitor_t monitor;
+
+    lvgl::Style layer_monitor_style;
 
     void change_color_buttons(lv_palette_t color)
     {
@@ -194,6 +199,15 @@ namespace streamDeco
         button.sysmonitor.color(color);
         button.sysconfig.color(color);
         button.shutdown.color(color);
+
+        monitor.cpu.color(color);
+        monitor.gpu.color(color);
+        monitor.system.color(color);
+        monitor.clock.color(color);
+
+        slider.backlightbright_style.set_bg_color(color);
+        slider.backlightbright_icon_style.set_img_recolor(color);
+        slider.backlightbright_icon.update_layout();
     }
 
 } // namespace streamDeco

@@ -31,6 +31,8 @@
 #include "settings.hpp"
 #include "uibutton.hpp"
 
+#include "streamDeco_monitor.hpp"
+
 /* Stack size of buttons task */
 #define STACK_BUTTONS_SIZE byte_k(4)
 
@@ -43,6 +45,10 @@ namespace streamDeco
     Task buttons;
     /* Task to hidde inactivities layers */
     Task uiReset;
+    /* Task to show computer metrics on configurations fixed layers */
+    Task monitor;
+    /* Task to update clock */
+    Task clock;
   } task_t;
 
   extern task_t task;
@@ -72,6 +78,10 @@ namespace streamDeco
     lvgl::Layer multimedia;
     /* Layer to hold configurations shortcuts. */
     lvgl::Layer configurations;
+    /* Layer to monitor computer stats. */
+    lvgl::Layer monitor;
+    /* Style for layers */
+    lvgl::Style style;
   } layer_t;
 
   extern layer_t layer;
@@ -148,6 +158,15 @@ namespace streamDeco
 
   extern slider_t slider;
 
+  typedef struct {
+    metric::Complete cpu;
+    metric::Complete gpu;
+    metric::Basic system;
+    metric::Clock clock;
+  } monitor_t;
+
+  extern monitor_t monitor;
+
   /* Events enumerations */
   enum event_e
   {
@@ -172,6 +191,7 @@ namespace streamDeco
     pin_window_event,
     lock_computer_event,
     configurations_layer_event,
+    configurations_layer_fix_event,
 
     /* --- APPLICATIONS LAYER EVENTS --- */
 
@@ -228,7 +248,7 @@ namespace streamDeco
   typedef struct
   {
     /* used to change color of StreamDeco background */
-    lv_palette_t color_background;
+    lv_color_t color_background;
 
     /* used to change color of StreamDeco buttons */
     lv_palette_t color_buttons;

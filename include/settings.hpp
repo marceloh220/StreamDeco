@@ -31,7 +31,7 @@ namespace settings {
 enum { SIZE_CONTENT = LV_SIZE_CONTENT };
 
 lv_palette_t buttonColor();
-lv_palette_t bgColor();
+lv_color_t backgroundColor();
 
 } // namespace settings
 
