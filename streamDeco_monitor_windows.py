@@ -81,13 +81,8 @@ class Date:
     year  = ''
 
 
-def sendData(cpu:xPU, gpu:xPU, mem:xMEM, disk:xMEM, date:Date):
-    conectionPort = ''
+def sendData(cpu:xPU, gpu:xPU, mem:xMEM, disk:xMEM, date:Date, conectionPort:str):
     try:
-        pcPorts = list(serial.tools.list_ports.comports())
-        for ports in pcPorts:
-            if boardCOM in ports.description:
-                conectionPort = ports.name
         connection = serial.Serial(conectionPort, 115200)
         data = cpu.load + ',' + cpu.temp + ',' + cpu.freq + ',' 
         data = data + gpu.load + ',' + gpu.temp + ',' + gpu.freq + ',' 
@@ -99,7 +94,22 @@ def sendData(cpu:xPU, gpu:xPU, mem:xMEM, disk:xMEM, date:Date):
         print("Data written", data.encode())
         connection.close  
     except Exception as e:
-        print(e)
+        print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+        time.sleep(10)
+
+def initPortConnection():
+    conectionPort:str
+    try:
+        pcPorts = list(serial.tools.list_ports.comports())
+        for ports in pcPorts:
+            if boardCOM in ports.description:
+                conectionPort = ports.name
+                print("Using device  USB-SERIAL " + ports.description)
+                return conectionPort
+    except Exception as e:
+        print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+        time.sleep(10)
+    return "FAIL"
 
 def initOpenHardwareMonitor():
     OpenHardwareMonitorFile = 'OpenHardwareMonitorLib'
@@ -184,17 +194,19 @@ def main():
     disk = xMEM()
     date = Date()
     sensors = initOpenHardwareMonitor()
+    conectionPort = initPortConnection()
+    while conectionPort == "FAIL":
+        conectionPort = initPortConnection()
+        print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+        time.sleep(10)
     while(1):
         cpu, gpu = readOpenHardwareMonitor(sensors)
         mem  = readMem()
         disk = readDiskDrive('c')
         date = readDate()
-        sendData(cpu, gpu, mem, disk, date)
+        sendData(cpu, gpu, mem, disk, date, conectionPort)
         time.sleep(updateTime)
 
 
 if __name__ == '__main__':
-    pcPorts = list(serial.tools.list_ports.comports())
-    for ports in pcPorts:
-        print(ports)
     main()
