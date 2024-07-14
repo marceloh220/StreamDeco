@@ -104,7 +104,7 @@ def initPortConnection():
         for ports in pcPorts:
             if boardCOM in ports.description:
                 conectionPort = ports.name
-                print("Using device  USB-SERIAL " + ports.description)
+                print("Using device USB-SERIAL " + ports.description)
                 return conectionPort
     except Exception as e:
         print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
