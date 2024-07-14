@@ -68,7 +68,7 @@ class xPU:
     temp = ''
     freq = ''
     
-class xRAM:
+class xMEM:
     used = ''
     max  = '' 
 
@@ -81,7 +81,7 @@ class Date:
     year  = ''
 
 
-def sendData(cpu:xPU, gpu:xPU, mem:xRAM, disk:xRAM, date:Date):
+def sendData(cpu:xPU, gpu:xPU, mem:xMEM, disk:xMEM, date:Date):
     conectionPort = ''
     try:
         pcPorts = list(serial.tools.list_ports.comports())
@@ -154,13 +154,13 @@ def readOpenHardwareMonitor(handle, showAllSensors = False):
     return cpu, gpu
 
 def readMem():
-    mem = xRAM()
+    mem = xMEM()
     mem.used  = str(psutil.virtual_memory().used / (1024 ** 2))
     mem.max   = str(psutil.virtual_memory().total / (1024 ** 2))
     return mem
 
 def readDiskDrive(letterDrive = 'c'):
-    disk = xRAM()
+    disk = xMEM()
     drive = psutil.disk_usage(letterDrive + ':\\') # Drive letter with double \\
     disk.used = str(drive.used / (1024.0 ** 3))
     disk.max  = str(drive.total / (1024.0 ** 3))
@@ -180,8 +180,8 @@ def readDate():
 def main():
     cpu = xPU()
     gpu = xPU()
-    mem = xRAM()
-    disk = xRAM()
+    mem = xMEM()
+    disk = xMEM()
     date = Date()
     sensors = initOpenHardwareMonitor()
     while(1):
