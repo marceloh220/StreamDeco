@@ -1,5 +1,16 @@
 '''
 
+The binaries of the Open Hardware Monitor have been made available 
+by the Open Hardware Monitor Project
+https://openhardwaremonitor.org/
+
+under the Mozilla Public License 2.0 (MPL)
+https://www.mozilla.org/en-US/MPL/2.0/
+
+
+
+This script is distribuited under MIT License
+
 Copyright © 2024 Marcelo H Moraes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,8 +34,8 @@ SOFTWARE.
 BE CAREFUL DON'T RUN ANY EXECUTABLES ON YOUR COMPUTER!
 MAKE YOUR OWN AFTER READING AND UNDERSTANDING THE SCRIPT.
 
-I DO NOT DISTRIBUTE EXECUTABLES AND I AM RESPONSIBLE FOR ANY DAMAGE CAUSED TO YOUR 
-COMPUTER BY ANY EXECUTABLES THAT MAY COME WITH THIS REPOSITORY!
+I DO NOT DISTRIBUTE EXECUTABLES AND I AM NOT RESPONSIBLE FOR ANY DAMAGE CAUSED TO 
+YOUR COMPUTER BY ANY EXECUTABLES THAT MAY COME WITH THIS REPOSITORY!
 
 From Windows:
 
