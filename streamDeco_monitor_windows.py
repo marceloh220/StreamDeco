@@ -2,7 +2,7 @@
 From Windows:
 
 Install the following Python modules:
-    pip.exe install pyserial psutil pythonnet
+    pip.exe install pyserial psutil pythonnet pyinstaller
 
 Make sure 'OpenHardwareMonitorLib.dll' is in the same folder as this Python script or the exe program
 
