@@ -150,7 +150,7 @@ namespace streamDeco
     monitor_t monitor = {
         metric::Complete("CPU", &processor_22_simp),
         metric::Complete("GPU", &gpu_22_simp),
-        metric::Basic("CPU", &ram_22_simp),
+        metric::Basic("MEM", &ram_22_simp),
         metric::Clock()
     };
 
