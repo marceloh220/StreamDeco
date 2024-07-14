@@ -1,4 +1,31 @@
 '''
+
+Copyright © 2024 Marcelo H Moraes
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+BE CAREFUL DON'T RUN ANY EXECUTABLES ON YOUR COMPUTER!
+MAKE YOUR OWN AFTER READING AND UNDERSTANDING THE SCRIPT.
+
+I DO NOT DISTRIBUTE EXECUTABLES AND I AM RESPONSIBLE FOR ANY DAMAGE CAUSED TO YOUR 
+COMPUTER BY ANY EXECUTABLES THAT MAY COME WITH THIS REPOSITORY!
+
 From Windows:
 
 Install the following Python modules:
@@ -6,10 +33,9 @@ Install the following Python modules:
 
 Make sure 'OpenHardwareMonitorLib.dll' is in the same folder as this Python script or the exe program
 
-Run exe program as administrator,
-or run py script in console with administratives permissions
+Run py script in console with administratives permissions
 
-If you don't trust in AMERICA... your comunist ¬_¬ ... create your own exe
+Create your own exe with commander
     pyinstaller.exe -F .\streamDeco_monitor_windows.py
 
 The COM device is searched until find ESP32 USB chip, in my case the chip is named as CH340
@@ -24,7 +50,7 @@ import psutil
 import datetime
 
 updateTime = 2       # monitor update interval
-boardCOM   = "CH340" # USB/TTL on StreamDeco Board, check your controler
+boardCOM   = "CH340" # USB/TTL on ESP32 8048s43c Board, check your controler
 
 class xPU:
     load = ''
