@@ -22,7 +22,7 @@
 #include <Arduino.h>
 #include "marcelino.hpp"
 
-#include "streamDeco.hpp"
+#include "streamDeco_init.hpp"
 
 void setup()
 {

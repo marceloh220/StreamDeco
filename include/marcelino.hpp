@@ -26,30 +26,30 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
-#include "task.hpp"
+#include "marcelino/button.hpp"
+#include "marcelino/chrono.hpp"
+#include "marcelino/eventGroup.hpp"
+#include "marcelino/gpio.hpp"
+#include "marcelino/input.hpp"
+#include "marcelino/interrupt.hpp"
+#include "marcelino/mutex.hpp"
+#include "marcelino/output.hpp"
+#include "marcelino/queue.hpp"
+#include "marcelino/semaphore.hpp"
+#include "marcelino/task.hpp"
+#include "marcelino/timer.hpp"
 
-#include "gpio.hpp"
-#include "output.hpp"
-#include "input.hpp"
-#include "interrupt.hpp"
-
-#include "mutex.hpp"
-#include "semaphore.hpp"
-#include "eventGroup.hpp"
-#include "queue.hpp"
-#include "timer.hpp"
-
-#include "chrono.hpp"
-
-#include "icons.h"
-
-#include "lvgl_port.hpp"
-#include "lvgl_screen.hpp"
-#include "lvgl_label.hpp"
-#include "lvgl_image.hpp"
-#include "lvgl_slider.hpp"
-#include "lvgl_layer.hpp"
-#include "lvgl_style.hpp"
+#include "lvgl/lvgl_arc.hpp"
+#include "lvgl/lvgl_bar.hpp"
+#include "lvgl/lvgl_button.hpp"
+#include "lvgl/lvgl_event.hpp"
+#include "lvgl/lvgl_image.hpp"
+#include "lvgl/lvgl_label.hpp"
+#include "lvgl/lvgl_layer.hpp"
+#include "lvgl/lvgl_port.hpp"
+#include "lvgl/lvgl_screen.hpp"
+#include "lvgl/lvgl_slider.hpp"
+#include "lvgl/lvgl_style.hpp"
 
 #define byte_k(_b) (_b*1024)
 

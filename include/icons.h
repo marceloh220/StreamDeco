@@ -137,4 +137,8 @@ extern const lv_img_dsc_t origin_simp;
 extern const lv_img_dsc_t ubisoft_simp;
 extern const lv_img_dsc_t epicgames_simp;
 
+extern const lv_img_dsc_t processor_22_simp;
+extern const lv_img_dsc_t gpu_22_simp;
+extern const lv_img_dsc_t ram_22_simp;
+
 #endif

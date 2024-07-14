@@ -1,0 +1,57 @@
+#ifdef __has_include
+    #if __has_include("lvgl.h")
+        #ifndef LV_LVGL_H_INCLUDE_SIMPLE
+            #define LV_LVGL_H_INCLUDE_SIMPLE
+        #endif
+    #endif
+#endif
+
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE)
+    #include "lvgl.h"
+#else
+    #include "lvgl/lvgl.h"
+#endif
+
+
+#ifndef LV_ATTRIBUTE_MEM_ALIGN
+#define LV_ATTRIBUTE_MEM_ALIGN
+#endif
+
+#ifndef LV_ATTRIBUTE_IMG_PROCESSOR_22_SIMP
+#define LV_ATTRIBUTE_IMG_PROCESSOR_22_SIMP
+#endif
+
+const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_PROCESSOR_22_SIMP uint8_t processor_22_simp_map[] = {
+  0x02, 0x01, 0x00, 
+  0x02, 0x31, 0x00, 
+  0x0f, 0xff, 0xc0, 
+  0x1f, 0xff, 0xe0, 
+  0x30, 0x00, 0x30, 
+  0x30, 0x00, 0x30, 
+  0xf1, 0xfe, 0x3c, 
+  0x33, 0x03, 0x30, 
+  0x32, 0x01, 0x30, 
+  0x32, 0x01, 0x30, 
+  0x72, 0x01, 0x38, 
+  0x72, 0x01, 0x38, 
+  0x32, 0x01, 0x30, 
+  0x32, 0x01, 0x30, 
+  0x33, 0x03, 0x30, 
+  0xf1, 0xfe, 0x3c, 
+  0x30, 0x00, 0x30, 
+  0x30, 0x00, 0x30, 
+  0x1f, 0xff, 0xe0, 
+  0x0f, 0xff, 0xc0, 
+  0x02, 0x31, 0x00, 
+  0x02, 0x01, 0x00, 
+};
+
+const lv_img_dsc_t processor_22_simp = {
+  .header.cf = LV_IMG_CF_ALPHA_1BIT,
+  .header.always_zero = 0,
+  .header.reserved = 0,
+  .header.w = 22,
+  .header.h = 22,
+  .data_size = 66,
+  .data = processor_22_simp_map,
+};

@@ -1,15 +1,19 @@
-# Windows:
+'''
+From Windows:
 
-# Install the following Python modules:
-# pip install pyserial
-# pip install psutil
-# pip install pythonnet
-#
-# or pip install -r requirements.txt
-# 
-# Make sure 'OpenHardwareMonitorLib.dll' is in the same folder as this Python script!
-#
-# Change the COM port under connection (line 31) to match that of the COM port the device is on!
+Install the following Python modules:
+    pip.exe install pyserial psutil pythonnet
+
+Make sure 'OpenHardwareMonitorLib.dll' is in the same folder as this Python script or the exe program
+
+Run exe program as administrator,
+or run py script in console with administratives permissions
+
+If you don't trust in AMERICA... your comunist ¬_¬ ... create your own exe
+    pyinstaller.exe -F .\streamDeco_monitor_windows.py
+
+The COM device is searched until find ESP32 USB chip, in my case the chip is named as CH340
+'''
 
 import serial
 import serial.tools.list_ports
@@ -19,25 +23,15 @@ import clr
 import psutil
 import datetime
 
-updateTime = 2 # number of seconds between each update
+updateTime = 2       # monitor update interval
+boardCOM   = "CH340" # USB/TTL on StreamDeco Board, check your controler
 
-# We are only using a few of these, but I left them here so you can experiment
-
-hardwaretypes = ['Mainboard','SuperIO','CPU','RAM','GpuNvidia','GpuAti','TBalancer','Heatmaster','HDD']
-sensortypes = ['Voltage','Clock','Temperature','Load','Fan','Flow','Control','Level','Factor','Power','Data','SmallData']
-
-
-class CPU:
-    load = ''
-    temp = ''
-    freq = ''
-
-class GPU:
+class xPU:
     load = ''
     temp = ''
     freq = ''
     
-class Spaces:
+class xRAM:
     used = ''
     max  = '' 
 
@@ -50,12 +44,12 @@ class Date:
     year  = ''
 
 
-def sendData(cpu:CPU, gpu:GPU, mem:Spaces, disk:Spaces, date:Date):
+def sendData(cpu:xPU, gpu:xPU, mem:xRAM, disk:xRAM, date:Date):
     conectionPort = ''
     try:
-        pc_ports = list(serial.tools.list_ports.comports())
-        for ports in pc_ports:
-            if "CH340" in ports.description:
+        pcPorts = list(serial.tools.list_ports.comports())
+        for ports in pcPorts:
+            if boardCOM in ports.description:
                 conectionPort = ports.name
         connection = serial.Serial(conectionPort, 115200)
         data = cpu.load + ',' + cpu.temp + ',' + cpu.freq + ',' 
@@ -70,9 +64,20 @@ def sendData(cpu:CPU, gpu:GPU, mem:Spaces, disk:Spaces, date:Date):
     except Exception as e:
         print(e)
 
-def readMonitor(handle, showAllSensors = False):
-    cpu = CPU()
-    gpu = GPU()
+def initOpenHardwareMonitor():
+    OpenHardwareMonitorFile = 'OpenHardwareMonitorLib'
+    clr.AddReference(OpenHardwareMonitorFile)
+    from OpenHardwareMonitor import Hardware
+    OpenHardwareMonitorHandle = Hardware.Computer()
+    OpenHardwareMonitorHandle.CPUEnabled = True
+    OpenHardwareMonitorHandle.RAMEnabled = True
+    OpenHardwareMonitorHandle.GPUEnabled = True
+    OpenHardwareMonitorHandle.Open()
+    return OpenHardwareMonitorHandle
+
+def readOpenHardwareMonitor(handle, showAllSensors = False):
+    cpu = xPU()
+    gpu = xPU()
     for hardware in handle.Hardware:
         hardware.Update()
         for sensor in hardware.Sensors:
@@ -111,38 +116,48 @@ def readMonitor(handle, showAllSensors = False):
                         print(str(subsensor.SensorType) + " : " + subsensor.Name + " : " + str(subsensor.Value))
     return cpu, gpu
 
+def readMem():
+    mem = xRAM()
+    mem.used  = str(psutil.virtual_memory().used / (1024 ** 2))
+    mem.max   = str(psutil.virtual_memory().total / (1024 ** 2))
+    return mem
 
-def main():
-    cpu = CPU()
-    gpu = GPU()
-    mem = Spaces()
-    disk = Spaces()
+def readDiskDrive(letterDrive = 'c'):
+    disk = xRAM()
+    drive = psutil.disk_usage(letterDrive + ':\\') # Drive letter with double \\
+    disk.used = str(drive.used / (1024.0 ** 3))
+    disk.max  = str(drive.total / (1024.0 ** 3))
+    return disk
+
+def readDate():
     date = Date()
-    file = 'OpenHardwareMonitorLib'
-    clr.AddReference(file)
-    from OpenHardwareMonitor import Hardware
-    OpenHardwareMonitorHandle = Hardware.Computer()
-    OpenHardwareMonitorHandle.MainboardEnabled = True
-    OpenHardwareMonitorHandle.CPUEnabled = True
-    OpenHardwareMonitorHandle.RAMEnabled = True
-    OpenHardwareMonitorHandle.GPUEnabled = True
-    OpenHardwareMonitorHandle.Open()
+    now = datetime.datetime.now()
+    date.sec = str(now.second)
+    date.min = str(now.minute)
+    date.hour = str(now.hour)
+    date.day = str(now.day)
+    date.month = str(now.month)
+    date.year = str(now.year)
+    return date
+    
+def main():
+    cpu = xPU()
+    gpu = xPU()
+    mem = xRAM()
+    disk = xRAM()
+    date = Date()
+    sensors = initOpenHardwareMonitor()
     while(1):
-        cpu, gpu = readMonitor(OpenHardwareMonitorHandle)
-        obj_Disk = psutil.disk_usage('c:\\') # Drive letter with double \\
-        mem.used  = str(psutil.virtual_memory().used / (1024 ** 2))
-        mem.max   = str(psutil.virtual_memory().total / (1024 ** 2))
-        disk.used = str(obj_Disk.used / (1024.0 ** 3))
-        disk.max  = str(obj_Disk.total / (1024.0 ** 3))
-        now = datetime.datetime.now()
-        date.sec = str(now.second)
-        date.min = str(now.minute)
-        date.hour = str(now.hour)
-        date.day = str(now.day)
-        date.month = str(now.month)
-        date.year = str(now.year)
+        cpu, gpu = readOpenHardwareMonitor(sensors)
+        mem  = readMem()
+        disk = readDiskDrive('c')
+        date = readDate()
         sendData(cpu, gpu, mem, disk, date)
         time.sleep(updateTime)
 
+
 if __name__ == '__main__':
+    pcPorts = list(serial.tools.list_ports.comports())
+    for ports in pcPorts:
+        print(ports)
     main()

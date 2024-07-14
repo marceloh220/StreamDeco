@@ -22,6 +22,7 @@
 
 #include "streamDeco_objects.hpp"
 #include "streamDeco_monitor.hpp"
+#include "icons.h"
 
 namespace streamDeco
 {
@@ -145,7 +146,13 @@ namespace streamDeco
 
     layer_t layer;
     slider_t slider;
-    monitor_t monitor;
+
+    monitor_t monitor = {
+        metric::Complete("CPU", &processor_22_simp),
+        metric::Complete("GPU", &gpu_22_simp),
+        metric::Basic("CPU", &ram_22_simp),
+        metric::Clock()
+    };
 
     lvgl::Style layer_monitor_style;
 
