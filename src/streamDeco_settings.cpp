@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "settings.hpp"
+#include "streamDeco_settings.hpp"
 
 namespace lvgl
 {

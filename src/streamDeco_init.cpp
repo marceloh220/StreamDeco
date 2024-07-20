@@ -54,9 +54,10 @@ namespace streamDeco
   /* Called in main_app loop or loop to print memory usage of tasks */
   void print_task_memory_usage()
   {
-    printf("Task Buttons mem usage %d\n", task.buttons.memUsage());
+    printf("Task Buttons mem usage %d\n",  task.buttons.memUsage());
     printf("Task UI Reset mem usage %d\n", task.uiReset.memUsage());
-    printf("Task Monitor mem usage %d\n", task.monitor.memUsage());
+    printf("Task Monitor mem usage %d\n",  task.monitor.memUsage());
+    printf("Task Ckock mem usage %d\n",    task.clock.memUsage());
   }
 
   /* Experimental, someday will roll. Gambare gambare senpai! */
@@ -166,7 +167,7 @@ namespace streamDeco
     } // loop check time
   }
 
-  /* Handle the clock task, update clock time. */
+  /* Handle the clock task, update clock time on Monitor layer. */
   void handle_clock(arg_t arg)
   {
 
@@ -180,7 +181,7 @@ namespace streamDeco
 
       count++;
 
-      if(count == 3600) {
+      if(count == (10*60)) {
         count = 0;
         synchro_clock(tm_date);
       }
@@ -212,7 +213,7 @@ namespace streamDeco
     monitor.cpu.set_pos(14, 25);
 
     monitor.cpu.bar1_set_range(0, 100);
-    monitor.cpu.bar2_set_range(0, 3300);
+    monitor.cpu.bar2_set_range(0, 3600);
 
     monitor.gpu.create(layer.monitor);
     monitor.gpu.set_size(280, 200);
@@ -271,7 +272,7 @@ namespace streamDeco
       }
       mutex_serial.give();
 
-      delay(2s);
+      delay(1s);
     }
   }
 

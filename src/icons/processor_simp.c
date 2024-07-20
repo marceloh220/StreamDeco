@@ -42,11 +42,11 @@
 #define LV_ATTRIBUTE_MEM_ALIGN
 #endif
 
-#ifndef LV_ATTRIBUTE_IMG_CPU_SIMP
-#define LV_ATTRIBUTE_IMG_CPU_SIMP
+#ifndef LV_ATTRIBUTE_IMG_PROCESSOR_SIMP
+#define LV_ATTRIBUTE_IMG_PROCESSOR_SIMP
 #endif
 
-const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_CPU_SIMP uint8_t cpu_simp_map[] = {
+const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_PROCESSOR_SIMP uint8_t processor_simp_map[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x7c, 0x03, 0xc0, 0x3e, 0x00, 0x00, 
   0x00, 0x00, 0x7c, 0x07, 0xe0, 0x3e, 0x00, 0x00, 
@@ -113,12 +113,12 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_CPU_SIMP 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 };
 
-const lv_img_dsc_t cpu_simp = {
+const lv_img_dsc_t processor_simp = {
   .header.cf = LV_IMG_CF_ALPHA_1BIT,
   .header.always_zero = 0,
   .header.reserved = 0,
   .header.w = 64,
   .header.h = 64,
   .data_size = 512,
-  .data = cpu_simp_map,
+  .data = processor_simp_map,
 };

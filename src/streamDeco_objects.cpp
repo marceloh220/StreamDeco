@@ -52,7 +52,10 @@ namespace streamDeco
     };
 
     /**
-     * @brief  Edit icons herer
+     * @brief  Buttons of StreamDeco
+     * @note   Icons can be changed herer
+     *         The only difference between mainIcon, layerButton and configButton
+     *         is position map
      * @code
      * mainButton(
      *          "Terminal",     // name, show name if icon not used
@@ -137,6 +140,17 @@ namespace streamDeco
         configButton("Shutdown", &shutdown_simp, NULL),
     };
 
+    /**
+     * @brief  Tasks of streamDeco
+     * @code
+     * Task(
+     *          "Terminal",  // Task name, used for debug
+     *          Priority,    // Higher numbers mean higher task priority
+     *          StakSize     // Can start with a higher value and change affter see memory used with memUsage method
+     * ),
+     * @note   The function handler is set with attach method
+     *         Other parameter can be see in file marcelino/task.hpp
+     **/
     task_t task = {
         Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
         Task("Task reset screen", 3, 1024),
@@ -147,15 +161,28 @@ namespace streamDeco
     layer_t layer;
     slider_t slider;
 
+    /**
+     * @brief  Metrics of Monitor layer
+     * @code
+     * metric::Complete(
+     *          "CPU",          // name show on metric space
+     *          &terminal_simp, // icon show in metric space, if NULL only name is show
+     * ),
+     * @note   Complete metric show an arc for load and two bars
+     *         Basic only show two bars
+     *         Clock show a clock formated in Hour:Minute:Second // Day/Month/Year
+     **/
     monitor_t monitor = {
         metric::Complete("CPU", &processor_22_simp),
         metric::Complete("GPU", &gpu_22_simp),
         metric::Basic("MEM", &ram_22_simp),
-        metric::Clock()
+        metric::Clock("Clock", &clock_22_simp)
     };
 
-    lvgl::Style layer_monitor_style;
-
+    /**
+     * @brief Change color of Buttons, Metrics and bright Slider
+     * @note  Called in button color_button event
+     **/
     void change_color_buttons(lv_palette_t color)
     {
 

@@ -28,7 +28,7 @@
 
 #include "marcelino.hpp"
 
-#include "settings.hpp"
+#include "streamDeco_settings.hpp"
 #include "streamDeco_buttons.hpp"
 
 #include "streamDeco_monitor.hpp"

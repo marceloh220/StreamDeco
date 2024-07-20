@@ -41,6 +41,7 @@
    Others:
    
    [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor)
+   [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor)
 
 # How to USE
 

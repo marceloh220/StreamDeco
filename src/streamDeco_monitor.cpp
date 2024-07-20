@@ -438,6 +438,21 @@ namespace streamDeco
             metric_style.set_text_color(LV_PALETTE_PURPLE);
             metric_style.set_arc_color(LV_PALETTE_PURPLE);
 
+            monitor_label.create(*this);
+            monitor_label.set_style_text_font(&lv_font_montserrat_22);
+            monitor_label.set_pos(0, 0);
+            monitor_label.add_style(metric_style, LV_PART_MAIN);
+            monitor_label.set_text(text_scr);
+
+            if (icon_scr != NULL)
+            {
+                monitor_icon.create(*this);
+                monitor_icon.set_pos(0, 0);
+                monitor_icon.add_style(metric_style, LV_PART_MAIN);
+                monitor_icon.set_src(icon_scr);
+                monitor_label.align_to(monitor_icon, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
+            }
+
             hour.create(*this);
             hour.align(LV_ALIGN_CENTER, 0, -22);
             hour.set_style_text_font(&lv_font_montserrat_40);

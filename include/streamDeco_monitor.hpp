@@ -98,6 +98,7 @@ namespace streamDeco
         class Clock : public lvgl::Object
         {
         public:
+            Clock(const char *text, const void *icon = NULL) : text_scr(text), icon_scr(icon) {}
             void create(lv_obj_t *parent = NULL);
             void create(Object &parent);
             void set_bg_color(lv_color_t color);
@@ -107,6 +108,10 @@ namespace streamDeco
 
         private:
             void init_conf();
+            const char *text_scr;
+            const void *icon_scr;
+            lvgl::Label monitor_label;
+            lvgl::Image monitor_icon;
             lvgl::Label date;
             lvgl::Label hour;
             lvgl::Style monitor_style;
