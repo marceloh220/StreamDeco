@@ -46,7 +46,6 @@ namespace streamDeco
             void bar2_set_range(int32_t min, int32_t max);
             void bar1_set_value(int32_t value, const char *prefix, const char *sufix = "");
             void bar2_set_value(int32_t value, const char *prefix, const char *sufix = "");
-
         protected:
             virtual void init_conf();
             const char *text_scr;
@@ -78,7 +77,6 @@ namespace streamDeco
             void bar2_set_range(int32_t min, int32_t max);
             void bar1_set_value(int32_t value, const char *prefix, const char *sufix = "");
             void bar2_set_value(int32_t value, int32_t value2, const char *prefix, const char *sufix = "");
-
         private:
             void init_conf();
             const char *text_scr;
@@ -105,7 +103,6 @@ namespace streamDeco
             void set_bg_color(lv_palette_t color);
             void color(lv_palette_t color);
             void set_time(struct tm &value);
-
         private:
             void init_conf();
             const char *text_scr;
@@ -116,7 +113,6 @@ namespace streamDeco
             lvgl::Label hour;
             lvgl::Style monitor_style;
             lvgl::Style metric_style;
-
         }; // class Clock
 
     } // namespace monitor

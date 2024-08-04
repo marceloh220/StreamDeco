@@ -39,9 +39,8 @@ public:
       : _name(name), _periode(periode), _autoreload(autoreload) {}
 
   void attach(TimerCallbackFunction_t callback) {
-    _id = _handler;
-    _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), _autoreload, _id,
-                            callback);
+    _id = &_handler;
+    _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), _autoreload, _id, callback);
     start();
   }
 
@@ -77,8 +76,7 @@ public:
   void periodeFromISR(milliseconds periode) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     _periode = periode;
-    xTimerChangePeriodFromISR(_handler, CHRONO_TO_TICK(periode),
-                              &xHigherPriorityTaskWoken);
+    xTimerChangePeriodFromISR(_handler, CHRONO_TO_TICK(periode), &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 

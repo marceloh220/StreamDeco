@@ -18,17 +18,23 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ * 
+ * @file    streamDeco_objects.cpp
+ * @brief   Declare StreamDeco's objects
+ * @details Icons and text can be change in this file
  */
 
 #include "streamDeco_objects.hpp"
 #include "streamDeco_monitor.hpp"
-#include "icons.h"
+#include "streamDeco_icons.h"
 
 namespace streamDeco
 {
 
     /**
-     * @brief  Edit bluetooth device herer
+     * @var     blekeyboard
+     * @brief   BLE Bluetooth keyboard comunications
+     * @details Edit Bluetooth device herer
      * @code
      * BleKeyboard bleKeyboard(
      *          "StreamDeco",    // device name
@@ -39,12 +45,17 @@ namespace streamDeco
     BleKeyboard bleKeyboard("StreamDeco", "Marcelino Inc", 100);
 
     /**
-     * @brief  Time to reset ui layers or backlight sleep can be changed herer
+     * @var     timer_ui
+     * @brief   Timers
+     * @details Time to reset ui canvas or backlight sleep can be changed herer
      * @code
      * Timer(
      *      "UI reset timer", // timer name, only for debug
-     *      10s               // time to timer occour, ui layer will be reseted affter 10 seconds
+     *      10s               // time to timer occour, ui canvas will be reseted affter 10 seconds
      * ),
+     * @note    uiReset time and backlight time can be changed herer
+     * @note    10 seconds to hidden canvas
+     * @note    30 seconds to change backlight bright to 10% of bright
      **/
     timer_t timer_ui = {
         Timer("UI reset timer", 10s),
@@ -52,10 +63,12 @@ namespace streamDeco
     };
 
     /**
-     * @brief  Buttons of StreamDeco
-     * @note   Icons can be changed herer
-     *         The only difference between mainIcon, layerButton and configButton
-     *         is position map
+     * @var     button
+     * @brief   Buttons of StreamDeco
+     * @details Buttons's icons can be changed herer
+     * 
+     * @note    The difference between mainIcon, canvasButton and configButton
+     *          is position map
      * @code
      * mainButton(
      *          "Terminal",     // name, show name if icon not used
@@ -65,64 +78,64 @@ namespace streamDeco
      **/
     button_t button = {
 
-        /* ---   Main Layer buttons   --- */
+        /* ---   Main screen buttons   --- */
 
-        /* Applications line */
+        /* Applications line, first line of buttons */
         mainButton("Terminal", &terminal_simp, NULL),
         mainButton("Files", &files_simp, NULL),
         mainButton("Web", &web_simp, NULL),
         mainButton("Search", &search_simp, NULL),
         mainButton("Application", &applications_simp, NULL),
 
-        /* Multimedia line */
+        /* Multimedia line, second line of buttons */
         mainButton("Prev", &backward_simp, NULL),
         mainButton("Play/Pause", &play_simp, &pause_simp),
         mainButton("Next", &forward_simp, NULL),
         mainButton("Mic", &mic_on_simp, &mic_off_simp),
         mainButton("Multimedia", &multimedia_simp, NULL),
 
-        /* Configurations line */
+        /* Configurations line, third line of buttons */
         mainButton("Left Workspace", &previous_workspace_simp, NULL),
         mainButton("Right Workspace", &next_workspace_simp, NULL),
         mainButton("Pin", &pin_simp, &unpin_simp),
         mainButton("Lock", &locked_simp, NULL),
         mainButton("Config", &config_simp, NULL),
 
-        /* ---   Applications Layer buttons   --- */
+        /* ---   Applications canvas buttons   --- */
 
         /* First line */
-        layerButton("app1", &gogcom_simp, NULL),
-        layerButton("app2", &discord_simp, NULL),
-        layerButton("app3", &fps_simp, NULL),
+        canvasButton("app1", &gogcom_simp, NULL),
+        canvasButton("app2", &discord_simp, NULL),
+        canvasButton("app3", &fps_simp, NULL),
 
         /* Second line */
-        layerButton("app4", &code_simp, NULL),
-        layerButton("app5", &texcompiler_simp, NULL),
-        layerButton("app6", &calculator_simp, NULL),
+        canvasButton("app4", &code_simp, NULL),
+        canvasButton("app5", &texcompiler_simp, NULL),
+        canvasButton("app6", &calculator_simp, NULL),
 
         /* Third line */
-        layerButton("app7", &build_simp, NULL),
-        layerButton("app8", &download_simp, NULL),
-        layerButton("app9", &serialport_simp, NULL),
+        canvasButton("app7", &build_simp, NULL),
+        canvasButton("app8", &download_simp, NULL),
+        canvasButton("app9", &serialport_simp, NULL),
 
-        /* ---   Multimedia Layer buttons   --- */
+        /* ---   Multimedia canvas buttons   --- */
 
         /* First line */
-        layerButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
-        layerButton("mult 2", &mic_off_simp, &mic_on_simp),
-        layerButton("mult 3", &cam_off_simp, &cam_on_simp),
+        canvasButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
+        canvasButton("mult 2", &mic_off_simp, &mic_on_simp),
+        canvasButton("mult 3", &cam_off_simp, &cam_on_simp),
 
         /* Second line */
-        layerButton("mult 4", &add_clip_simp, NULL),
-        layerButton("mult 5", &ripple_simp, NULL),
-        layerButton("mult 6", &rolling_simp, NULL),
+        canvasButton("mult 4", &add_clip_simp, NULL),
+        canvasButton("mult 5", &ripple_simp, NULL),
+        canvasButton("mult 6", &rolling_simp, NULL),
 
         /* Third line */
-        layerButton("mult 7", &seek_backward_simp, NULL),
-        layerButton("mult 8", &play_simp, NULL),
-        layerButton("mult 9", &seek_forward_simp, NULL),
+        canvasButton("mult 7", &seek_backward_simp, NULL),
+        canvasButton("mult 8", &play_simp, NULL),
+        canvasButton("mult 9", &seek_forward_simp, NULL),
 
-        /* ---   Configurations Layer buttons   --- */
+        /* ---   Configurations canvas buttons   --- */
 
         /* First line */
         configButton("Vol Mute", &volume_mute_simp, NULL),
@@ -141,28 +154,39 @@ namespace streamDeco
     };
 
     /**
+     * @var    task
      * @brief  Tasks of streamDeco
      * @code
      * Task(
      *          "Terminal",  // Task name, used for debug
      *          Priority,    // Higher numbers mean higher task priority
-     *          StakSize     // Can start with a higher value and change affter see memory used with memUsage method
+     *          StakSize     // Can start with a higher value and change affter see memory usage with memUsage method
      * ),
      * @note   The function handler is set with attach method
-     *         Other parameter can be see in file marcelino/task.hpp
+     *         Other parameters can be see in file marcelino/task.hpp
      **/
     task_t task = {
         Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
-        Task("Task reset screen", 3, 1024),
+        Task("Task reset canvas", 3, 1024),
         Task("Task Monitor", 5, 3 * 1024),
         Task("Task Clock", 5, 3 * 1024),
     };
 
-    layer_t layer;
+    /**
+     * @var   canvas
+     * @brief Canvas to hold additional buttons
+     */
+    canvas_t canvas;
+
+    /**
+     * @var   slider
+     * @brief Bright control slider
+     */
     slider_t slider;
 
     /**
-     * @brief  Metrics of Monitor layer
+     * @var    monitor
+     * @brief  Metrics of Monitor canvas
      * @code
      * metric::Complete(
      *          "CPU",          // name show on metric space
@@ -180,29 +204,36 @@ namespace streamDeco
     };
 
     /**
-     * @brief Change color of Buttons, Metrics and bright Slider
-     * @note  Called in button color_button event
+     * @var  mutex_serial
+   * @brief  Serial interface mutex
+   * @note   Used to avoid Monitor and Clock task uses Serial interface in same instant
+   */
+    Mutex mutex_serial;
+
+    /**
+     * @brief  Change color of Buttons, Metrics and bright Slider
+     * @param  color  New button color
+     * @note   Called in color_button event
      **/
     void change_color_buttons(lv_palette_t color)
     {
-
         button.terminal.color(color);
         button.files.color(color);
         button.web.color(color);
         button.search.color(color);
-        button.applications_layer.color(color);
+        button.applications_canvas.color(color);
 
         button.multimedia_prev.color(color);
         button.multimedia_play.color(color);
         button.multimedia_next.color(color);
         button.multimedia_mic.color(color);
-        button.multimedia_layer.color(color);
+        button.multimedia_canvas.color(color);
 
         button.left_workspace.color(color);
         button.right_workspace.color(color);
         button.pin.color(color);
         button.lock.color(color);
-        button.configurations_layer.color(color);
+        button.configurations_canvas.color(color);
 
         button.app1.color(color);
         button.app2.color(color);
@@ -214,15 +245,15 @@ namespace streamDeco
         button.app8.color(color);
         button.app9.color(color);
 
-        button.multimedia_mult1.color(color);
-        button.multimedia_mult2.color(color);
-        button.multimedia_mult3.color(color);
-        button.multimedia_mult4.color(color);
-        button.multimedia_mult5.color(color);
-        button.multimedia_mult6.color(color);
-        button.multimedia_mult7.color(color);
-        button.multimedia_mult8.color(color);
-        button.multimedia_mult9.color(color);
+        button.mult1.color(color);
+        button.mult2.color(color);
+        button.mult3.color(color);
+        button.mult4.color(color);
+        button.mult5.color(color);
+        button.mult6.color(color);
+        button.mult7.color(color);
+        button.mult8.color(color);
+        button.mult9.color(color);
 
         button.volmut.color(color);
         button.voldown.color(color);
@@ -239,9 +270,9 @@ namespace streamDeco
         monitor.system.color(color);
         monitor.clock.color(color);
 
-        slider.backlightbright_style.set_bg_color(color);
+        slider.backlightbright_slider_style.set_bg_color(color);
         slider.backlightbright_icon_style.set_img_recolor(color);
         slider.backlightbright_icon.update_layout();
-    }
+    } // function end change_color_buttons
 
 } // namespace streamDeco

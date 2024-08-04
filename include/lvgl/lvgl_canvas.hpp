@@ -19,38 +19,55 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _MARCELINO_HPP_
-#define _MARCELINO_HPP_
+#ifndef _LVGL_CANVAS_HPP_
+#define _LVGL_CANVAS_HPP_
 
-#include <stdio.h>
-#include "esp_err.h"
-#include "esp_log.h"
+#include "lvgl_object.hpp"
 
-#include "marcelino/button.hpp"
-#include "marcelino/chrono.hpp"
-#include "marcelino/eventGroup.hpp"
-#include "marcelino/gpio.hpp"
-#include "marcelino/input.hpp"
-#include "marcelino/interrupt.hpp"
-#include "marcelino/mutex.hpp"
-#include "marcelino/output.hpp"
-#include "marcelino/queue.hpp"
-#include "marcelino/semaphore.hpp"
-#include "marcelino/task.hpp"
-#include "marcelino/timer.hpp"
+namespace lvgl {
 
-#include "lvgl/lvgl_arc.hpp"
-#include "lvgl/lvgl_bar.hpp"
-#include "lvgl/lvgl_button.hpp"
-#include "lvgl/lvgl_event.hpp"
-#include "lvgl/lvgl_image.hpp"
-#include "lvgl/lvgl_label.hpp"
-#include "lvgl/lvgl_canvas.hpp"
-#include "lvgl/lvgl_port.hpp"
-#include "lvgl/lvgl_screen.hpp"
-#include "lvgl/lvgl_slider.hpp"
-#include "lvgl/lvgl_style.hpp"
+class Canvas : public Object {
 
-#define byte_k(_b) (_b*1024)
+public:
+  inline void create(lv_obj_t *parent = NULL) {
+    if (created)
+      return;
+    port::mutex_take();
+    if (parent == NULL)
+      parent = lv_scr_act();
+    object = lv_obj_create(parent);
+    port::mutex_give();
+    created = true;
+  }
+
+  inline void create(Object &parent) {
+    if (created)
+      return;
+    port::mutex_take();
+    object = lv_obj_create(parent.get_object());
+    port::mutex_give();
+    created = true;
+  }
+
+  void set_bg_color(lv_color_t color) {
+    if (!created)
+      return;
+    port::mutex_take();
+    lv_obj_set_style_bg_color(object, color, LV_PART_MAIN);
+    invalidate();
+    port::mutex_give();
+  }
+
+  void set_bg_color(lv_palette_t color) {
+    if (!created)
+      return;
+    port::mutex_take();
+    lv_obj_set_style_bg_color(object, lv_palette_main(color), LV_PART_MAIN);
+    invalidate();
+    port::mutex_give();
+  }
+};
+
+} // namespace lvgl
 
 #endif

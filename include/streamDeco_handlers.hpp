@@ -19,57 +19,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LVGL_LAYER_HPP_
-#define _LVGL_LAYER_HPP_
+#ifndef _STREAMDECO_HANDLERS_HPP_
+#define _STREAMDECO_HANDLERS_HPP_
 
-#include "lvgl_object.hpp"
-#include "lvgl_port.hpp"
-#include <lvgl.h>
+#include "streamDeco_objects.hpp"
 
-namespace lvgl {
+namespace streamDeco {
 
-class Layer : public Object {
+  /** 
+   * @brief   Handle the buttons task, made buttons configurations and manager buttons events
+   * @details The events can generate a keyboard code to send to computer throug BLE Bluetooth
+   *          or change StreamDeco configurations
+   */
+  void handleButtons(arg_t arg);
 
-public:
-  inline void create(lv_obj_t *parent = NULL) {
-    if (created)
-      return;
-    port::mutex_take();
-    if (parent == NULL)
-      parent = lv_scr_act();
-    object = lv_obj_create(parent);
-    port::mutex_give();
-    created = true;
-  }
+  /**
+   * @brief   Handle the ui reset task
+   * @details Each 10 seconds a timer will pass a event to this task 
+   *          to hidden additional screens and return to Main screen
+   */
+  void handleUiReset(arg_t arg);
 
-  inline void create(Object &parent) {
-    if (created)
-      return;
-    port::mutex_take();
-    object = lv_obj_create(parent.get_object());
-    port::mutex_give();
-    created = true;
-  }
+  /** 
+   * @brief   Handle the monitor task
+   * @details Update computer metrics on Monitor screen
+   */
+  void handleMonitor(arg_t arg);
 
-  void set_bg_color(lv_color_t color) {
-    if (!created)
-      return;
-    port::mutex_take();
-    lv_obj_set_style_bg_color(object, color, LV_PART_MAIN);
-    invalidate();
-    port::mutex_give();
-  }
+  /**
+   * @brief   Handle the clock task
+   * @details Update clock on Monitor screen
+   */
+  void handleClock(arg_t arg);
 
-  void set_bg_color(lv_palette_t color) {
-    if (!created)
-      return;
-    port::mutex_take();
-    lv_obj_set_style_bg_color(object, lv_palette_main(color), LV_PART_MAIN);
-    invalidate();
-    port::mutex_give();
-  }
-};
-
-} // namespace lvgl
+} // nasmespasce streamDeco
 
 #endif

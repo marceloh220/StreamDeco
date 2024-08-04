@@ -22,9 +22,7 @@
 #ifndef _LVGL_STYLE_HPP_
 #define _LVGL_STYLE_HPP_
 
-#include "lvgl_event.hpp"
 #include "lvgl_object.hpp"
-#include <lvgl.h>
 
 namespace lvgl {
 
@@ -52,9 +50,9 @@ public:
    */
   bool is_empty() { return lv_style_is_empty(&_style); }
 
-  inline void set_size(lv_coord_t value) {
-    lv_style_set_width(&_style, value);
-    lv_style_set_height(&_style, value);
+  inline void set_size(lv_coord_t width, lv_coord_t height) {
+    lv_style_set_width(&_style, width);
+    lv_style_set_height(&_style, height);
   }
 
   inline void set_pad_all(lv_coord_t value) {
@@ -98,11 +96,21 @@ public:
     lv_style_set_max_height(&_style, value);
   }
 
+  void set_pos(lv_coord_t x, lv_coord_t y) { 
+    lv_style_set_x(&_style, x);
+    lv_style_set_y(&_style, y);
+  }
+
   void set_x(lv_coord_t value) { lv_style_set_x(&_style, value); }
 
   void set_y(lv_coord_t value) { lv_style_set_y(&_style, value); }
 
   void set_align(lv_align_t value) { lv_style_set_align(&_style, value); }
+
+  void align(lv_align_t align, lv_coord_t x_ofs, lv_coord_t y_ofs) {
+    set_align(align);
+    set_pos(x_ofs, y_ofs);
+  }
 
   void set_transform_width(lv_coord_t value) {
     lv_style_set_transform_width(&_style, value);

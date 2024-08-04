@@ -24,9 +24,6 @@
 
 #include <lvgl.h>
 
-#include "lvgl_object.hpp"
-#include "lvgl_port.hpp"
-
 namespace lvgl {
 
 namespace screen {

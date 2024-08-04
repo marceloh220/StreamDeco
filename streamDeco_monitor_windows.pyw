@@ -41,15 +41,18 @@
 #
 #  3 - I'M NOT GOING TO SAY ANYTHING ABOUT ANY COUNTRY OR ABOUT THE PRESIDENT, OR DICTATOR, OF ANY COUNTY!
 #
-#  4 - ALSO I'M NOT GOING TO SAY ANYTHING ABOUT WHAT HAPPEN ON ANY COUNTRY!
-#
+#  4 - ALSO I'M NOT GOING TO SAY ANYTHING ABOUT WHAT HAPPEN ON ANY COUNTRY BY DECISION MADE BY THE PRESIDENT, 
+#      OR DICTATOR, OF ANY COUNTRY!
+#  
+#  5 - YOU ARE FREE TO DO THE SAME IF YOU WANT
 #
 # From Windows:
 #
 # Install the following Python modules:
 #     pip.exe install pyserial psutil pythonnet pyinstaller pstray pillow
 #
-# Make sure 'OpenHardwareMonitorLib.dll' is in the same folder as this Python script or the exe program
+# Make sure that 'OpenHardwareMonitorLib.dll', 'LibreHardwareMonitorLib.dll' and 'HidSharp.dll' is in the same folder 
+# as this Python script or the exe program
 #
 # Run py script in console with administrative permissions
 #     pythonw.exe .\streamDeco_monitor_windows.py
@@ -57,21 +60,21 @@
 # Create your own exe with commander
 #     pyinstaller.exe --icon=streamDeco.ico .\streamDeco_monitor_windows.pyw
 #
-# The COM device is searched until find ESP32 USB chip, in my case the chip is named as CH340
-
+# The COM device is searched until find ESP32 USB chip
+#
 
 updateTime = 1       # monitor update interval
-boardCOM   = "CH340" # USB/TTL on ESP32 8048s43c Board, check your controller
+boardCOM   = 'CH340' # USB/TTL on ESP32 8048s43c Board, check your controller
 debugCode  = False   # Show information in terminal, only to terminal execution
+monitorFull = False  # If true enable all sensors in monitor, else only CPU and GPU sensors are enabled
 
 class MetricCPU:
     def __init__(self) -> None:
-        self.load = ''
-        self.temperature = ''
-        self.frequency = ''
+        self.load:str = ''
+        self.temperature:str = ''
+        self.frequency:str = ''
         
     def parse(self, sensor) -> None:
-        
         if str(sensor.SensorType) == 'Load' and sensor.Name == 'CPU Total':
             self.load = str(int(sensor.Value))
         if str(sensor.SensorType) == 'Temperature' and sensor.Name == 'CPU Package':
@@ -79,8 +82,8 @@ class MetricCPU:
         if str(sensor.SensorType) == 'Clock' and sensor.Name == 'CPU Core #1':
             self.frequency = str(int(sensor.Value))
             
-    def decode(self, last = False) -> str:
-        _data = self.load + ',' + self.temperature + ',' + self.frequency
+    def decode(self, last:bool = False) -> str:
+        _data = f'{self.load}, {self.temperature}, {self.frequency}'
         if last == True:
             _data = _data + '/'
         else:
@@ -100,17 +103,18 @@ class MetricGPU(MetricCPU):
 
 class MetricRAM:
     def __init__(self) -> None:
-        import psutil
-        self.used = ''
-        self.max = ''
-        self.metric = psutil.virtual_memory
+        from psutil import virtual_memory, disk_usage
+        self.used:str = ''
+        self.max:str = ''
+        self.memory:callable = virtual_memory
+        self.disk:callable = disk_usage
     
     def read(self) -> None:
-        self.used  = str(self.metric().used / (1024 ** 2))
-        self.max   = str(self.metric().total / (1024 ** 2))
+        self.used  = str(self.memory().used / (1024 ** 2))
+        self.max   = str(self.memory().total / (1024 ** 2))
         
-    def decode(self, last = False) -> str:
-        _data = self.used + ',' + self.max
+    def decode(self, last:bool = False) -> str:
+        _data = f'{self.used}, {self.max}'
         if last == True:
             _data = _data + '/'
         else:
@@ -119,28 +123,22 @@ class MetricRAM:
 
 
 class MetricDISK(MetricRAM):
-    def __init__(self) -> None:
-        import psutil
-        self.used = ''
-        self.max = ''
-        self.metric = psutil.disk_usage
-
     def read(self, letterDrive:str) -> None:
-        drive = self.metric(letterDrive + ':\\') # Drive letter with double \\
+        drive = self.disk(f'{letterDrive}:\\') # Drive letter with double \\
         self.used = str(drive.used / (1024.0 ** 3))
         self.max  = str(drive.total / (1024.0 ** 3))
 
 
 class MetricDate:
     def __init__(self) -> None:
-        import datetime
-        self.sec = ''
-        self.min = ''
-        self.hour = ''
-        self.day = ''
-        self.month = ''
-        self.year = ''
-        self.metric = datetime.datetime
+        from datetime import datetime
+        self.sec:str = ''
+        self.min:str = ''
+        self.hour:str = ''
+        self.day:str = ''
+        self.month:str = ''
+        self.year:str = ''
+        self.metric:object = datetime
     
     def read(self) -> None:
         now = self.metric.now()
@@ -152,8 +150,8 @@ class MetricDate:
         self.year = str(now.year)
 
     def decode(self, last = False) -> str:
-        _data = self.sec  + ',' + self.min   + ',' + self.hour + ','
-        _data = _data + self.day  + ',' + self.month + ',' + self.year
+        _data = f'{self.sec}, {self.min}, {self.hour},'
+        _data = _data + f'{self.day}, {self.month}, {self.year}'
         if last == True:
             _data = _data + '/'
         else:
@@ -164,52 +162,51 @@ class MetricDate:
 class StreamMonitor:
     def __init__(self, boardName:str, debug = False) -> None:
         from time import sleep
-        import serial
-        self._sleep = sleep
-        self._port = 'FAIL'
-        self._name = boardName
-        self._debug = debug
-        self._port = self._initPortConnection()
+        self._sleep:callable = sleep
+        self._port:str = 'FAIL'
+        self._name:str = boardName
+        self._debug:bool = debug
+        self._port:callable = self._initPortConnection()
         while self._port == 'FAIL':
             self._port = self._initPortConnection()
             if self._debug == True:
-                print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+                print('No device found. Please, connect SteamDeco on USB to use monitor functions.')
             self._sleep(10)
 
     def send(self, data:str) -> None:
-        import serial
+        from serial import Serial
         try:
-            connection = serial.Serial(self._port, 115200)
+            connection = Serial(self._port, 115200)
             connection.write(data.encode())
             if self._debug == True:
-                print("Data written", data.encode())
+                print('Data written', data.encode())
             connection.close() 
         except Exception as e:
             if self._debug == True:
-                print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+                print('No device found. Please, connect SteamDeco on USB to use monitor functions.')
                 print(e)
             self._sleep(10)
 
     def _initPortConnection(self) -> str:
-        import serial.tools.list_ports
-        connectionPort:str
+        from serial.tools.list_ports import comports
+        connectionPort:str = ''
         try:
-            pcPorts = list(serial.tools.list_ports.comports())
+            pcPorts = list(comports())
             for ports in pcPorts:
                 if self._name in ports.description:
                     connectionPort = ports.name
                     if self._debug == True:
-                        print("Using device " + ports.description)
+                        print('Using device ' + ports.description)
         except Exception as e:
             connectionPort = 'FAIL'
             if self._debug == True:
-                print("No device found. Please, connect SteamDeco on USB to use monitor functions.")
+                print('No device found. Please, connect SteamDeco on USB to use monitor functions.')
                 print(e)
         return connectionPort
 
 
 class LibreHardwareMonitor:
-    def __init__(self, debug = False) -> None:
+    def __init__(self, debug = False, monitorAll = False) -> None:
         import clr
         fileLib = 'LibreHardwareMonitorLib'
         clr.AddReference(fileLib)
@@ -217,11 +214,12 @@ class LibreHardwareMonitor:
         self._handle = Hardware.Computer()
         self._handle.IsCpuEnabled = True
         self._handle.IsGpuEnabled = True
-        #self._handle.IsMemoryEnabled = True
-        #self._handle.IsMotherboardEnabled = True
-        #self._handle.IsControllerEnabled = True
-        #self._handle.IsNetworkEnabled = True
-        #self._handle.IsStorageEnabled = True
+        if monitorAll == True:
+            self._handle.IsMemoryEnabled = True
+            self._handle.IsMotherboardEnabled = True
+            self._handle.IsControllerEnabled = True
+            self._handle.IsNetworkEnabled = True
+            self._handle.IsStorageEnabled = True
         self._handle.Open()
         self._cpu = MetricCPU()
         self._gpu = MetricGPU()
@@ -235,8 +233,8 @@ class LibreHardwareMonitor:
                     self._cpu.parse(sensor)
                     self._gpu.parse(sensor)
                     if self._debug == True:
-                        data = str(sensor.SensorType) + " : "
-                        data = data + sensor.Name + " : " 
+                        data = f'{str(sensor.SensorType)} : '
+                        data = data + f'{sensor.Name} : ' 
                         data = data + str(sensor.Value)
                         print(data)
             for subHardware in hardware.SubHardware:
@@ -246,15 +244,18 @@ class LibreHardwareMonitor:
                         self._cpu.parse(subsensor)
                         self._gpu.parse(subsensor)
                         if self._debug == True:
-                            data = str(subsensor.SensorType) + " : "
-                            data = data + subsensor.Name + " : "
+                            data = f'{str(subsensor.SensorType)} : '
+                            data = data + f'{subsensor.Name} : '
                             data = data + str(subsensor.Value)
                             print(data)
         return self._cpu, self._gpu
+    
+    def decode(self, last = False) -> str:
+        return self._cpu.decode() + self._gpu.decode(last)
 
 
 class OpenHardwareMonitor(LibreHardwareMonitor):
-    def __init__(self, debug = False) -> None:
+    def __init__(self, debug = False, monitorAll = False) -> None:
         import clr
         fileLib = 'OpenHardwareMonitorLib'
         clr.AddReference(fileLib)
@@ -262,9 +263,10 @@ class OpenHardwareMonitor(LibreHardwareMonitor):
         self._handle = Hardware.Computer()
         self._handle.CPUEnabled = True
         self._handle.GPUEnabled = True
-        #self._handle.MainboardEnabled = True
-        #self._handle.RAMEnabled = True
-        #self._handle.HDDEnabled = True
+        if monitorAll == True:
+            self._handle.MainboardEnabled = True
+            self._handle.RAMEnabled = True
+            self._handle.HDDEnabled = True
         self._handle.Open()
         self._cpu = MetricCPU()
         self._gpu = MetricGPU()
@@ -277,20 +279,22 @@ class Task():
         import multiprocessing
         if sys.platform.startswith('win'):
             multiprocessing.freeze_support()
-        self.task = multiprocessing.Process(target = target)
+        self._task:object = multiprocessing.Process(target = target)
 
     def start(self) -> None:
-        self.task.start()
+        self._task.start()
 
     def close(self, tray) -> None:
         tray.stop()
-        self.task.terminate()
+        self._task.terminate()
 
 
 def monitor() -> None:
     global debugCode
+    global monitorFull
     from time import sleep
-    hardwareMonitor = LibreHardwareMonitor(debug=debugCode) # this work better on my processor
+    import timeit
+    hardwareMonitor = LibreHardwareMonitor(debug=debugCode, monitorAll=monitorFull) # this work better on my processor
     streamMonitor = StreamMonitor(boardName = boardCOM, debug=debugCode)
     cpu = MetricCPU()
     gpu = MetricGPU()
@@ -298,26 +302,29 @@ def monitor() -> None:
     disk = MetricDISK()
     date = MetricDate()
     while(1):
-        cpu, gpu = hardwareMonitor.read()
+        if debugCode:
+            print('Hardware read:\t\t', timeit.timeit(hardwareMonitor.read, number=1))
+        else:
+            hardwareMonitor.read()
         mem.read()
         disk.read('c')
         date.read()
-        data = cpu.decode() + gpu.decode()
+        data = hardwareMonitor.decode()
         data = data + mem.decode() + disk.decode()
         data = data + date.decode(last = True)
         streamMonitor.send(data)
         sleep(updateTime)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import pystray
     import PIL.Image
     
     task = Task(monitor)
-    iconTray = PIL.Image.open("streamDeco.ico")
-    tray = pystray.Icon(name = "StreamDeco", title = "StreamDeco", icon = iconTray, 
+    iconTray = PIL.Image.open('streamDeco.ico')
+    tray = pystray.Icon(name = 'StreamDeco', title = 'StreamDeco', icon = iconTray, 
                         menu = pystray.Menu(
-                                            pystray.MenuItem("Sair", task.close)
+                                            pystray.MenuItem('Sair', task.close)
                                )
                        )
     task.start()

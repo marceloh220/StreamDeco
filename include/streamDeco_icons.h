@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _ICONS_H_
-#define _ICONS_H_
+#ifndef _STREAMDECO_ICONS_H_
+#define _STREAMDECO_ICONS_H_
 
 #ifdef __has_include
 #if __has_include("lvgl.h")
@@ -86,9 +86,7 @@ extern const lv_img_dsc_t next_workspace_simp;
 extern const lv_img_dsc_t view_simp;
 
 extern const lv_img_dsc_t locked_simp;
-
 extern const lv_img_dsc_t theme_simp;
-
 extern const lv_img_dsc_t keyboard_simp;
 
 extern const lv_img_dsc_t config_simp;
@@ -145,6 +143,5 @@ extern const lv_img_dsc_t ram_22_simp;
 extern const lv_img_dsc_t ram_simp;
 extern const lv_img_dsc_t clock_22_simp;
 extern const lv_img_dsc_t clock_simp;
-
 
 #endif

@@ -21,7 +21,7 @@
 
 #include "streamDeco_settings.hpp"
 
-namespace lvgl
+namespace streamDeco
 {
 
     namespace settings

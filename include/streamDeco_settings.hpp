@@ -19,12 +19,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _SETTTING_HPP_
-#define _SETTTING_HPP_
+#ifndef _STREAMDECO_SETTTING_HPP_
+#define _STREAMDECO_SETTTING_HPP_
 
 #include <lvgl.h>
 
-namespace lvgl {
+namespace streamDeco {
 
 namespace settings {
 
@@ -35,6 +35,6 @@ lv_color_t backgroundColor();
 
 } // namespace settings
 
-} // namespace lvgl
+} // namespace streamDeco
 
 #endif

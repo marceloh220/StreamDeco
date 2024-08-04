@@ -19,11 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _STREAMDECO_HPP_
-#define _STREAMDECO_HPP_
+#ifndef _STREAMDECO_INIT_HPP_
+#define _STREAMDECO_INIT_HPP_
 
 namespace streamDeco {
-void init();
-void print_task_memory_usage();
+  void init();
+  void print_task_memory_usage();
 }
 #endif

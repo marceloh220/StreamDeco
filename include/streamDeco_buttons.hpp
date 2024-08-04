@@ -28,18 +28,11 @@
 
 namespace streamDeco
 {
-
-  typedef struct
-  {
-    lv_coord_t x;
-    lv_coord_t y;
-  } lv_position_t;
-
   class mainButton : public lvgl::Object
   {
   public:
     mainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
-        : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {}
+    : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {};
     void create(uint8_t pos);
     void position(uint8_t pos);
     void text(const char *text);
@@ -48,9 +41,9 @@ namespace streamDeco
     void iconColor(lv_color_t color);
     void callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data);
     void swapIcon();
-    void fixe();
-    void unfixe();
-    bool is_fixed();
+    void pin();
+    void unpin();
+    bool pinned();
 
   protected:
     void icon1();
@@ -65,19 +58,19 @@ namespace streamDeco
     const void *icon1_scr;
     const void *icon2_scr;
     bool icon_now = true; // start with icon 1
-    bool fixed = false;
+    bool pinnedState = false;
   }; // class mainButton
 
-  class layerButton : public mainButton
+  class canvasButton : public mainButton
   {
   public:
-    layerButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
+    canvasButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
         : mainButton(text, icon1, icon2) {}
     void create(Object &parent, uint8_t pos);
     void callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data);
     void position(uint8_t pos);
 
-  }; // class layerButton
+  }; // class canvasButton
 
   class configButton : public mainButton
   {

@@ -23,7 +23,6 @@
 #define _EVENT_HPP_
 
 #include "lvgl_object.hpp"
-#include <lvgl.h>
 
 namespace lvgl {
 
@@ -33,7 +32,7 @@ typedef lv_event_t *event_t;
 
 /**
  * @brief Event callback.
- * Events are used to notify the user of some action being taken on the object.
+ * Events are used to notify user of some action being taken on the object.
  */
 typedef void callback_t(event_t);
 

@@ -23,9 +23,6 @@
 #define _LVGL_LABEL_HPP_
 
 #include "lvgl_object.hpp"
-#include "lvgl_port.hpp"
-#include <lvgl.h>
-
 namespace lvgl {
 
 class Label : public Object {

@@ -20,6 +20,7 @@
  */
 
 #include "lvgl/lvgl_screen.hpp"
+#include "lvgl/lvgl_port.hpp"
 
 namespace lvgl {
 

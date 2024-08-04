@@ -23,8 +23,6 @@
 #define _LVGL_SLIDER_HPP_
 
 #include "lvgl_object.hpp"
-#include "lvgl_port.hpp"
-#include <lvgl.h>
 
 namespace lvgl {
 

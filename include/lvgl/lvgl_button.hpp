@@ -22,10 +22,8 @@
 #ifndef _LVGL_BUTTON_HPP_
 #define _LVGL_BUTTON_HPP_
 
-#include "lvgl_event.hpp"
 #include "lvgl_object.hpp"
-#include "lvgl_port.hpp"
-#include <lvgl.h>
+#include "lvgl_event.hpp"
 
 namespace lvgl {
 
@@ -45,8 +43,7 @@ public:
     lv_style_set_radius(&this->style, 6);
     lv_style_set_bg_opa(&this->style, LV_OPA_100);
     lv_style_set_bg_color(&this->style, lv_palette_main(LV_PALETTE_PURPLE));
-    lv_style_set_bg_grad_color(&this->style,
-                               lv_palette_darken(LV_PALETTE_PURPLE, 2));
+    lv_style_set_bg_grad_color(&this->style, lv_palette_darken(LV_PALETTE_PURPLE, 2));
     lv_style_set_bg_grad_dir(&this->style, LV_GRAD_DIR_VER);
     lv_style_set_border_opa(&this->style, LV_OPA_40);
     lv_style_set_border_width(&this->style, 2);
@@ -55,8 +52,7 @@ public:
     lv_style_set_shadow_color(&this->style, lv_palette_main(LV_PALETTE_GREY));
     lv_style_set_shadow_ofs_y(&this->style, 0);
     lv_style_set_outline_opa(&this->style, LV_OPA_COVER);
-    lv_style_set_outline_color(&this->style,
-                               lv_palette_main(LV_PALETTE_PURPLE));
+    lv_style_set_outline_color(&this->style, lv_palette_main(LV_PALETTE_PURPLE));
     lv_style_set_text_color(&this->style, lv_color_white());
     lv_style_set_pad_all(&this->style, 10);
 
@@ -65,17 +61,14 @@ public:
     lv_style_set_outline_opa(&this->style_pressed, LV_OPA_TRANSP);
     lv_style_set_translate_y(&this->style_pressed, 5);
     lv_style_set_shadow_ofs_y(&this->style_pressed, 3);
-    lv_style_set_bg_color(&this->style_pressed,
-                          lv_palette_darken(LV_PALETTE_PURPLE, 2));
-    lv_style_set_bg_grad_color(&this->style_pressed,
-                               lv_palette_darken(LV_PALETTE_PURPLE, 4));
+    lv_style_set_bg_color(&this->style_pressed, lv_palette_darken(LV_PALETTE_PURPLE, 2));
+    lv_style_set_bg_grad_color(&this->style_pressed, lv_palette_darken(LV_PALETTE_PURPLE, 4));
 
 #ifdef BUTTON_PRESSED_ANIMATION
     static lv_style_transition_dsc_t trans;
     static lv_style_prop_t props[] = {LV_STYLE_OUTLINE_WIDTH,
                                       LV_STYLE_OUTLINE_OPA, LV_STYLE_PROP_INV};
-    lv_style_transition_dsc_init(&trans, props, lv_anim_path_linear, 300, 0,
-                                 NULL);
+    lv_style_transition_dsc_init(&trans, props, lv_anim_path_linear, 300, 0, NULL);
     lv_style_set_transition(&this->style_pressed, &trans);
 #endif
 
@@ -123,8 +116,7 @@ public:
     lv_style_set_bg_grad_color(&this->style, lv_palette_darken(color, 2));
     lv_style_set_outline_color(&this->style, lv_palette_main(color));
     lv_style_set_bg_color(&this->style_pressed, lv_palette_darken(color, 2));
-    lv_style_set_bg_grad_color(&this->style_pressed,
-                               lv_palette_darken(color, 4));
+    lv_style_set_bg_grad_color(&this->style_pressed, lv_palette_darken(color, 4));
     port::mutex_give();
   }
 
@@ -143,7 +135,7 @@ public:
     port::mutex_take();
     static bool icon_now = 0;
 
-    if (icon1_scr == NULL && icon2_scr == NULL) {
+    if (icon1_scr == NULL || icon2_scr == NULL) {
       return;
     }
 

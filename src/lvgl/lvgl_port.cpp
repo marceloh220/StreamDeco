@@ -139,10 +139,8 @@ void backlight_set(float bright) {
   if (bright < 0.0f)
     bright = 0.0f;
   uint32_t pwm_value = 4095 * bright;
-  ledc_set_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE,
-                (ledc_channel_t)BACKLIGHT_CHANNEL, pwm_value);
-  ledc_update_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE,
-                   (ledc_channel_t)BACKLIGHT_CHANNEL);
+  ledc_set_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE, (ledc_channel_t)BACKLIGHT_CHANNEL, pwm_value);
+  ledc_update_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE, (ledc_channel_t)BACKLIGHT_CHANNEL);
 }
 
 void backlight_setRaw(int bright) {
@@ -151,10 +149,8 @@ void backlight_setRaw(int bright) {
     bright = 4095;
   if (bright < 0)
     bright = 0;
-  ledc_set_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE,
-                (ledc_channel_t)BACKLIGHT_CHANNEL, bright);
-  ledc_update_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE,
-                   (ledc_channel_t)BACKLIGHT_CHANNEL);
+  ledc_set_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE, (ledc_channel_t)BACKLIGHT_CHANNEL, bright);
+  ledc_update_duty((ledc_mode_t)BACKLIGHT_SPEED_MODE, (ledc_channel_t)BACKLIGHT_CHANNEL);
 }
 
 void mutex_take() { mutex.take(); }
@@ -174,35 +170,28 @@ void init() {
 
   uint32_t screenWidth = gfx.width();
   uint32_t screenHeight = gfx.height();
+  int buffer_size = screenWidth * screenHeight / LVGL_REDRAW_PARTIAL;
 
   if (LVGL_DOUBLE_BUFFER > 2) {
 
-    display_draw_buf1 = (lv_color_t *)heap_caps_malloc(
-        sizeof(lv_color_t) * screenWidth * screenHeight / LVGL_REDRAW_PARTIAL,
-        MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
-    display_draw_buf2 = (lv_color_t *)heap_caps_malloc(
-        sizeof(lv_color_t) * screenWidth * screenHeight / LVGL_REDRAW_PARTIAL,
-        MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    display_draw_buf1 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
+    display_draw_buf2 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
     if (!display_draw_buf1 || !display_draw_buf2) {
       Serial.println("LVGL disp_draw_buf allocate failed!");
       return;
     }
 
-    lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, display_draw_buf2,
-                          screenWidth * screenHeight / LVGL_REDRAW_PARTIAL);
+    lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, display_draw_buf2, buffer_size);
 
   } else {
 
-    display_draw_buf1 = (lv_color_t *)heap_caps_malloc(
-        sizeof(lv_color_t) * screenWidth * screenHeight / LVGL_REDRAW_PARTIAL,
-        MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    display_draw_buf1 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
     if (!display_draw_buf1) {
       Serial.println("LVGL disp_draw_buf allocate failed!");
       return;
     }
 
-    lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, NULL,
-                          screenWidth * screenHeight / LVGL_REDRAW_PARTIAL);
+    lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, NULL, buffer_size);
   }
 
   lv_disp_drv_init(&display_driver);

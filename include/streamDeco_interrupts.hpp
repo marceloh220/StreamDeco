@@ -19,38 +19,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _MARCELINO_HPP_
-#define _MARCELINO_HPP_
+#ifndef _STREAMDECO_INTERRUPTS_HPP_
+#define _STREAMDECO_INTERRUPTS_HPP_
 
-#include <stdio.h>
-#include "esp_err.h"
-#include "esp_log.h"
+#include "streamDeco_objects.hpp"
 
-#include "marcelino/button.hpp"
-#include "marcelino/chrono.hpp"
-#include "marcelino/eventGroup.hpp"
-#include "marcelino/gpio.hpp"
-#include "marcelino/input.hpp"
-#include "marcelino/interrupt.hpp"
-#include "marcelino/mutex.hpp"
-#include "marcelino/output.hpp"
-#include "marcelino/queue.hpp"
-#include "marcelino/semaphore.hpp"
-#include "marcelino/task.hpp"
-#include "marcelino/timer.hpp"
+namespace streamDeco {
 
-#include "lvgl/lvgl_arc.hpp"
-#include "lvgl/lvgl_bar.hpp"
-#include "lvgl/lvgl_button.hpp"
-#include "lvgl/lvgl_event.hpp"
-#include "lvgl/lvgl_image.hpp"
-#include "lvgl/lvgl_label.hpp"
-#include "lvgl/lvgl_canvas.hpp"
-#include "lvgl/lvgl_port.hpp"
-#include "lvgl/lvgl_screen.hpp"
-#include "lvgl/lvgl_slider.hpp"
-#include "lvgl/lvgl_style.hpp"
+  /**
+   * @brief    ISR function to handle backlight timer
+   * @details  Set backlight bright to 10% affter timer overflow
+   * @param    timerHandle The rtos timer send the timer handler to callback function
+  **/
+  void isr_timer(TimerHandle_t timerHandle);
 
-#define byte_k(_b) (_b*1024)
+  /**
+   * @brief   Callback registred in buttons 
+   * @details Send a notifications with event code to task buttons handler
+   * @param   event  Event received by the callback
+   * @note    This callback is registred on buttons and slider objects
+   * @note    Each button and slider send a different event
+   **/
+  void buttons_callback(lvgl::event::event_t event);
+
+} // nasmespasce streamDeco
 
 #endif
