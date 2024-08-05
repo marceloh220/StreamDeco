@@ -39,6 +39,7 @@ namespace streamDeco
    */
   void init()
   {
+
     /**
      * @var      settings_t *settings
      * @brief    Wallpaper color, buttons theme and screen bright
@@ -73,7 +74,7 @@ namespace streamDeco
     startScreen_icon.set_src(&keyboard_simp);
     lvgl::screen::refresh();
 
-    delay(1s); /* see my icon =) */
+    rtos::delay(1s); /* see my icon =) */
 
     /* start bluetooth keyboard interface */
     bleKeyboard.begin();
@@ -83,7 +84,7 @@ namespace streamDeco
     startScreen_icon.set_src(&bluetooth_simp);
     lvgl::screen::refresh();
 
-    delay(500ms); /* see more icon =) */
+    rtos::delay(500ms); /* see more icon =) */
 
     /* try connection, while you see icons and text =) */
     while (1)
@@ -92,7 +93,7 @@ namespace streamDeco
       {
         break;
       }
-      delay(2s);
+      rtos::delay(2s);
     }
 
     /* delete apresentation icons and text =( */

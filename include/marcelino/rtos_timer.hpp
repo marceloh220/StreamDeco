@@ -25,12 +25,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 #include "freertos/timers.h"
+#include "rtos_chrono.hpp"
+
+namespace rtos {
 
 class Timer {
 
 public:
-  Timer(const char *name, TimerCallbackFunction_t callback,
-        milliseconds periode, UBaseType_t autoreload = true)
+  Timer(const char *name, TimerCallbackFunction_t callback, milliseconds periode, UBaseType_t autoreload = true)
       : _name(name), _periode(periode), _autoreload(autoreload) {
     attach(callback);
   }
@@ -95,5 +97,7 @@ private:
   UBaseType_t _autoreload;
   void* _id;
 };
+
+} // namespace rtos
 
 #endif

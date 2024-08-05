@@ -19,19 +19,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <Arduino.h>
 #include "marcelino.hpp"
-
 #include "streamDeco_init.hpp"
 
 void setup()
 {
-  
+
   Serial.begin(115200);
-  
+
   lvgl::port::init();
   streamDeco::init();
-
 }
 
 void loop()
@@ -40,6 +37,5 @@ void loop()
   lvgl::port::print_task_memory_usage();
   streamDeco::print_task_memory_usage();
 
-  delay(10s);
-
+  rtos::delay(10s);
 }

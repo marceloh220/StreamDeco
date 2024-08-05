@@ -22,9 +22,9 @@
 #ifndef __INTERRUPT_HPP__
 #define __INTERRUPT_HPP__
 
-#include "input.hpp"
+#include "hardware_input.hpp"
 
-namespace gpio {
+namespace hardware {
 
 class Interrupt : private GPIO {
 
@@ -73,6 +73,6 @@ public:
 
 }; // class Interrupt
 
-} // namespace gpio
+} // namespace hardware
 
 #endif

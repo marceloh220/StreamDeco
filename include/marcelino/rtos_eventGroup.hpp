@@ -24,7 +24,9 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
-#include "chrono.hpp"
+#include "rtos_chrono.hpp"
+
+namespace rtos {
 
 class EventGroup {
 
@@ -59,28 +61,25 @@ public:
   }
 
   inline EventBits_t wait() {
-    return xEventGroupWaitBits(*_handle, 0xFFFFFF, pdTRUE, pdFALSE,
-                               portMAX_DELAY);
+    return xEventGroupWaitBits(*_handle, 0xFFFFFF, pdTRUE, pdFALSE, portMAX_DELAY);
   }
 
   inline EventBits_t wait(const EventBits_t flags) {
     return xEventGroupWaitBits(*_handle, flags, pdTRUE, pdTRUE, portMAX_DELAY);
   }
 
-  inline EventBits_t wait(const EventBits_t flags, bool clearFlags,
-                          bool allFlags) {
-    return xEventGroupWaitBits(*_handle, flags, clearFlags, allFlags,
-                               portMAX_DELAY);
+  inline EventBits_t wait(const EventBits_t flags, bool clearFlags, bool allFlags) {
+    return xEventGroupWaitBits(*_handle, flags, clearFlags, allFlags, portMAX_DELAY);
   }
 
-  inline EventBits_t wait(const EventBits_t flags, bool clearFlags,
-                          bool allFlags, milliseconds timeout) {
-    return xEventGroupWaitBits(*_handle, flags, clearFlags, allFlags,
-                               CHRONO_TO_TICK(timeout));
+  inline EventBits_t wait(const EventBits_t flags, bool clearFlags, bool allFlags, milliseconds timeout) {
+    return xEventGroupWaitBits(*_handle, flags, clearFlags, allFlags, CHRONO_TO_TICK(timeout));
   }
 
 private:
   EventGroupHandle_t *_handle = new EventGroupHandle_t;
 };
+
+} // namespace rtos
 
 #endif

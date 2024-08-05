@@ -29,9 +29,11 @@
 #include "freertos/portmacro.h"
 #include "freertos/task.h"
 
-#include "chrono.hpp"
+#include "rtos_chrono.hpp"
 
 typedef void *arg_t;
+
+namespace rtos {
 
 class Task {
 
@@ -42,16 +44,13 @@ public:
     NO_AFINITY,
   } pinCore_t;
 
-  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0,
-       uint32_t stackSize = 6 * 1024, arg_t args = NULL,
-       pinCore_t core = NO_AFINITY)
+  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 6 * 1024, arg_t args = NULL, pinCore_t core = NO_AFINITY)
       : _callback(callback), _name(name), _priority(priority), _core(core),
         _stackSize(stackSize), _args(args) {
     attach(_callback, args);
   }
 
-  Task(const char *name, UBaseType_t priority = 0,
-       uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY)
+  Task(const char *name, UBaseType_t priority = 0, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY)
       : _name(name), _priority(priority), _core(core), _stackSize(stackSize) {}
 
   ~Task() { taskDelete(); }
@@ -196,5 +195,7 @@ private:
   bool _created = false;
   TickType_t previousTime = 0;
 };
+
+} // namespace rtos
 
 #endif

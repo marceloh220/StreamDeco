@@ -76,7 +76,7 @@ namespace streamDeco
         settimeofday(&time_epoch, NULL);
         break;
       } // Serial.avaliable
-      delay(100ms);
+      rtos::delay(100ms);
     } // loop check time
     mutex_serial.give();
   }
@@ -104,7 +104,7 @@ namespace streamDeco
       getLocalTime(&tm_date);
       monitor.clock.set_time(tm_date);
 
-      delay(500ms);
+      rtos::delay(500ms);
     }
   }
 

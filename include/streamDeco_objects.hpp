@@ -55,28 +55,28 @@ namespace streamDeco
      * @brief    Task buttons
      * @details  Task to manager buttons configurations and events
      **/
-    Task buttons;
+    rtos::Task buttons;
     
     /**
      * @var      uiReset
      * @brief    Task uiReset
      * @details  Task to hidde inactivities canvas
      **/
-    Task uiReset;
+    rtos::Task uiReset;
     
     /** 
      * @var      monitor
      * @brief    Task monitor
      * @details  Task to show computer metrics on monitor canvas
      **/
-    Task monitor;
+    rtos::Task monitor;
     
     /**
      * @var      clock
      * @brief    Task clock
      * @details  Task to update clock
      **/
-    Task clock;
+    rtos::Task clock;
   } task_t;
 
   /**
@@ -112,7 +112,7 @@ namespace streamDeco
      * @details  and return to Main screen in inactivitie
      * @note     The timer value can be change in file streamDeco_objects.cpp
      **/
-    Timer uiReset;
+    rtos::Timer uiReset;
     
     /** 
      * @var      backlight
@@ -120,7 +120,7 @@ namespace streamDeco
      * @details  Timer to reduce screen backlight in inactivitie
      * @note     The timer value can be change in file streamDeco_objects.cpp
     */
-    Timer backlight;
+    rtos::Timer backlight;
   } timer_t;
 
   /**
@@ -590,7 +590,7 @@ namespace streamDeco
    * @brief  Reference to serial interface mutex
    * @note   Used to avoid Monitor and Clock task uses Serial interface in same time
    */
-  extern Mutex mutex_serial;
+  extern rtos::Mutex mutex_serial;
 
   /**
    * @enum     event_e

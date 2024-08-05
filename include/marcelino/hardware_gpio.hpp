@@ -36,6 +36,8 @@
 #undef INPUT_PULLUP
 #undef INPUT_PULLDOWN
 
+namespace hardware {
+
 class GPIO {
 
 public:
@@ -158,5 +160,7 @@ private:
   bool _state;
   interrupt_t _interrupt;
 };
+
+} // namespace hardware
 
 #endif

@@ -75,7 +75,7 @@ namespace streamDeco
       }
       mutex_serial.give();
 
-      delay(1s);
+      rtos::delay(1s);
     }
   }
 

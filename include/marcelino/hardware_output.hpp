@@ -19,40 +19,68 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _INPUT_HPP_
-#define _INPUT_HPP_
+#ifndef _OUTPUT_HPP_
+#define _OUTPUT_HPP_
 
-#include "gpio.hpp"
+#include "driver/gpio.h"
+#include "esp_rom_gpio.h"
+#include "hal/gpio_types.h"
 
-#undef PULLUP
-#undef PULLDOWN
+#include "hardware_gpio.hpp"
 
-namespace gpio {
+#undef LOW
+#undef HIGH
+#undef INPUT
+#undef OUTPUT
+#undef INPUT_PULLUP
+#undef INPUT_PULLDOWN
 
-class Input : private GPIO {
+namespace hardware {
+
+namespace State {
+typedef enum state_e {
+  LOW,
+  HIGH,
+} state_t;
+}
+
+class Output : private GPIO {
 public:
-  typedef enum mode_e {
-    FLOATING = GPIO::INPUT,
-    PULLUP = GPIO::INPUT_PULLUP,
-    PULLDOWN = GPIO::INPUT_PULLDOWN,
-  } mode_t;
-
-  Input(gpio_num_t pin, mode_t mode = PULLDOWN)
-      : GPIO(pin, (GPIO::mode_t)mode) {}
+  Output(gpio_num_t pin, bool sink = false)
+      : GPIO(pin, GPIO::OUTPUT), _sink(sink) {}
 
   inline gpio_num_t pinName() { return GPIO::pinName(); }
 
-  [[nodiscard]] inline bool readRaw() { return GPIO::read(); }
+  [[nodiscard]] inline bool read() { return GPIO::read(); }
 
-  [[nodiscard]] virtual bool read() {
-    bool state = GPIO::read();
-    return GPIO::mode() == INPUT_PULLUP ? !state : state;
+  inline void write(bool level) {
+    level = _sink ? !level : level;
+    GPIO::write(level);
+  }
+
+  inline void toggle(int level = 1) { GPIO::toggle(level); }
+
+  inline Output &operator=(Output &v) {
+    this->write(v.read());
+    return *this;
+  }
+
+  inline Output &operator=(int v) {
+    this->write(v);
+    return *this;
+  }
+
+  inline Output &operator^=(int v) {
+    this->toggle(v);
+    return *this;
   }
 
   [[nodiscard]] inline operator int() { return read(); }
 
-}; // class Input
+protected:
+  const bool _sink;
+}; // class output
 
-} // namespace gpio
+} // namespace hardware
 
 #endif

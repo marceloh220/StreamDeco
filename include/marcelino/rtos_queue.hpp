@@ -25,6 +25,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+namespace rtos {
+
 template <typename type> class Queue {
 
 public:
@@ -89,5 +91,7 @@ public:
 private:
   QueueHandle_t _handle;
 };
+
+} // namespace rtos
 
 #endif

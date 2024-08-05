@@ -23,16 +23,17 @@
 #define _BUTTOM_HPP_
 
 #include "freertos/projdefs.h"
-#include "input.hpp"
+#include "hardware_input.hpp"
 
-#include "chrono.hpp"
+#include "rtos_chrono.hpp"
 
-class Button : public gpio::Input
+namespace hardware {
+
+class Button : public Input
 {
 
 public:
-  Button(gpio_num_t pin, milliseconds debounce,
-         gpio::Input::mode_t mode = gpio::Input::PULLDOWN)
+  Button(gpio_num_t pin, milliseconds debounce, Input::mode_t mode = Input::PULLDOWN)
       : Input(pin, mode), _debounce(debounce) {}
 
   [[nodiscard]] bool read()
@@ -45,7 +46,7 @@ public:
     }
     else if (!state && _lock)
     {
-      delay(_debounce);
+      rtos::delay(_debounce);
       if (!Input::read())
       {
         _lock = false;
@@ -54,14 +55,16 @@ public:
     return false;
   }
 
-  inline void resetTiming() { _timing = time<milliseconds>(); }
+  inline void resetTiming() { _timing = rtos::time<milliseconds>(); }
 
-  milliseconds getTiming() { return time<milliseconds>() - _timing; }
+  milliseconds getTiming() { return rtos::time<milliseconds>() - _timing; }
 
 private:
   bool _lock = false;
   milliseconds _debounce;
   milliseconds _timing;
 };
+
+} // namespace hardware
 
 #endif

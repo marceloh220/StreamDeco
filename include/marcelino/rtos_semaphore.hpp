@@ -19,67 +19,45 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _MUTEX_HPP_
-#define _MUTEX_HPP_
+#ifndef _SEMAPHORE_HPP_
+#define _SEMAPHORE_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "rtos_chrono.hpp"
 
-#include "chrono.hpp"
+namespace rtos {
 
-class Mutex {
+class Semaphore {
 public:
-    Mutex() {
-        *_handle = xSemaphoreCreateMutex();
-    }
+  Semaphore(int count = 1, int initialValue = 0) {
+    if (count > 1)
+      _handle = xSemaphoreCreateCounting(count, initialValue);
+    else
+      _handle = xSemaphoreCreateBinary();
+  }
 
-    ~Mutex() {
-        vSemaphoreDelete(*_handle);
-        delete _handle;
-    }
+  ~Semaphore() { vSemaphoreDelete(_handle); }
 
-    inline BaseType_t take() {
-        return xSemaphoreTake(*_handle, portMAX_DELAY);
-    }
+  inline BaseType_t take() { return xSemaphoreTake(_handle, portMAX_DELAY); }
 
-    inline BaseType_t take(milliseconds timeout) {
-        return xSemaphoreTake(*_handle, CHRONO_TO_TICK(timeout));
-    }
+  inline BaseType_t take(milliseconds timeout) {
+    return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
+  }
 
-    inline BaseType_t give() {
-        return xSemaphoreGive(*_handle);
-    }
+  inline BaseType_t give() { return xSemaphoreGive(_handle); }
+
+  inline BaseType_t giveFromISR() {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    return ret;
+  }
 
 private:
-    SemaphoreHandle_t *_handle = new SemaphoreHandle_t;
+  SemaphoreHandle_t _handle;
 };
 
-
-class MutexRecursive {
-public:
-    MutexRecursive() {
-        *_handle = xSemaphoreCreateRecursiveMutex();
-    }
-
-    ~MutexRecursive() {
-        vSemaphoreDelete(*_handle);
-        delete _handle;
-    }
-
-    inline BaseType_t take() {
-        return xSemaphoreTakeRecursive(*_handle, portMAX_DELAY);
-    }
-
-    inline BaseType_t take(int timeout) {
-        return xSemaphoreTakeRecursive(*_handle, pdMS_TO_TICKS(timeout));
-    }
-
-    inline BaseType_t give() {
-        return xSemaphoreGiveRecursive(*_handle);
-    }
-
-private:
-    SemaphoreHandle_t *_handle = new SemaphoreHandle_t;
-};
+} // namespace rtos
 
 #endif

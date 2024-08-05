@@ -37,6 +37,8 @@ using std::chrono::milliseconds;
 using std::chrono::minutes;
 using std::chrono::seconds;
 
+namespace rtos {
+
 #define CHRONO_TO_TICK(_time) (pdMS_TO_TICKS(_time.count()))
 
 template <typename t>
@@ -77,5 +79,7 @@ template <typename t>
   microseconds micros(esp_timer_get_time());
   return std::chrono::duration_cast<t>(micros);
 }
+
+} // namespace rtos
 
 #endif

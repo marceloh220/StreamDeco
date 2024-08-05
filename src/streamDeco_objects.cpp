@@ -58,8 +58,8 @@ namespace streamDeco
      * @note    30 seconds to change backlight bright to 10% of bright
      **/
     timer_t timer_ui = {
-        Timer("UI reset timer", 10s),
-        Timer("Backlight timer", 30s),
+        rtos::Timer("UI reset timer", 10s),
+        rtos::Timer("Backlight timer", 30s),
     };
 
     /**
@@ -166,10 +166,10 @@ namespace streamDeco
      *         Other parameters can be see in file marcelino/task.hpp
      **/
     task_t task = {
-        Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
-        Task("Task reset canvas", 3, 1024),
-        Task("Task Monitor", 5, 3 * 1024),
-        Task("Task Clock", 5, 3 * 1024),
+        rtos::Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
+        rtos::Task("Task reset canvas", 3, 1024),
+        rtos::Task("Task Monitor", 5, 3 * 1024),
+        rtos::Task("Task Clock", 5, 3 * 1024),
     };
 
     /**
@@ -208,7 +208,7 @@ namespace streamDeco
    * @brief  Serial interface mutex
    * @note   Used to avoid Monitor and Clock task uses Serial interface in same instant
    */
-    Mutex mutex_serial;
+    rtos::Mutex mutex_serial;
 
     /**
      * @brief  Change color of Buttons, Metrics and bright Slider

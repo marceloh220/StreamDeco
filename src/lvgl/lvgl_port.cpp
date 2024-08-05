@@ -27,8 +27,8 @@
 
 #include "lvgl/lvgl_port_map.h"
 
-#include "marcelino/mutex.hpp"
-#include "marcelino/task.hpp"
+#include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_task.hpp"
 
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_rgb.h"
@@ -68,13 +68,12 @@ static lv_disp_t *display;
 
 static lv_indev_drv_t indev_driver;
 
-MutexRecursive mutex;
+rtos::MutexRecursive mutex;
 
-Task task("Port task LVGL", 5, LVGL_STACK_SIZE);
+rtos::Task task("Port task LVGL", 5, LVGL_STACK_SIZE);
 
 /* Display flushing */
-void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area,
-                lv_color_t *color_p) {
+void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
   uint32_t w = (area->x2 - area->x1 + 1);
   uint32_t h = (area->y2 - area->y1 + 1);
 
@@ -89,10 +88,8 @@ void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
 
   if (touchscreen.isTouched) {
     data->state = LV_INDEV_STATE_PR;
-    data->point.x = map(touchscreen.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0,
-                        LCD_WIDTH - 1);
-    data->point.y = map(touchscreen.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0,
-                        LCD_HEIGHT - 1);
+    data->point.x = map(touchscreen.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, LCD_WIDTH - 1);
+    data->point.y = map(touchscreen.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, LCD_HEIGHT - 1);
   } else {
     data->state = LV_INDEV_STATE_REL;
   }
@@ -110,24 +107,28 @@ void handle(void *arg) {
 
 void backlight_init(void) {
 
-  ledc_timer_config_t ledc_timer = {.speed_mode =
-                                        (ledc_mode_t)BACKLIGHT_SPEED_MODE,
-                                    .duty_resolution = LEDC_TIMER_12_BIT,
-                                    .timer_num = (ledc_timer_t)BACKLIGHT_TIMER,
-                                    .freq_hz = BACKLIGHT_FREQUENCY,
-                                    .clk_cfg = LEDC_AUTO_CLK};
+  ledc_timer_config_t ledc_timer =
+  {
+    .speed_mode = (ledc_mode_t)BACKLIGHT_SPEED_MODE,
+    .duty_resolution = LEDC_TIMER_12_BIT,
+    .timer_num = (ledc_timer_t)BACKLIGHT_TIMER,
+    .freq_hz = BACKLIGHT_FREQUENCY,
+    .clk_cfg = LEDC_AUTO_CLK
+  };
 
   ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
   // Prepare and then apply the LEDC PWM channel configuration
-  ledc_channel_config_t ledc_channel = {
-      .gpio_num = GPIO_LCD_BL,
-      .speed_mode = (ledc_mode_t)BACKLIGHT_SPEED_MODE,
-      .channel = (ledc_channel_t)BACKLIGHT_CHANNEL,
-      .intr_type = LEDC_INTR_DISABLE,
-      .timer_sel = (ledc_timer_t)BACKLIGHT_TIMER,
-      .duty = 2457,
-      .hpoint = 0};
+  ledc_channel_config_t ledc_channel =
+  {
+    .gpio_num = GPIO_LCD_BL,
+    .speed_mode = (ledc_mode_t)BACKLIGHT_SPEED_MODE,
+    .channel = (ledc_channel_t)BACKLIGHT_CHANNEL,
+    .intr_type = LEDC_INTR_DISABLE,
+    .timer_sel = (ledc_timer_t)BACKLIGHT_TIMER,
+    .duty = 2457,
+    .hpoint = 0
+  };
 
   ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 }

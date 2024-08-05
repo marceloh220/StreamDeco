@@ -22,22 +22,26 @@
 #ifndef _MARCELINO_HPP_
 #define _MARCELINO_HPP_
 
+#include <Arduino.h>
+
 #include <stdio.h>
 #include "esp_err.h"
 #include "esp_log.h"
 
-#include "marcelino/button.hpp"
-#include "marcelino/chrono.hpp"
-#include "marcelino/eventGroup.hpp"
-#include "marcelino/gpio.hpp"
-#include "marcelino/input.hpp"
-#include "marcelino/interrupt.hpp"
-#include "marcelino/mutex.hpp"
-#include "marcelino/output.hpp"
-#include "marcelino/queue.hpp"
-#include "marcelino/semaphore.hpp"
-#include "marcelino/task.hpp"
-#include "marcelino/timer.hpp"
+#include "marcelino/rtos_chrono.hpp"
+
+#include "marcelino/hardware_button.hpp"
+#include "marcelino/hardware_gpio.hpp"
+#include "marcelino/hardware_input.hpp"
+#include "marcelino/hardware_interrupt.hpp"
+#include "marcelino/hardware_output.hpp"
+
+#include "marcelino/rtos_eventGroup.hpp"
+#include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_queue.hpp"
+#include "marcelino/rtos_semaphore.hpp"
+#include "marcelino/rtos_task.hpp"
+#include "marcelino/rtos_timer.hpp"
 
 #include "lvgl/lvgl_arc.hpp"
 #include "lvgl/lvgl_bar.hpp"
