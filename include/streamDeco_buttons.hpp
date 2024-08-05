@@ -23,7 +23,6 @@
 #define _STREAMDECO_BUTTONS_HPP_
 
 #include <lvgl.h>
-
 #include "marcelino.hpp"
 
 namespace streamDeco
@@ -33,9 +32,8 @@ namespace streamDeco
   public:
     mainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
     : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {};
-    void create(lv_obj_t *parent, uint8_t pos);
+    void create(uint8_t pos);
     void create(Object &parent, uint8_t pos);
-    virtual void position(uint8_t pos);
     void text(const char *text);
     void color(lv_palette_t color);
     void iconColor(lv_palette_t color);
@@ -45,12 +43,11 @@ namespace streamDeco
     void pin();
     void unpin();
     bool pinned();
-
+    virtual void position(uint8_t pos);
   protected:
-    void icon1();
-    void icon2();
     void init();
-    virtual bool assertPosition(uint8_t pos) {
+    virtual bool assertPosition(uint8_t pos)
+    {
       return (pos >= 15) ? false : true;
     }
     lvgl::Label label;
@@ -73,7 +70,8 @@ namespace streamDeco
         : mainButton(text, icon1, icon2) {}
     void position(uint8_t pos);
   private:
-    bool assertPosition(uint8_t pos) {
+    bool assertPosition(uint8_t pos)
+    {
       return (pos >= 9) ? false : true;
     }
   }; // class canvasButton
@@ -85,10 +83,11 @@ namespace streamDeco
         : mainButton(text, icon1, icon2) {}
     void position(uint8_t pos);
   private:
-    bool assertPosition(uint8_t pos) {
+    bool assertPosition(uint8_t pos)
+    {
       return (pos >= 9) ? false : true;
     }
-  }; // class configButton
+  }; // class configButtoniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
 } // namespace streamDeco
 
