@@ -33,8 +33,9 @@ namespace streamDeco
   public:
     mainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
     : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {};
-    void create(uint8_t pos);
-    void position(uint8_t pos);
+    void create(lv_obj_t *parent, uint8_t pos);
+    void create(Object &parent, uint8_t pos);
+    virtual void position(uint8_t pos);
     void text(const char *text);
     void color(lv_palette_t color);
     void iconColor(lv_palette_t color);
@@ -48,6 +49,10 @@ namespace streamDeco
   protected:
     void icon1();
     void icon2();
+    void init();
+    virtual bool assertPosition(uint8_t pos) {
+      return (pos >= 15) ? false : true;
+    }
     lvgl::Label label;
     lvgl::Image icon;
     lvgl::Style style_button;
@@ -66,10 +71,11 @@ namespace streamDeco
   public:
     canvasButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
         : mainButton(text, icon1, icon2) {}
-    void create(Object &parent, uint8_t pos);
-    void callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data);
     void position(uint8_t pos);
-
+  private:
+    bool assertPosition(uint8_t pos) {
+      return (pos >= 9) ? false : true;
+    }
   }; // class canvasButton
 
   class configButton : public mainButton
@@ -77,9 +83,11 @@ namespace streamDeco
   public:
     configButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
         : mainButton(text, icon1, icon2) {}
-    void create(Object &parent, uint8_t pos);
-    void callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data);
     void position(uint8_t pos);
+  private:
+    bool assertPosition(uint8_t pos) {
+      return (pos >= 9) ? false : true;
+    }
   }; // class configButton
 
 } // namespace streamDeco

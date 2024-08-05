@@ -105,23 +105,23 @@ namespace streamDeco
 
     /* the class mainButton deal with position buttons,
      * is only necessary pass the order */
-    button.terminal.create(0);
-    button.files.create(1);
-    button.web.create(2);
-    button.search.create(3);
-    button.applications_canvas.create(4);
+    button.terminal.create(NULL, 0);
+    button.files.create(NULL, 1);
+    button.web.create(NULL, 2);
+    button.search.create(NULL, 3);
+    button.applications_canvas.create(NULL, 4);
 
-    button.multimedia_prev.create(5);
-    button.multimedia_play.create(6);
-    button.multimedia_next.create(7);
-    button.multimedia_mic.create(8);
-    button.multimedia_canvas.create(9);
+    button.multimedia_prev.create(NULL, 5);
+    button.multimedia_play.create(NULL, 6);
+    button.multimedia_next.create(NULL, 7);
+    button.multimedia_mic.create(NULL, 8);
+    button.multimedia_canvas.create(NULL, 9);
 
-    button.left_workspace.create(10);
-    button.right_workspace.create(11);
-    button.pin.create(12);
-    button.lock.create(13);
-    button.configurations_canvas.create(14);
+    button.left_workspace.create(NULL, 10);
+    button.right_workspace.create(NULL, 11);
+    button.pin.create(NULL, 12);
+    button.lock.create(NULL, 13);
+    button.configurations_canvas.create(NULL, 14);
 
     /* register buttons event */
     button.terminal.callback(buttons_callback, LV_EVENT_PRESSED, terminal_event);
