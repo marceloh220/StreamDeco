@@ -31,7 +31,7 @@
 
 #include "rtos_chrono.hpp"
 
-typedef void *arg_t;
+typedef void *taskArg_t;
 
 namespace rtos {
 
@@ -44,145 +44,38 @@ public:
     NO_AFINITY,
   } pinCore_t;
 
-  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 6 * 1024, arg_t args = NULL, pinCore_t core = NO_AFINITY)
+  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 6 * 1024, taskArg_t args = NULL, pinCore_t core = NO_AFINITY)
       : _callback(callback), _name(name), _priority(priority), _core(core),
-        _stackSize(stackSize), _args(args) {
-    attach(_callback, args);
-  }
+        _stackSize(stackSize), _args(args) { attach(_callback, args); }
 
   Task(const char *name, UBaseType_t priority = 0, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY)
       : _name(name), _priority(priority), _core(core), _stackSize(stackSize) {}
 
   ~Task() { taskDelete(); }
 
-  inline void attach(TaskFunction_t callback, arg_t args = NULL) {
-    if (_created)
-      return;
-    _callback = callback;
-    _args = args;
-    esp_err_t error;
-    if (_core == NO_AFINITY) {
-      error =
-          xTaskCreate(_callback, _name, _stackSize, _args, _priority, &_handle);
-    } else
-      error = xTaskCreatePinnedToCore(_callback, _name, _stackSize, _args,
-                                      _priority, &_handle, _core);
-    if (error == pdPASS) {
-      ESP_LOGI(_name, "Task created");
-      _created = true;
-    } else {
-      ESP_LOGE(_name, "Task faill in creation");
-    }
-  }
-
-  inline void sendNotify() {
-    if (!_created)
-      return;
-    xTaskNotifyGive(_handle);
-  }
-
-  inline void sendNotify(uint32_t sendBit) {
-    if (!_created)
-      return;
-    xTaskNotify(_handle, sendBit, eSetBits);
-  }
-
-  inline void sendNotifyFromISR() {
-    if (!_created)
-      return;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
-  inline void sendNotifyFromISR(uint32_t sendBit) {
-    if (!_created)
-      return;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTaskNotifyFromISR(_handle, sendBit, eSetBits, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
-  inline uint32_t takeNotify() { return ulTaskNotifyTake(true, portMAX_DELAY); }
-
-  inline uint32_t takeNotify(TickType_t time) {
-    return ulTaskNotifyTake(true, pdMS_TO_TICKS(time));
-  }
-
-  inline void delayUntil(milliseconds time) {
-    vTaskDelayUntil(&previousTime, CHRONO_TO_TICK(time));
-  }
-
-  inline BaseType_t abortDelay() {
-    if (!_created)
-      return 0;
-    return xTaskAbortDelay(_handle);
-  }
-
-  template <typename type> inline void call(type parameter = NULL) {
-    xTaskCallApplicationTaskHook(_handle, (void*)parameter);
-  }
-
-  inline void suspend() {
-    if (!_created)
-      return;
-    vTaskSuspend(_handle);
-  }
-
-  inline void resume() {
-    if (!_created)
-      return;
-    vTaskResume(_handle);
-  }
-
-  inline BaseType_t resumeFromISR() {
-    if (!_created)
-      return 0;
-    return xTaskResumeFromISR(_handle);
-  }
-
-  inline void taskDelete() {
-    if (!_created)
-      return;
-    vTaskDelete(_handle);
-    _created = false;
-  }
-
+  void attach(TaskFunction_t callback, taskArg_t args = NULL);
+  void sendNotify();
+  void sendNotify(uint32_t sendBit);
+  void sendNotifyFromISR();
+  void sendNotifyFromISR(uint32_t sendBit);
+  uint32_t takeNotify();
+  uint32_t takeNotify(TickType_t time);
+  void delayUntil(milliseconds time);
+  BaseType_t abortDelay();
+  void suspend();
+  void resume();
+  BaseType_t resumeFromISR();
+  void taskDelete();
   inline const char *name() { return _name; }
-
+  void priority(UBaseType_t priority);
   inline UBaseType_t priority() { return _priority; }
   inline UBaseType_t priorityFromISR() { return _priority; }
-
-  inline void priority(UBaseType_t priority) {
-    if (!_created)
-      return;
-    _priority = priority;
-    vTaskPrioritySet(_handle, priority);
-  }
-
   inline uint32_t stackSize() { return _stackSize; }
-
-  template <typename type> inline type args() {
-    return static_cast<type>(_args);
-  }
-
-  template <typename type> inline void args(type args) {
-    _args = static_cast<arg_t>(args);
-  }
-
+  template <typename type> inline type args() { return static_cast<type>(_args); }
+  template <typename type> inline void args(type args) { _args = static_cast<taskArg_t>(args); }
   inline BaseType_t core() { return _core; }
-
-  inline uint32_t memUsage() {
-    if (!_created)
-      return 0;
-    return _stackSize - uxTaskGetStackHighWaterMark(_handle);
-  }
-
-  inline uint32_t memFree() {
-    if (!_created)
-      return 0;
-    return uxTaskGetStackHighWaterMark(_handle);
-  }
+  uint32_t memUsage();
+  uint32_t memFree();
 
 private:
   TaskFunction_t _callback;
@@ -190,11 +83,12 @@ private:
   UBaseType_t _priority;
   UBaseType_t _core;
   uint32_t _stackSize;
-  arg_t _args;
-  TaskHandle_t _handle;
-  bool _created = false;
+  taskArg_t _args;
+  TaskHandle_t _handle = NULL;
   TickType_t previousTime = 0;
 };
+
+Task *get_task(taskArg_t arg);
 
 } // namespace rtos
 

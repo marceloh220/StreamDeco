@@ -83,7 +83,7 @@ namespace streamDeco
 
   /* Handle the clock task,
    * update clock time on Monitor canvas */
-  void handleClock(arg_t arg)
+  void handleClock(taskArg_t task_arg)
   {
     struct tm tm_date = {0};
     int count = 0;

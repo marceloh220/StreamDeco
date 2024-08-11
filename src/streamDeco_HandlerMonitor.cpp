@@ -30,7 +30,7 @@ namespace streamDeco
 
   /* Handle the monitor task,
    * show computer metrics on configure pinned canvas */
-  void handleMonitor(arg_t arg)
+  void handleMonitor(taskArg_t task_arg)
   {
 
     while (1)

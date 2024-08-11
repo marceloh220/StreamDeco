@@ -32,7 +32,7 @@ namespace streamDeco
 
   /* Handler of UI reset task, 
    * hidden canvas if they are not pinned. */
-  void handleUiReset(arg_t arg)
+  void handleUiReset(taskArg_t task_arg)
   {
     while (1)
     {

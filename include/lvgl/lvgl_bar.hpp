@@ -17,24 +17,22 @@ namespace lvgl
          */
         inline void create(lv_obj_t *parent = NULL)
         {
-            if (created)
+            if (object != NULL)
                 return;
             port::mutex_take();
             if (parent == NULL)
                 parent = lv_scr_act();
             object = lv_bar_create(parent);
             port::mutex_give();
-            created = true;
         }
 
         inline void create(Object &parent)
         {
-            if (created)
+            if (object != NULL)
                 return;
             port::mutex_take();
             object = lv_bar_create(parent.get_object());
             port::mutex_give();
-            created = true;
         }
 
         /**
@@ -44,7 +42,7 @@ namespace lvgl
          */
         void set_value(int32_t value, lv_anim_enable_t anim)
         {
-            if (!created)
+            if (object == NULL)
                 return;
             port::mutex_take();
             lv_bar_set_value(object, value, anim);
@@ -58,7 +56,7 @@ namespace lvgl
          */
         void set_start_value(int32_t start_value, lv_anim_enable_t anim)
         {
-            if (!created)
+            if (object == NULL)
                 return;
             port::mutex_take();
             lv_bar_set_start_value(object, start_value, anim);
@@ -72,7 +70,7 @@ namespace lvgl
          */
         void set_range(int32_t min, int32_t max)
         {
-            if (!created)
+            if (object == NULL)
                 return;
             port::mutex_take();
             lv_bar_set_range(object, min, max);
@@ -85,7 +83,7 @@ namespace lvgl
          */
         void set_mode(lv_bar_mode_t mode)
         {
-            if (!created)
+            if (object == NULL)
                 return;
             port::mutex_take();
             lv_bar_set_mode(object, mode);
@@ -99,7 +97,7 @@ namespace lvgl
         int32_t get_value()
         {
             int32_t ret = 0;
-            if (!created)
+            if (object == NULL)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_value(object);
@@ -114,7 +112,7 @@ namespace lvgl
         int32_t get_start_value()
         {
             int32_t ret = 0;
-            if (!created)
+            if (object == NULL)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_start_value(object);
@@ -129,7 +127,7 @@ namespace lvgl
         int32_t get_min_value()
         {
             int32_t ret = 0;
-            if (!created)
+            if (object == NULL)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_min_value(object);
@@ -144,7 +142,7 @@ namespace lvgl
         int32_t get_max_value()
         {
             int32_t ret = 0;
-            if (!created)
+            if (object == NULL)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_max_value(object);
@@ -160,7 +158,7 @@ namespace lvgl
         lv_bar_mode_t get_mode()
         {
             int32_t ret = 0;
-            if (!created)
+            if (object == NULL)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_mode(object);

@@ -39,23 +39,21 @@ public:
   }
 
   inline void create(lv_obj_t *parent = NULL) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     if (parent == NULL)
       parent = lv_scr_act();
     object = lv_label_create(parent);
     port::mutex_give();
-    created = true;
   }
 
   inline void create(Object &parent) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     object = lv_label_create(parent.get_object());
     port::mutex_give();
-    created = true;
   }
 
   /**
@@ -65,7 +63,7 @@ public:
    * the current text.
    */
   void set_text(const char *text) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_text(object, text);
@@ -79,7 +77,7 @@ public:
    * @example lv_label_set_text_fmt(label1, "%d user", user_num);
    */
   void set_text_fmt(const char *fmt, ...) {
-    if (!created)
+    if (object == NULL)
       return;
     va_list args;
     va_start(args, fmt);
@@ -101,7 +99,7 @@ public:
    * text.
    */
   void set_text_static(const char *text) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_text_static(object, text);
@@ -115,7 +113,7 @@ public:
    * label should be set AFTER this function
    */
   void set_long_mode(lv_label_long_mode_t long_mode) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_long_mode(object, long_mode);
@@ -128,7 +126,7 @@ public:
    * @example "This is a #ff0000 red# word"
    */
   void set_recolor(bool en) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_recolor(object, en);
@@ -141,7 +139,7 @@ public:
    * `LV_LABEL_TEXT_SELECTION_OFF` for no selection
    */
   void set_text_sel_start(uint32_t index) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_text_sel_start(object, index);
@@ -154,7 +152,7 @@ public:
    * `LV_LABEL_TEXT_SELECTION_OFF` for no selection
    */
   void set_text_sel_end(uint32_t index) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_label_set_text_sel_end(object, index);
@@ -166,7 +164,7 @@ public:
    * @return          the text of the label
    */
   char *get_text() {
-    if (!created)
+    if (object == NULL)
       return NULL;
     port::mutex_take();
     char *ret = lv_label_get_text(object);
@@ -180,7 +178,7 @@ public:
    */
   lv_label_long_mode_t get_long_mode() {
     lv_label_long_mode_t ret = 0;
-    if (!created)
+    if (object == NULL)
       return ret;
     port::mutex_take();
     ret = lv_label_get_long_mode(object);
@@ -194,7 +192,7 @@ public:
    */
   bool get_recolor() {
     bool ret = false;
-    if (!created)
+    if (object == NULL)
       return ret;
     port::mutex_take();
     ret = lv_label_get_recolor(object);
@@ -223,7 +221,7 @@ public:
    */
   uint32_t get_letter_on(const lv_obj_t *object, lv_point_t *pos_in) {
     uint32_t ret = 0;
-    if (!created)
+    if (object == NULL)
       return ret;
     port::mutex_take();
     ret = lv_label_get_letter_on(object, pos_in);
@@ -238,7 +236,7 @@ public:
    */
   bool is_char_under_pos(lv_point_t *pos) {
     bool ret = false;
-    if (!created)
+    if (object == NULL)
       return ret;
     port::mutex_take();
     ret =  lv_label_is_char_under_pos(object, pos);

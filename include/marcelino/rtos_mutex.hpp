@@ -32,56 +32,54 @@ namespace rtos {
 class Mutex {
 public:
     Mutex() {
-        *_handle = xSemaphoreCreateMutex();
+        _handle = xSemaphoreCreateMutex();
     }
 
     ~Mutex() {
-        vSemaphoreDelete(*_handle);
-        delete _handle;
+        vSemaphoreDelete(_handle);
     }
 
     inline BaseType_t take() {
-        return xSemaphoreTake(*_handle, portMAX_DELAY);
+        return xSemaphoreTake(_handle, portMAX_DELAY);
     }
 
     inline BaseType_t take(milliseconds timeout) {
-        return xSemaphoreTake(*_handle, CHRONO_TO_TICK(timeout));
+        return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
     }
 
     inline BaseType_t give() {
-        return xSemaphoreGive(*_handle);
+        return xSemaphoreGive(_handle);
     }
 
 private:
-    SemaphoreHandle_t *_handle = new SemaphoreHandle_t;
+    SemaphoreHandle_t _handle;
 };
 
 
 class MutexRecursive {
 public:
     MutexRecursive() {
-        *_handle = xSemaphoreCreateRecursiveMutex();
+        _handle = xSemaphoreCreateRecursiveMutex();
     }
 
     ~MutexRecursive() {
-        vSemaphoreDelete(*_handle);
-        delete _handle;
+        vSemaphoreDelete(_handle);
     }
 
     inline BaseType_t take() {
-        return xSemaphoreTakeRecursive(*_handle, portMAX_DELAY);
+        return xSemaphoreTakeRecursive(_handle, portMAX_DELAY);
     }
 
     inline BaseType_t take(int timeout) {
-        return xSemaphoreTakeRecursive(*_handle, pdMS_TO_TICKS(timeout));
+        return xSemaphoreTakeRecursive(_handle, pdMS_TO_TICKS(timeout));
     }
 
     inline BaseType_t give() {
-        return xSemaphoreGiveRecursive(*_handle);
+        return xSemaphoreGiveRecursive(_handle);
     }
 
 private:
-    SemaphoreHandle_t *_handle = new SemaphoreHandle_t;
+    SemaphoreHandle_t _handle;
 };
 
 } // namespace rtos

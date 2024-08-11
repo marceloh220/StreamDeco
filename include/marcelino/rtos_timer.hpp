@@ -30,66 +30,22 @@
 namespace rtos {
 
 class Timer {
-
 public:
   Timer(const char *name, TimerCallbackFunction_t callback, milliseconds periode, UBaseType_t autoreload = true)
-      : _name(name), _periode(periode), _autoreload(autoreload) {
-    attach(callback);
-  }
-
+      : _name(name), _periode(periode), _autoreload(autoreload) { attach(callback); }
   Timer(const char *name, milliseconds periode, UBaseType_t autoreload = true)
       : _name(name), _periode(periode), _autoreload(autoreload) {}
-
-  void attach(TimerCallbackFunction_t callback) {
-    _id = &_handler;
-    _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), _autoreload, _id, callback);
-    start();
-  }
-
+  void attach(TimerCallbackFunction_t callback);
   void start() { xTimerStart(_handler, portMAX_DELAY); }
-
-  void startFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerStartFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
+  void startFromISR();
   void stop() { xTimerStop(_handler, portMAX_DELAY); }
-
-  void stopFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerStopFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
+  void stopFromISR();
   void reset() { xTimerReset(_handler, portMAX_DELAY); }
-
-  void resetFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerResetFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
-  void periode(milliseconds periode) {
-    _periode = periode;
-    xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
-  }
-
-  void periodeFromISR(milliseconds periode) {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    _periode = periode;
-    xTimerChangePeriodFromISR(_handler, CHRONO_TO_TICK(periode), &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
+  void resetFromISR();
+  void periode(milliseconds periode);
+  void periodeFromISR(milliseconds periode);
   milliseconds periode() { return _periode; }
-
-  bool verifyID(TimerHandle_t timer) {
-    if (pvTimerGetTimerID(timer) == _id)
-      return true;
-    return false;
-  }
-
+  bool verifyID(TimerHandle_t timer);
 private:
   TimerHandle_t _handler;
   const char *_name;

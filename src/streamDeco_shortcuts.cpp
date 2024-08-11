@@ -50,9 +50,8 @@ namespace streamDeco
              * @note     Need configuration on application or system
              **/
         case terminal_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_F1);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_RETURN);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -74,7 +73,10 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case web_event:
-            bleKeyboard.write(KEY_MEDIA_WWW_HOME);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('w');
+            rtos::delay(10ms);
+            bleKeyboard.releaseAll();
             break;
 
         /** @brief    Search button is pressed
@@ -82,7 +84,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows 11 and Linux KDE Plasma
          **/
         case search_event:
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(' ');
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
@@ -228,6 +230,7 @@ namespace streamDeco
         case left_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_LEFT_ARROW);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
@@ -241,6 +244,7 @@ namespace streamDeco
         case right_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_RIGHT_ARROW);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
@@ -360,9 +364,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app4_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('f');
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('c');
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -372,9 +375,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app5_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('g');
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('t');
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -594,8 +596,7 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case configuration_canvas_sysmonitor_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_ESC);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
@@ -608,7 +609,10 @@ namespace streamDeco
          **/
         case configuration_canvas_sysconfig_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press('i');
+            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(KEY_ESC);
+            rtos::delay(10ms);
+            bleKeyboard.releaseAll();
             break;
 
         /** @brief    Reboot button is pressed
@@ -616,9 +620,10 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_reboot_event:
+            bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('2');
+            bleKeyboard.press(KEY_ESC);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
             break;

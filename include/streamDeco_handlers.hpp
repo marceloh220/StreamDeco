@@ -31,26 +31,26 @@ namespace streamDeco {
    * @details The events can generate a keyboard code to send to computer throug BLE Bluetooth
    *          or change StreamDeco configurations
    */
-  void handleButtons(arg_t arg);
+  void handleButtons(taskArg_t arg);
 
   /**
    * @brief   Handle the ui reset task
    * @details Each 10 seconds a timer will pass a event to this task 
    *          to hidden additional screens and return to Main screen
    */
-  void handleUiReset(arg_t arg);
+  void handleUiReset(taskArg_t arg);
 
   /** 
    * @brief   Handle the monitor task
    * @details Update computer metrics on Monitor screen
    */
-  void handleMonitor(arg_t arg);
+  void handleMonitor(taskArg_t arg);
 
   /**
    * @brief   Handle the clock task
    * @details Update clock on Monitor screen
    */
-  void handleClock(arg_t arg);
+  void handleClock(taskArg_t arg);
 
 } // nasmespasce streamDeco
 

@@ -30,23 +30,21 @@ class Slider : public Object {
 
 public:
   inline void create(lv_obj_t *parent = NULL) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     if (parent == NULL)
       parent = lv_scr_act();
     object = lv_slider_create(parent);
     port::mutex_give();
-    created = true;
   }
 
   inline void create(Object &parent) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     object = lv_slider_create(parent.get_object());
     port::mutex_give();
-    created = true;
   }
 
   /**
@@ -56,7 +54,7 @@ public:
    * change the value immediately
    */
   inline void set_value(int32_t value, lv_anim_enable_t anim = LV_ANIM_OFF) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_bar_set_value(object, value, anim);
@@ -70,7 +68,7 @@ public:
    * change the value immediately
    */
   inline void set_left_value(int32_t value, lv_anim_enable_t anim) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_bar_set_start_value(object, value, anim);
@@ -83,7 +81,7 @@ public:
    * @param max       maximum value
    */
   inline void set_range(int32_t min, int32_t max) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_bar_set_range(object, min, max);
@@ -95,7 +93,7 @@ public:
    * @param mode      the mode of the slider. See ::lv_slider_mode_t
    */
   inline void set_mode(lv_slider_mode_t mode) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_bar_set_mode(object, (lv_bar_mode_t)mode);
@@ -107,7 +105,7 @@ public:
    * @return          the value of the main knob of the slider
    */
   inline int32_t get_value() {
-    if (!created)
+    if (object == NULL)
       return 0;
     port::mutex_take();
     int32_t ret = lv_bar_get_value(object);
@@ -120,7 +118,7 @@ public:
    * @return          the value of the left knob of the slider
    */
   inline int32_t get_left_value() {
-    if (!created)
+    if (object == NULL)
       return 0;
     port::mutex_take();
     int32_t ret = lv_bar_get_start_value(object);
@@ -133,7 +131,7 @@ public:
    * @return          the minimum value of the slider
    */
   inline int32_t get_min_value() {
-    if (!created)
+    if (object == NULL)
       return 0;
     port::mutex_take();
     int32_t ret = lv_bar_get_min_value(object);
@@ -146,7 +144,7 @@ public:
    * @return          the maximum value of the slider
    */
   inline int32_t get_max_value() {
-    if (!created)
+    if (object == NULL)
       return 0;
     port::mutex_take();
     int32_t ret = lv_bar_get_max_value(object);
@@ -159,7 +157,7 @@ public:
    * @return          true: drag in progress false: not dragged
    */
   bool is_dragged() {
-    if (!created)
+    if (object == NULL)
       return false;
     port::mutex_take();
     bool ret = lv_slider_is_dragged(object);
@@ -172,7 +170,7 @@ public:
    * @return          see ::lv_slider_mode_t
    */
   inline lv_slider_mode_t get_mode() {
-    if (!created)
+    if (object == NULL)
       return false;
     port::mutex_take();
     lv_bar_mode_t mode = lv_bar_get_mode(object);

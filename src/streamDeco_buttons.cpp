@@ -59,11 +59,10 @@ namespace streamDeco
 
   void mainButton::create(uint8_t pos)
   {
-    if (assertPosition(pos) == false || created)
+    if (assertPosition(pos) == false || object != NULL)
       return;
     lvgl::port::mutex_take();
     object = lv_btn_create(lv_scr_act());
-    created = true;
     init();
     position(pos);
     lvgl::port::mutex_give();
@@ -71,11 +70,10 @@ namespace streamDeco
 
   void mainButton::create(Object &parent, uint8_t pos)
   {
-    if (assertPosition(pos) == false || created)
+    if (assertPosition(pos) == false || object != NULL)
       return;
     lvgl::port::mutex_take();
     object = lv_btn_create(parent.get_object());
-    created = true;
     init();
     position(pos);
     lvgl::port::mutex_give();
@@ -131,7 +129,7 @@ namespace streamDeco
 
   void mainButton::text(const char *text)
   {
-    if (!created)
+    if (object == NULL)
       return;
     lvgl::port::mutex_take();
     label.set_text(text);
@@ -140,7 +138,7 @@ namespace streamDeco
 
   void mainButton::color(lv_palette_t color)
   {
-    if (!created)
+    if (object == NULL)
       return;
     lvgl::port::mutex_take();
     style_button.set_bg_color(lv_palette_main(color));
@@ -153,7 +151,7 @@ namespace streamDeco
 
   void mainButton::iconColor(lv_palette_t color)
   {
-    if (!created)
+    if (object == NULL)
       return;
     lvgl::port::mutex_take();
     style_icon.set_img_recolor(color);
@@ -162,7 +160,7 @@ namespace streamDeco
 
   void mainButton::iconColor(lv_color_t color)
   {
-    if (!created)
+    if (object == NULL)
       return;
     lvgl::port::mutex_take();
     style_icon.set_img_recolor(color);
@@ -171,7 +169,7 @@ namespace streamDeco
 
   void mainButton::callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data)
   {
-    if (!created)
+    if (object == NULL)
       return;
     lvgl::port::mutex_take();
     add_event_cb(callback, code, (void *)user_data);
@@ -180,7 +178,7 @@ namespace streamDeco
 
   void mainButton::swapIcon()
   {
-    if (!created)
+    if (object == NULL)
       return;
     if (icon1_scr == NULL || icon2_scr == NULL)
       return;
@@ -219,7 +217,7 @@ namespace streamDeco
 
   void mainButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || !created)
+    if (assertPosition(pos) == false || object == NULL)
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
@@ -237,7 +235,7 @@ namespace streamDeco
 
   void canvasButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || !created)
+    if (assertPosition(pos) == false || object == NULL)
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
@@ -255,7 +253,7 @@ namespace streamDeco
 
   void configButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || !created)
+    if (assertPosition(pos) == false || object == NULL)
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();

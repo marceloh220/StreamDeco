@@ -30,29 +30,12 @@ namespace rtos {
 
 class Semaphore {
 public:
-  Semaphore(int count = 1, int initialValue = 0) {
-    if (count > 1)
-      _handle = xSemaphoreCreateCounting(count, initialValue);
-    else
-      _handle = xSemaphoreCreateBinary();
-  }
-
+  Semaphore(int count = 1, int initialValue = 0);
   ~Semaphore() { vSemaphoreDelete(_handle); }
-
   inline BaseType_t take() { return xSemaphoreTake(_handle, portMAX_DELAY); }
-
-  inline BaseType_t take(milliseconds timeout) {
-    return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
-  }
-
+  inline BaseType_t take(milliseconds timeout) { return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout)); }
   inline BaseType_t give() { return xSemaphoreGive(_handle); }
-
-  inline BaseType_t giveFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    return ret;
-  }
+  inline BaseType_t giveFromISR();
 
 private:
   SemaphoreHandle_t _handle;
