@@ -46,7 +46,7 @@ public:
     }
     else if (!state && _lock)
     {
-      rtos::delay(_debounce);
+      rtos::sleep(_debounce);
       if (!Input::read())
       {
         _lock = false;

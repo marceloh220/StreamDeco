@@ -71,8 +71,8 @@ template <typename t>
   return std::chrono::duration_cast<t>(time).count();
 }
 
-inline void delay(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
-inline void delay(uint32_t time) { vTaskDelay(pdMS_TO_TICKS(time)); }
+inline void sleep(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
+inline void sleep(uint32_t time) { vTaskDelay(pdMS_TO_TICKS(time)); }
 
 template <typename t>
 [[nodiscard]] inline t time()

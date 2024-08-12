@@ -74,7 +74,7 @@ namespace streamDeco
     startScreen_icon.set_src(&keyboard_simp);
     lvgl::screen::refresh();
 
-    rtos::delay(1s); /* see my icon =) */
+    rtos::sleep(1s); /* see my icon =) */
 
     /* start bluetooth keyboard interface */
     bleKeyboard.begin();
@@ -84,7 +84,7 @@ namespace streamDeco
     startScreen_icon.set_src(&bluetooth_simp);
     lvgl::screen::refresh();
 
-    rtos::delay(500ms); /* see more icon =) */
+    rtos::sleep(500ms); /* see more icon =) */
 
     /* try connection, while you see icons and text =) */
     while (1)
@@ -93,7 +93,7 @@ namespace streamDeco
       {
         break;
       }
-      rtos::delay(2s);
+      rtos::sleep(2s);
     }
 
     /* delete apresentation icons and text =( */

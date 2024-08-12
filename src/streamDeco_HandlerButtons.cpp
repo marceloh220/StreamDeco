@@ -70,7 +70,7 @@ namespace streamDeco
       timer_ui.backlight.reset();
       timer_ui.uiReset.reset();
 
-      rtos::delay(100ms);
+      rtos::sleep(100ms);
 
     } // end handleButtons's infinit loop
 

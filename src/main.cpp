@@ -37,5 +37,5 @@ void loop()
   lvgl::port::print_task_memory_usage();
   streamDeco::print_task_memory_usage();
 
-  rtos::delay(10s);
+  rtos::sleep(10s);
 }

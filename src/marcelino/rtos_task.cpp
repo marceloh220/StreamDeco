@@ -26,19 +26,10 @@ namespace rtos {
   void Task::attach(TaskFunction_t callback, taskArg_t args)
   {
     if (_handle != NULL)
-      return;
+      vTaskDelete(_handle);
     _callback = callback;
     _args = args;
-    esp_err_t error;
-    if (_core == NO_AFINITY) {
-      error = xTaskCreate(_callback, _name, _stackSize, this, _priority, &_handle);
-    } else
-      error = xTaskCreatePinnedToCore(_callback, _name, _stackSize, this, _priority, &_handle, _core);
-    if (error == pdPASS) {
-      ESP_LOGI(_name, "Task created");
-    } else {
-      ESP_LOGE(_name, "Task faill in creation");
-    }
+    xTaskCreatePinnedToCore(_callback, _name, _stackSize, this, _priority, &_handle, _core);
   }
 
   void Task::sendNotify() {
@@ -79,12 +70,12 @@ namespace rtos {
     return ulTaskNotifyTake(true, pdMS_TO_TICKS(time));
   }
 
-  void Task::delayUntil(milliseconds time)
+  void Task::sleepUntil(milliseconds time)
   {
     vTaskDelayUntil(&previousTime, CHRONO_TO_TICK(time));
   }
 
-  BaseType_t Task::abortDelay()
+  BaseType_t Task::wakeup()
   {
     if (_handle == NULL)
       return 0;
@@ -135,7 +126,7 @@ namespace rtos {
   }
 
 Task *get_task(taskArg_t arg) {
-  return (Task*)arg;
+  return static_cast<Task*>(arg);
 }
 
 } // namespace rtos

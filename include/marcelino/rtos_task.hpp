@@ -41,10 +41,10 @@ public:
   typedef enum pinCore {
     CORE_0,
     CORE_1,
-    NO_AFINITY,
+    NO_AFINITY = tskNO_AFFINITY,
   } pinCore_t;
 
-  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 6 * 1024, taskArg_t args = NULL, pinCore_t core = NO_AFINITY)
+  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 2 * 1024, taskArg_t args = NULL, pinCore_t core = NO_AFINITY)
       : _callback(callback), _name(name), _priority(priority), _core(core),
         _stackSize(stackSize), _args(args) { attach(_callback, args); }
 
@@ -60,8 +60,8 @@ public:
   void sendNotifyFromISR(uint32_t sendBit);
   uint32_t takeNotify();
   uint32_t takeNotify(TickType_t time);
-  void delayUntil(milliseconds time);
-  BaseType_t abortDelay();
+  void sleepUntil(milliseconds time);
+  BaseType_t wakeup();
   void suspend();
   void resume();
   BaseType_t resumeFromISR();
@@ -73,7 +73,7 @@ public:
   inline uint32_t stackSize() { return _stackSize; }
   template <typename type> inline type args() { return static_cast<type>(_args); }
   template <typename type> inline void args(type args) { _args = static_cast<taskArg_t>(args); }
-  inline BaseType_t core() { return _core; }
+  inline pinCore_t core() { return static_cast<pinCore_t>(_core); }
   uint32_t memUsage();
   uint32_t memFree();
 
