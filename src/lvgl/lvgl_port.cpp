@@ -76,16 +76,12 @@ rtos::Task task("Port task LVGL", 5, LVGL_STACK_SIZE);
 void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
   uint32_t w = (area->x2 - area->x1 + 1);
   uint32_t h = (area->y2 - area->y1 + 1);
-
   gfx.draw16bitRGBBitmap(area->x1, area->y1, (uint16_t *)&color_p->full, w, h);
-
   lv_disp_flush_ready(disp);
 }
 
 void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
-
   touchscreen.read();
-
   if (touchscreen.isTouched) {
     data->state = LV_INDEV_STATE_PR;
     data->point.x = map(touchscreen.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, LCD_WIDTH - 1);
@@ -96,7 +92,6 @@ void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
 }
 
 void handle(void *arg) {
-
   while (1) {
     mutex.take();
     uint32_t time_till_next_run = lv_timer_handler();
@@ -106,7 +101,6 @@ void handle(void *arg) {
 }
 
 void backlight_init(void) {
-
   ledc_timer_config_t ledc_timer =
   {
     .speed_mode = (ledc_mode_t)BACKLIGHT_SPEED_MODE,
@@ -115,9 +109,7 @@ void backlight_init(void) {
     .freq_hz = BACKLIGHT_FREQUENCY,
     .clk_cfg = LEDC_AUTO_CLK
   };
-
   ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
-
   // Prepare and then apply the LEDC PWM channel configuration
   ledc_channel_config_t ledc_channel =
   {
@@ -129,12 +121,10 @@ void backlight_init(void) {
     .duty = 2457,
     .hpoint = 0
   };
-
   ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 }
 
 void backlight_set(float bright) {
-
   if (bright > 1.0f)
     bright = 1.0f;
   if (bright < 0.0f)
@@ -145,7 +135,6 @@ void backlight_set(float bright) {
 }
 
 void backlight_setRaw(int bright) {
-
   if (bright > 4095)
     bright = 4095;
   if (bright < 0)
@@ -155,46 +144,34 @@ void backlight_setRaw(int bright) {
 }
 
 void mutex_take() { mutex.take(); }
-
 void mutex_give() { mutex.give(); }
 
 void init() {
-
   gfx.begin();
   Wire.begin(TOUCH_GT911_SDA, TOUCH_GT911_SCL);
   touchscreen.begin();
   touchscreen.setRotation(TOUCH_GT911_ROTATION);
-
   backlight_init();
-
   lv_init();
-
   uint32_t screenWidth = gfx.width();
   uint32_t screenHeight = gfx.height();
   int buffer_size = screenWidth * screenHeight / LVGL_REDRAW_PARTIAL;
-
   if (LVGL_DOUBLE_BUFFER > 2) {
-
     display_draw_buf1 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
     display_draw_buf2 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
     if (!display_draw_buf1 || !display_draw_buf2) {
       Serial.println("LVGL disp_draw_buf allocate failed!");
       return;
     }
-
     lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, display_draw_buf2, buffer_size);
-
   } else {
-
     display_draw_buf1 = (lv_color_t *)heap_caps_malloc(sizeof(lv_color_t) * buffer_size, LVGL_MEMORY_ALLOCATION | MALLOC_CAP_8BIT);
     if (!display_draw_buf1) {
       Serial.println("LVGL disp_draw_buf allocate failed!");
       return;
     }
-
     lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, NULL, buffer_size);
   }
-
   lv_disp_drv_init(&display_driver);
   display_driver.hor_res = screenWidth;
   display_driver.ver_res = screenHeight;
@@ -202,12 +179,10 @@ void init() {
   display_driver.draw_buf = &draw_buf;
   display_driver.sw_rotate = true;
   display = lv_disp_drv_register(&display_driver);
-
   lv_indev_drv_init(&indev_driver);
   indev_driver.type = LV_INDEV_TYPE_POINTER;
   indev_driver.read_cb = touchpad_read;
   lv_indev_drv_register(&indev_driver);
-
   task.attach(handle);
 }
 
