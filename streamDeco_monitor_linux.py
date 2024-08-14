@@ -47,27 +47,21 @@
 #  
 #  5 - YOU ARE FREE TO DO THE SAME IF YOU WANT
 #
-# From Windows:
+# From Linux:
 #
 # Install the following Python modules:
-#     pip.exe install pyserial psutil pythonnet pyinstaller pstray pillow
+#     pip.exe install pyserial psutil pyamdgpuinfo pstray pillow
 #
-# Make sure that 'OpenHardwareMonitorLib.dll', 'LibreHardwareMonitorLib.dll' and 'HidSharp.dll' is in the same folder 
-# as this Python script or the exe program
+# Or using package manager (Arch linux)
+#     yay -S python-{pyserial,psutil,pyamdgpuinfo,pstray,pillow}
 #
-# Run py script in console with administrative permissions
-#     pythonw.exe .\streamDeco_monitor_windows.py
 #
-# Create your own exe with commander
-#     pyinstaller.exe --icon=streamDeco.ico .\streamDeco_monitor_windows.pyw
-#
-# The COM device is searched until find ESP32 USB chip
+# The USB device is searched until find ESP32 USB chip
 #
 
 updateTime = 1       # monitor update interval
 boardCOM   = 'USB Serial' # USB/TTL on ESP32 8048s43c Board, check your controller
 debugCode  = True   # Show information in terminal, only to terminal execution
-monitorFull = False  # If true enable all sensors in monitor, else only CPU and GPU sensors are enabled
 
 import psutil
 import pyamdgpuinfo
