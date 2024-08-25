@@ -96,11 +96,11 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  inline milliseconds TimerStatic::getPeriode() {
+  milliseconds TimerStatic::getPeriode() {
     return _periode;
   }
 
-  inline int64_t TimerStatic::getPeriodeIntMS() {
+  int64_t TimerStatic::getPeriodeIntMS() {
     return _periode.count();
   }
 
@@ -111,7 +111,7 @@ namespace rtos {
     return pvTimerGetTimerID(timer) == &_handler ? true : false;
   }
 
-  inline const char *TimerStatic::name() {
+  const char *TimerStatic::name() {
     return _name;
   }
 

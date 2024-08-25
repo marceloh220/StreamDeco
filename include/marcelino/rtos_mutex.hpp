@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _MUTEX_HPP_
-#define _MUTEX_HPP_
+#ifndef _RTOS_MUTEX_HPP_
+#define _RTOS_MUTEX_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -31,55 +31,25 @@ namespace rtos {
 
 class Mutex {
 public:
-    Mutex() {
-        _handle = xSemaphoreCreateMutex();
-    }
-
-    ~Mutex() {
-        vSemaphoreDelete(_handle);
-    }
-
-    inline BaseType_t take() {
-        return xSemaphoreTake(_handle, portMAX_DELAY);
-    }
-
-    inline BaseType_t take(milliseconds timeout) {
-        return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
-    }
-
-    inline BaseType_t give() {
-        return xSemaphoreGive(_handle);
-    }
-
+    Mutex();
+    ~Mutex();
+    BaseType_t take();
+    BaseType_t take(milliseconds timeout);
+    BaseType_t give();
 private:
-    SemaphoreHandle_t _handle;
+    SemaphoreHandle_t _handle = NULL;
 };
 
 
 class MutexRecursive {
 public:
-    MutexRecursive() {
-        _handle = xSemaphoreCreateRecursiveMutex();
-    }
-
-    ~MutexRecursive() {
-        vSemaphoreDelete(_handle);
-    }
-
-    inline BaseType_t take() {
-        return xSemaphoreTakeRecursive(_handle, portMAX_DELAY);
-    }
-
-    inline BaseType_t take(int timeout) {
-        return xSemaphoreTakeRecursive(_handle, pdMS_TO_TICKS(timeout));
-    }
-
-    inline BaseType_t give() {
-        return xSemaphoreGiveRecursive(_handle);
-    }
-
+    MutexRecursive();
+    ~MutexRecursive();
+    BaseType_t take();
+    BaseType_t take(int timeout);
+    BaseType_t give();
 private:
-    SemaphoreHandle_t _handle;
+    SemaphoreHandle_t _handle = NULL;
 };
 
 } // namespace rtos
