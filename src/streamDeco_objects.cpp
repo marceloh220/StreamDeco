@@ -58,8 +58,8 @@ namespace streamDeco
      * @note    30 seconds to change backlight bright to 10% of bright
      **/
     timer_t timer_ui = {
-        rtos::Timer("UI reset timer", 10s),
-        rtos::Timer("Backlight timer", 30s),
+        rtos::TimerStatic("UI reset timer", 10s),
+        rtos::TimerStatic("Backlight timer", 30s),
     };
 
     /**
@@ -166,10 +166,10 @@ namespace streamDeco
      *         Other parameters can be see in file marcelino/task.hpp
      **/
     task_t task = {
-        rtos::Task("Task Buttons", 5, STACK_BUTTONS_SIZE),
-        rtos::Task("Task reset canvas", 3, 1024),
-        rtos::Task("Task Monitor", 5, 3 * 1024),
-        rtos::Task("Task Clock", 5, 3 * 1024),
+        rtos::TaskStatic<STACK_BUTTONS_SIZE>("Task Buttons", 5),
+        rtos::TaskStatic<1024>("Task reset canvas", 3),
+        rtos::TaskStatic<3*1024>("Task Monitor", 5),
+        rtos::TaskStatic<3*1024>("Task Clock", 5),
     };
 
     /**

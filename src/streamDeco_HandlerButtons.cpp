@@ -37,12 +37,6 @@ namespace streamDeco
   {
 
     /**
-     * @brief  Tasks handlers receive they own task as arg
-     * @brief  get_task recover the task from arg received
-     **/
-    rtos::Task *task = rtos::get_task(task_arg);
-
-    /**
      * @var      settings_t settings
      * @brief    Wallpaper color, buttons theme and screen bright
      * @details  lv_color_t color_background
@@ -50,14 +44,14 @@ namespace streamDeco
      *           int lcd_bright
      * @note     This arg reside on heap and is passed in attach method during StreamDeco::init
      **/
-    settings_t *settings = task->args<settings_t*>();
+    settings_t *settings = static_cast<settings_t*>(task_arg);
 
     while (1)
     {
 
       /* wait for a notification
        * this notification is sent by LVGL button with a event code */
-      uint32_t button_event = task->takeNotify();
+      uint32_t button_event = task.buttons.takeNotify();
 
       /* function in streamDeco_shortcuts.cpp */
       process_event(button_event, settings);

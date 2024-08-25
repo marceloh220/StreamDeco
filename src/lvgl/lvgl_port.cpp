@@ -28,7 +28,7 @@
 #include "lvgl/lvgl_port_map.h"
 
 #include "marcelino/rtos_mutex.hpp"
-#include "marcelino/rtos_task.hpp"
+#include "marcelino/rtos_task_static.hpp"
 
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_rgb.h"
@@ -70,7 +70,7 @@ static lv_indev_drv_t indev_driver;
 
 rtos::MutexRecursive mutex;
 
-rtos::Task task("Port task LVGL", 5, LVGL_STACK_SIZE);
+rtos::TaskStatic<LVGL_STACK_SIZE> task("Port task LVGL", 5);
 
 /* Display flushing */
 void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
@@ -96,7 +96,7 @@ void handle(void *arg) {
     mutex.take();
     uint32_t time_till_next_run = lv_timer_handler();
     mutex.give();
-    delay(time_till_next_run);
+    rtos::sleep(time_till_next_run);
   }
 }
 

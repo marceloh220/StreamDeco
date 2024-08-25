@@ -19,46 +19,59 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _MARCELINO_HPP_
-#define _MARCELINO_HPP_
-
-#include <Arduino.h>
-
-#include <stdio.h>
-#include "esp_err.h"
-#include "esp_log.h"
-
-#include "marcelino/rtos_chrono.hpp"
-
-#include "marcelino/hardware_button.hpp"
-#include "marcelino/hardware_gpio.hpp"
-#include "marcelino/hardware_input.hpp"
-#include "marcelino/hardware_interrupt.hpp"
-#include "marcelino/hardware_output.hpp"
-
-#include "marcelino/rtos_eventGroup.hpp"
-#include "marcelino/rtos_mutex.hpp"
-#include "marcelino/rtos_queue.hpp"
-#include "marcelino/rtos_queue_static.hpp"
 #include "marcelino/rtos_semaphore.hpp"
-#include "marcelino/rtos_semaphore_static.hpp"
-#include "marcelino/rtos_task.hpp"
-#include "marcelino/rtos_task_static.hpp"
-#include "marcelino/rtos_timer.hpp"
-#include "marcelino/rtos_timer_static.hpp"
 
-#include "lvgl/lvgl_arc.hpp"
-#include "lvgl/lvgl_bar.hpp"
-#include "lvgl/lvgl_button.hpp"
-#include "lvgl/lvgl_event.hpp"
-#include "lvgl/lvgl_image.hpp"
-#include "lvgl/lvgl_label.hpp"
-#include "lvgl/lvgl_canvas.hpp"
-#include "lvgl/lvgl_port.hpp"
-#include "lvgl/lvgl_screen.hpp"
-#include "lvgl/lvgl_slider.hpp"
-#include "lvgl/lvgl_style.hpp"
+namespace rtos {
 
-#define byte_k(_b) (_b*1024)
+  Semaphore::Semaphore(int count, int initialValue) {
+    if(_handle != NULL)
+      return;
+    if (count > 1)
+      _handle = xSemaphoreCreateCounting(count, initialValue);
+    else
+      _handle = xSemaphoreCreateBinary();
+  }
 
-#endif
+  Semaphore::~Semaphore() {
+    semaphoreDelete();
+  }
+
+  void Semaphore::semaphoreDelete()
+  {
+    if(_handle == NULL)
+      return;
+    vSemaphoreDelete(_handle);
+  }
+
+  bool Semaphore::give()
+  {
+    if(_handle == NULL)
+      return false;
+    return xSemaphoreGive(_handle);
+  }
+
+  BaseType_t Semaphore::giveFromISR()
+  {
+    if(_handle == NULL)
+      return false;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    return ret;
+  }
+
+  bool Semaphore::take()
+  {
+    if(_handle == NULL)
+      return false;
+    return xSemaphoreTake(_handle, portMAX_DELAY);
+  }
+
+  bool Semaphore::take(milliseconds timeout)
+  {
+    if(_handle == NULL)
+      return false;
+    return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
+  }
+
+} // namespace rtos

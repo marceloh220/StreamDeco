@@ -23,56 +23,57 @@
 
 namespace rtos {
 
+  Task::Task(const char *name, UBaseType_t priority, uint32_t stackSize, pinCore_t core)
+  : _name(name), _priority(priority), _core(core), _stackSize(stackSize)
+  {
+
+  }
+
+  Task::~Task()
+  {
+    taskDelete();
+  }
+
   void Task::attach(TaskFunction_t callback, taskArg_t args)
   {
     if (_handle != NULL)
-      vTaskDelete(_handle);
-    _callback = callback;
-    _args = args;
-    xTaskCreatePinnedToCore(_callback, _name, _stackSize, this, _priority, &_handle, _core);
+      return;
+    xTaskCreatePinnedToCore(callback, _name, _stackSize, args, _priority, &_handle, _core);
   }
 
-  void Task::sendNotify() {
+  void Task::sendNotify(uint32_t notification) {
     if (_handle == NULL)
       return;
-    xTaskNotifyGive(_handle);
+    xTaskNotify(_handle, notification, eSetBits);
   }
 
-  void Task::sendNotify(uint32_t sendBit) {
-    if (_handle == NULL)
-      return;
-    xTaskNotify(_handle, sendBit, eSetBits);
-  }
-
-  void Task::sendNotifyFromISR() {
+  void Task::sendNotifyFromISR(uint32_t notification) {
     if (_handle == NULL)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
-
-  void Task::sendNotifyFromISR(uint32_t sendBit) {
-    if (_handle == NULL)
-      return;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTaskNotifyFromISR(_handle, sendBit, eSetBits, &xHigherPriorityTaskWoken);
+    xTaskNotifyFromISR(_handle, notification, eSetBits, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
   uint32_t Task::takeNotify()
   {
+    if (_handle == NULL)
+      return 0;
     return ulTaskNotifyTake(true, portMAX_DELAY);
   }
 
-  uint32_t Task::takeNotify(TickType_t time)
+  uint32_t Task::takeNotify(milliseconds time)
   {
-    return ulTaskNotifyTake(true, pdMS_TO_TICKS(time));
+    if (_handle == NULL)
+      return 0;
+    return ulTaskNotifyTake(true, CHRONO_TO_TICK(time));
   }
 
   void Task::sleepUntil(milliseconds time)
   {
-    vTaskDelayUntil(&previousTime, CHRONO_TO_TICK(time));
+    if (_handle == NULL)
+      return;
+    vTaskDelayUntil(&_previousTime, CHRONO_TO_TICK(time));
   }
 
   BaseType_t Task::wakeup()
@@ -93,10 +94,10 @@ namespace rtos {
       return;
     vTaskResume(_handle);
   }
-  BaseType_t Task::resumeFromISR() {
+  void Task::resumeFromISR() {
     if (_handle == NULL)
-      return 0;
-    return xTaskResumeFromISR(_handle);
+      return;
+    xTaskResumeFromISR(_handle);
   }
 
   void Task::taskDelete() {
@@ -124,9 +125,5 @@ namespace rtos {
       return 0;
     return uxTaskGetStackHighWaterMark(_handle);
   }
-
-Task *get_task(taskArg_t arg) {
-  return static_cast<Task*>(arg);
-}
 
 } // namespace rtos

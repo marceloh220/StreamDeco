@@ -19,29 +19,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _STREAMDECO_INTERRUPTS_HPP_
-#define _STREAMDECO_INTERRUPTS_HPP_
+#ifndef _RTOS_SEMAPHORE_STATIC_HPP_
+#define _RTOS_SEMAPHORE_STATIC_HPP_
 
-#include "streamDeco_objects.hpp"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+#include "rtos_chrono.hpp"
 
-namespace streamDeco {
+namespace rtos {
 
-  /**
-   * @brief    ISR function to handle backlight timer
-   * @details  Set backlight bright to 10% affter timer overflow
-   * @param    timerHandle The rtos timer send the timer handler to callback function
-  **/
-  void isr_timer(TimerHandle_t timerHandle);
+class SemaphoreStatic {
+public:
+  SemaphoreStatic(int count = 1, int initialValue = 0);
+  ~SemaphoreStatic();
+  void semaphoreDelete();
+  bool give();
+  BaseType_t giveFromISR();
+  bool take();
+  bool take(milliseconds timeout);
 
-  /**
-   * @brief   Callback registred in buttons 
-   * @details Send a notifications with event code to task buttons handler
-   * @param   event  Event received by the callback
-   * @note    This callback is registred on buttons and slider objects
-   * @note    Each button and slider send a different event
-   **/
-  void buttons_callback(lvgl::event::event_t event);
+private:
+  SemaphoreHandle_t _handle = NULL;
+  StaticSemaphore_t _stak;
+};
 
-} // nasmespasce streamDeco
+} // namespace rtos
 
 #endif

@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _SEMAPHORE_HPP_
-#define _SEMAPHORE_HPP_
+#ifndef _RTOS_SEMAPHORE_HPP_
+#define _RTOS_SEMAPHORE_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -31,14 +31,15 @@ namespace rtos {
 class Semaphore {
 public:
   Semaphore(int count = 1, int initialValue = 0);
-  ~Semaphore() { vSemaphoreDelete(_handle); }
-  inline BaseType_t take() { return xSemaphoreTake(_handle, portMAX_DELAY); }
-  inline BaseType_t take(milliseconds timeout) { return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout)); }
-  inline BaseType_t give() { return xSemaphoreGive(_handle); }
-  inline BaseType_t giveFromISR();
+  ~Semaphore();
+  void semaphoreDelete();
+  bool give();
+  BaseType_t giveFromISR();
+  bool take();
+  bool take(milliseconds timeout);
 
 private:
-  SemaphoreHandle_t _handle;
+  SemaphoreHandle_t _handle = NULL;
 };
 
 } // namespace rtos

@@ -19,22 +19,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "marcelino/rtos_semaphore.hpp"
+#ifndef _STREAMDECO_INTERRUPTS_HPP_
+#define _STREAMDECO_INTERRUPTS_HPP_
 
-namespace rtos {
+#include "streamDeco_objects.hpp"
 
-  Semaphore::Semaphore(int count = 1, int initialValue = 0) {
-    if (count > 1)
-      _handle = xSemaphoreCreateCounting(count, initialValue);
-    else
-      _handle = xSemaphoreCreateBinary();
-  }
+namespace streamDeco {
 
-  BaseType_t Semaphore::giveFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    return ret;
-  }
+  /**
+   * @brief    Callback function to handle backlight timer
+   * @details  Set backlight bright to 10% affter timer overflow
+   * @param    timerHandle The rtos timer send the timer handler to callback function
+  **/
+  void timer_callback(TimerHandle_t timerHandle);
 
-} // namespace rtos
+  /**
+   * @brief   Callback registred in buttons 
+   * @details Send a notifications with event code to task buttons handler
+   * @param   event  Event received by the callback
+   * @note    This callback is registred on buttons and slider objects
+   * @note    Each button and slider send a different event
+   **/
+  void buttons_callback(lvgl::event::event_t event);
+
+} // nasmespasce streamDeco
+
+#endif
