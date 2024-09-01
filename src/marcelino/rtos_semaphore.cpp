@@ -33,7 +33,10 @@ namespace rtos {
   }
 
   Semaphore::~Semaphore() {
-    semaphoreDelete();
+    if(_handle == NULL)
+      return;
+    vSemaphoreDelete(_handle);
+    _handle = NULL;
   }
 
   void Semaphore::semaphoreDelete()
@@ -41,6 +44,7 @@ namespace rtos {
     if(_handle == NULL)
       return;
     vSemaphoreDelete(_handle);
+    _handle = NULL;
   }
 
   bool Semaphore::give()

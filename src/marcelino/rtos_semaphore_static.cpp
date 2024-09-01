@@ -27,20 +27,16 @@ namespace rtos {
     if(_handle != NULL)
       return;
     if (count > 1)
-      _handle = xSemaphoreCreateCountingStatic(count, initialValue, &_stak);
+      _handle = xSemaphoreCreateCountingStatic(count, initialValue, &_stack);
     else
-      _handle = xSemaphoreCreateBinaryStatic(&_stak);
+      _handle = xSemaphoreCreateBinaryStatic(&_stack);
   }
 
   SemaphoreStatic::~SemaphoreStatic() {
-    semaphoreDelete();
-  }
-
-  void SemaphoreStatic::semaphoreDelete()
-  {
     if(_handle == NULL)
       return;
     vSemaphoreDelete(_handle);
+    _handle = NULL;
   }
 
   bool SemaphoreStatic::give()

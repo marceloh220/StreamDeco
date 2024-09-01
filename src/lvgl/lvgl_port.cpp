@@ -27,7 +27,7 @@
 
 #include "lvgl/lvgl_port_map.h"
 
-#include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_mutex_static.hpp"
 #include "marcelino/rtos_task_static.hpp"
 
 #include "esp_lcd_panel_ops.h"
@@ -68,7 +68,7 @@ static lv_disp_t *display;
 
 static lv_indev_drv_t indev_driver;
 
-rtos::MutexRecursive mutex;
+rtos::MutexRecursiveStatic mutex;
 
 rtos::TaskStatic<LVGL_STACK_SIZE> task("Port task LVGL", 5);
 

@@ -208,7 +208,7 @@ namespace streamDeco
    * @brief  Serial interface mutex
    * @note   Used to avoid Monitor and Clock task uses Serial interface in same instant
    */
-    rtos::Mutex mutex_serial;
+    rtos::MutexRecursiveStatic mutex_serial;
 
     /**
      * @brief  Change color of Buttons, Metrics and bright Slider

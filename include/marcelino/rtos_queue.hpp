@@ -28,7 +28,7 @@
 namespace rtos {
 
 /**
- * @sa       TaskStatic
+ * @sa       Task
  * @brief    Creates a new queue instance
  * @details  Internally, within the FreeRTOS implementation, queues use two blocks of
  * memory. The first block is used to hold the queue's data structures and the
@@ -42,7 +42,7 @@ namespace rtos {
  * 
  * rtos::Queue<int, 2> queue_intData;
  * 
- * void task_receiver_handler(taskStaticArg_t arg) {
+ * void task_receiver_handler(taskArg_t arg) {
  * 
  *  int counter = 0;
  * 
@@ -99,6 +99,7 @@ public:
 
   /**
    * @brief   Post an item on a queue.
+   * @details  Block the task until a intem be posted on queue or an error occour
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -114,6 +115,8 @@ public:
 
   /**
    * @brief   Post an item on a queue.
+   * @details  Block the task until a intem be posted on queue,
+   * the timeout expire or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -132,6 +135,7 @@ public:
 
   /**
    * @brief   Post an item to the back of a queue.
+   * @details  Block the task until a intem be posted on queue or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -147,6 +151,8 @@ public:
 
   /**
    * @brief   Post an item to the back of a queue.
+   * @details  Block the task until a intem be posted on queue,
+   * the timeout expire or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -180,6 +186,8 @@ public:
 
   /**
    * @brief   Post an item to the front of a queue.
+   * @details  Block the task until a intem be posted on queue,
+   * the timeout expire or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -242,6 +250,7 @@ public:
    * @brief   Receive an item from a queue. The item is received by copy so a buffer of
    * adequate size must be provided. The number of bytes copied into the buffer
    * was defined when the queue was instanciate.
+   * @details  Block the task until a intem be received from queue or an error occour.
    * @param   data Pointer to the buffer into which the received item will be copied.
    * @return  pdTRUE if an item was successfully received from the queue, otherwise pdFALSE.
    * @note    This function must not be called from an interrupt service routine.
@@ -256,6 +265,8 @@ public:
    * @brief   Receive an item from a queue. The item is received by copy so a buffer of
    * adequate size must be provided. The number of bytes copied into the buffer
    * was defined when the queue was instanciate.
+   * @details  Block the task until a intem be received from queue,
+   * the timeout expire or an error occour.
    * @param   data Pointer to the buffer into which the received item will be copied.
    * @param   timeout The maximum amount of time the task should block
    * waiting for space to become available on the queue, should it already
@@ -272,7 +283,7 @@ public:
   /**
    * @brief   Return the number of free spaces available in a queue. This is equal to the
    * number of items that can be sent to the queue before the queue becomes full if no items are removed.
-   * @return  The number of spaces available in the queue.
+   * @return  The number of messages available in the queue.
    */
   UBaseType_t messagesWaiting() { 
     if(_handle == NULL)
@@ -283,7 +294,7 @@ public:
   /**
    * @brief   Return the number of free spaces available in a queue. This is equal to the
    * number of items that can be sent to the queue before the queue becomes full if no items are removed.
-   * @return  The number of spaces available in the queue.
+   * @return  The number of messages available in the queue.
    * @note    Utilities to query queues that are safe to use from an ISR.
    */
   UBaseType_t messagesWaitingFromISR() {
@@ -324,7 +335,7 @@ public:
   }
 
 private:
-  
+
   QueueHandle_t _handle = NULL;
   const int _size = SIZE;
 

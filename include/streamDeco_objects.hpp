@@ -590,7 +590,7 @@ namespace streamDeco
    * @brief  Reference to serial interface mutex
    * @note   Used to avoid Monitor and Clock task uses Serial interface in same time
    */
-  extern rtos::Mutex mutex_serial;
+  extern rtos::MutexRecursiveStatic mutex_serial;
 
   /**
    * @enum     event_e
@@ -599,6 +599,8 @@ namespace streamDeco
    **/
   enum event_e
   {
+
+    nothing_event,
 
     /* --- MAIN CANVAS EVENTS --- */
     terminal_event,

@@ -222,7 +222,7 @@ private:
   TimerHandle_t _handler = NULL;
 
   /**
-   * @var    _stak
+   * @var    _stack
    * @brief  Keep timer stack into object to easy access
    */
   StaticTimer_t _stack;

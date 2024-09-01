@@ -38,6 +38,7 @@
 
 #include "marcelino/rtos_eventGroup.hpp"
 #include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_mutex_static.hpp"
 #include "marcelino/rtos_queue.hpp"
 #include "marcelino/rtos_queue_static.hpp"
 #include "marcelino/rtos_semaphore.hpp"

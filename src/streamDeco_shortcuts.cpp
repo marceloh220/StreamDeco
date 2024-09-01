@@ -40,6 +40,15 @@ namespace streamDeco
         switch (button_event)
         {
 
+        /**
+         * @brief    Nothing happens
+         * @details  If nothing happens, do nothing is the better option
+         * @note     If nothing happens, do nothing is the better option
+         */
+        case nothing_event:
+            /* do nothing */
+            break;
+
             /* --- MAIN CANVAS --- */
 
             /* First row buttons */

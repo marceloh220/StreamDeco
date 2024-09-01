@@ -19,57 +19,57 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_mutex_static.hpp"
 
 namespace rtos {
 
-    Mutex::Mutex() {
-        _handle = xSemaphoreCreateMutex();
+    MutexStatic::MutexStatic() {
+        _handle = xSemaphoreCreateMutexStatic(&_stack);
     }
 
-    Mutex::~Mutex() {
+    MutexStatic::~MutexStatic() {
         vSemaphoreDelete(_handle);
     }
 
-    bool Mutex::take() {
+    bool MutexStatic::take() {
         if(_handle == NULL)
             return false;
         return xSemaphoreTake(_handle, portMAX_DELAY);
     }
 
-    bool Mutex::take(milliseconds timeout) {
+    bool MutexStatic::take(milliseconds timeout) {
         if(_handle == NULL)
             return false;
         return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
     }
 
-    bool Mutex::give() {
+    bool MutexStatic::give() {
         if(_handle == NULL)
             return false;
         return xSemaphoreGive(_handle);
     }
 
-    MutexRecursive::MutexRecursive() {
-        _handle = xSemaphoreCreateRecursiveMutex();
+    MutexRecursiveStatic::MutexRecursiveStatic() {
+        _handle = xSemaphoreCreateRecursiveMutexStatic(&_stack);
     }
 
-    MutexRecursive::~MutexRecursive() {
+    MutexRecursiveStatic::~MutexRecursiveStatic() {
         vSemaphoreDelete(_handle);
     }
 
-    bool MutexRecursive::take() {
+    bool MutexRecursiveStatic::take() {
         if(_handle == NULL)
             return false;
         return xSemaphoreTakeRecursive(_handle, portMAX_DELAY);
     }
 
-    bool MutexRecursive::take(int timeout) {
+    bool MutexRecursiveStatic::take(int timeout) {
         if(_handle == NULL)
             return false;
         return xSemaphoreTakeRecursive(_handle, pdMS_TO_TICKS(timeout));
     }
 
-    bool MutexRecursive::give() {
+    bool MutexRecursiveStatic::give() {
         if(_handle == NULL)
             return false;
         return xSemaphoreGiveRecursive(_handle);

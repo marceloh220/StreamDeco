@@ -53,8 +53,14 @@ namespace streamDeco
        * this notification is sent by LVGL button with a event code */
       uint32_t button_event = task.buttons.takeNotify();
 
+      /* BleKeyboard uses serial interface to make verbose things */
+      streamDeco::mutex_serial.take();
+
       /* function in streamDeco_shortcuts.cpp */
       process_event(button_event, settings);
+
+      streamDeco::mutex_serial.give();
+
 
       /**
        * if some event is received the UI is not inactive

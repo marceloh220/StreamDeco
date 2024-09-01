@@ -105,7 +105,7 @@ public:
     NO_AFINITY = tskNO_AFFINITY,
   } pinCore_t;
 
-  Task(const char *name, UBaseType_t priority = 0, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY);
+  Task(const char *name, UBaseType_t priority = 2, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY);
 
   /**
    * @brief Remove a task from the RTOS real time kernel's management

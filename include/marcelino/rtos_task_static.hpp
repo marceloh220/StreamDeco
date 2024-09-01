@@ -106,7 +106,7 @@ public:
     NO_AFINITY = tskNO_AFFINITY,
   } pinCore_t;
 
-  TaskStatic(const char *name, UBaseType_t priority = 0, pinCore_t core = NO_AFINITY) 
+  TaskStatic(const char *name, UBaseType_t priority = 2, pinCore_t core = NO_AFINITY) 
   : _name(name), _priority(priority), _core(core)
   {
 
@@ -144,7 +144,7 @@ public:
   void attach(TaskFunction_t callback, taskStaticArg_t args = NULL) {
     if(_handle != NULL)
       return;
-    _handle = xTaskCreateStatic(callback, _name, _stackSize, args, _priority, _stackBuffer, &_stak);
+    _handle = xTaskCreateStatic(callback, _name, _stackSize, args, _priority, _stackBuffer, &_stack);
   }
 
   /**
@@ -399,10 +399,10 @@ private:
   TaskHandle_t _handle = NULL;
 
   /**
-   * @var    _stak
+   * @var    _stack
    * @brief  Keep task stak into object to easy access
    */
-  StaticTask_t _stak;
+  StaticTask_t _stack;
 
   /**
    * @var    _stakBuffer
