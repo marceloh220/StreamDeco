@@ -33,7 +33,7 @@ namespace rtos {
     vEventGroupDelete(_handle);
   }
 
-  EventBits_t EventGroupStatic::set(const EventBits_t flags)
+  bool EventGroupStatic::set(const EventBits_t flags)
   {
     if(_handle == NULL)
       return false;
@@ -41,7 +41,7 @@ namespace rtos {
     return (bits & flags) == flags ? true : false;
   }
 
-  EventBits_t EventGroupStatic::setFromISR(const EventBits_t flags)
+  bool EventGroupStatic::setFromISR(const EventBits_t flags)
   {
     if(_handle == NULL)
       return false;
@@ -49,18 +49,18 @@ namespace rtos {
     return (bits & flags) == flags ? true : false;
   }
 
-  EventBits_t EventGroupStatic::clear(const EventBits_t flags)
+  bool EventGroupStatic::clear(const EventBits_t flags)
   {
     if(_handle == NULL)
-      return 0;
+      return false;
     EventBits_t bits = xEventGroupClearBits(_handle, flags);
     return (bits & flags) == flags ? false : true;
   }
 
-  EventBits_t EventGroupStatic::clearFromISR(const EventBits_t flags)
+  bool EventGroupStatic::clearFromISR(const EventBits_t flags)
   {
     if(_handle == NULL)
-      return 0;
+      return false;
     EventBits_t bits = xEventGroupClearBitsFromISR(_handle, flags);
     return (bits & flags) == flags ? false : true;
   }

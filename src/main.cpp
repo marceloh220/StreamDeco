@@ -42,7 +42,7 @@ void loop()
   lvgl::port::print_task_memory_usage();
   streamDeco::print_task_memory_usage();
   printf("Test Cycle: %d\n", test_count++);
-  streamDeco::mutex_serial.give();;
+  streamDeco::mutex_serial.give();
   rtos::sleep(10s);
 
 }

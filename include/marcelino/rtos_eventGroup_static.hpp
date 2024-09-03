@@ -135,36 +135,224 @@ public:
    * @brief    Set bits within an event group.
    * @details  Setting bits in an event group will automatically unblock tasks that are
    *           blocked waiting for the bits.
-   * @note     This function cannot be called from an interrupt. setBitsFromISR()
+   * @note     This method cannot be called from an interrupt. setBitsFromISR()
    *           is a version that can be called from an interrupt.
    * @param    flags A bitwise value that indicates the bit or bits to set.
-   *           For example, to set bit 3 only, set uxBitsToSet to 0x08 of (1<<3). To set bit 3
-   *           and bit 0 set uxBitsToSet to 0x09 or (1<<0)|(1<<3).
-   * @return The value of the event group at the time the call to
-   *         set() returns.
+   *           For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *           and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @return   true if flags are seted correctly
+   *           false if not seted
    */
-  EventBits_t set(const EventBits_t flags);
+  bool set(const EventBits_t flags);
 
-  EventBits_t setFromISR(const EventBits_t flags);
+  /**
+   * @brief    Set bits within an event group.
+   * @details  Setting bits in an event group will automatically unblock tasks that are
+   *           blocked waiting for the bits.
+   * @note     This method is a version of set() that can be called from an interrupt.
+   * @param    flags A bitwise value that indicates the bit or bits to set.
+   *           For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *           and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @return   true if flags are seted correctly
+   *           false if not seted
+   */
+  bool setFromISR(const EventBits_t flags);
 
-  EventBits_t clear(const EventBits_t flags);
+  /**
+   * @brief    Clear bits within an event group.
+   * @note     This method cannot be called from an interrupt. clearFromISR()
+   *           is a version that can be called from an interrupt.
+   * @param    flags A bitwise value that indicates the bit or bits to clear.
+   *           For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *           and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @return   true if flags are seted correctly
+   *           false if not seted
+   */
+  bool clear(const EventBits_t flags);
 
-  EventBits_t clearFromISR(const EventBits_t flags);
+  /**
+   * @brief    Clear bits within an event group.
+   * @note     This method is a version of clear() that can be called from an interrupt.
+   * @param    flags A bitwise value that indicates the bit or bits to clear.
+   *           For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *           and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @return   true if flags are seted correctly
+   *           false if not seted
+   */
+  bool clearFromISR(const EventBits_t flags);
 
+  /**
+   * @brief   Get the current value of the bits in an event group.
+   * @note    This method cannot be called from an interrupt. getBitsFromISR()
+   *          is a version that can be called from an interrupt.
+   * @return  The event group bits at the time get() was called.
+   */
   EventBits_t get();
 
+  /**
+   * @brief   Get the current value of the bits in an event group.
+   * @note    This method is a version of get() that can be called from an interrupt.
+   * @return  The event group bits at the time get() was called.
+   */
   EventBits_t getFromISR();
 
+  /**
+   * @brief   Block the task to wait for one or more bits to be set within a event group.
+   * @note    This method do not test or clear, this must be done by the user.
+   * @return  The value of the event group at the time either the bits being waited
+   *          for became set.
+   * @code
+   * #define FLAG_0 (1 << 0)
+   * 
+   * #define FLAG_1 (1 << 1)
+   * 
+   * #define FLAG_2 (1 << 2)
+   * 
+   * void task_waiting(taskArg_t arg) {
+   * 
+   *    rtos::EventGroup *eventGroup = static_cast<rtos::EventGroup>(arg);
+   * 
+   *    while(true) {
+   * 
+   *      EventBits_t flags = eventGroup->wait();
+   * 
+   *      if(flags & FLAG_0) {
+   * 
+   *        eventGroup->clear(FLAG_0)
+   *      
+   *        printf("Flag Zero received\n");
+   * 
+   *      }
+   * 
+   *      if(flags & FLAG_1) {
+   * 
+   *        eventGroup->clear(FLAG_1
+   *      
+   *        printf("Flag One received\n");
+   * 
+   *      }
+   * 
+   *      if(flags & FLAG_2) {
+   * 
+   *        eventGroup->clear(FLAG_2)
+   *      
+   *        printf("Flag Two received\n");
+   * 
+   *      }
+   * 
+   *    }
+   * 
+   * }
+   */
   EventBits_t wait();
 
+  /**
+   * @brief   Block the task to wait for one or more bits to be set within a event group 
+   *          or for the time expire.
+   * @param   timeour The maximum amount of time to wait for the bits specified become set.
+   * @note    This method do not test or clear, this must be done by the user.
+   * @return  The value of the event group at the time either the bits being waited
+   *          for became set.
+   * @code
+   * #define FLAG_0 (1 << 0)
+   * 
+   * #define FLAG_1 (1 << 1)
+   * 
+   * #define FLAG_2 (1 << 2)
+   * 
+   * rtos::EventGroupStatic eventGroup;
+   * 
+   * void task_waiting(taskArg_t arg) {
+   * 
+   *    while(true) {
+   * 
+   *      EventBits_t flags = eventGroup.wait(1s);
+   * 
+   *      if(flags) {
+   * 
+   *        if(flags & FLAG_0) {
+   * 
+   *          eventGroup->clear(FLAG_0)
+   *      
+   *          printf("Flag Zero received\n");
+   * 
+   *        }
+   * 
+   *        if(flags & FLAG_1) {
+   * 
+   *          eventGroup->clear(FLAG_1
+   *      
+   *          printf("Flag One received\n");
+   * 
+   *        }
+   * 
+   *        if(flags & FLAG_2) {
+   * 
+   *          eventGroup->clear(FLAG_2)
+   *      
+   *          printf("Flag Two received\n");
+   * 
+   *        }
+   * 
+   *      }
+   *      else {
+   * 
+   *        printf("No flags received in time");
+   * 
+   *      }
+   * 
+   *    }
+   * 
+   * }
+   */
   EventBits_t wait(milliseconds timeout);
 
+  /**
+   * @brief   Block the task to wait for all bits to be set within a event group.
+   * @param   flags A bitwise value that indicates the bit or bits to wait.
+   *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @note    This method test and clear the waiting flags.
+   * @return  true if all flags are setted
+   *          false if an error occour
+   */
   bool waitAllFlags(const EventBits_t flags);
 
+  /**
+   * @brief   Block the task to wait for all bits to be set within a event group 
+   *          or for the time expire.
+   * @param   flags A bitwise value that indicates the bit or bits to wait.
+   *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @param   timeout The maximum amount of time to wait for the bits specified become set.
+   * @note    This method test and clear the waiting flags.
+   * @return  true if all flags are setted
+   *          false if an error occour or timeout expire.
+   */
   bool waitAllFlags(const EventBits_t flags, milliseconds timeout);
 
+  /**
+   * @brief   Block the task to wait for any bits to be set within a event group.
+   * @param   flags A bitwise value that indicates the bit or bits to wait.
+   *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @note    This method test and clear the waiting flags.
+   * @return  true if any flag are setted
+   *          false if an error occour
+   */
   bool waitAnyFlags(const EventBits_t flags);
 
+  /**
+   * @brief   Block the task to wait for any bits to be set within a event group 
+   *          or for the time expire.
+   * @param   flags A bitwise value that indicates the bit or bits to wait.
+   *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
+   *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
+   * @param   timeout The maximum amount of time to wait for the bits specified become set.
+   * @note    This method test and clear the waiting flags.
+   * @return  true if any flag are setted
+   *          false if an error occour or timeout expire.
+   */
   bool waitAnyFlags(const EventBits_t flags, milliseconds timeout);
 
 private:
