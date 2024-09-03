@@ -37,6 +37,7 @@
 #include "marcelino/hardware_output.hpp"
 
 #include "marcelino/rtos_eventGroup.hpp"
+#include "marcelino/rtos_eventGroup_static.hpp"
 #include "marcelino/rtos_mutex.hpp"
 #include "marcelino/rtos_mutex_static.hpp"
 #include "marcelino/rtos_queue.hpp"

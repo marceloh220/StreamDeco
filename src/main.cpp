@@ -23,6 +23,61 @@
 #include "streamDeco_init.hpp"
 #include "streamDeco_objects.hpp"
 
+rtos::TaskStatic<2048> task_receiver_or("Task Receiver OR");
+rtos::TaskStatic<2048> task_receiver_and("Task Receiver AND");
+rtos::TaskStatic<2048> task_Transmiter("Task Transmiter");
+ 
+rtos::EventGroupStatic event_group; 
+
+#define EVENT_0 (1 << 0)
+#define EVENT_1 (1 << 1)
+#define EVENT_2 (1 << 2)
+#define EVENT_3 (1 << 3)
+
+void task_receiver_or_handler(taskStaticArg_t arg) {
+
+  while(true) {
+
+    if(event_group.waitAnyFlags(EVENT_0|EVENT_1)) {
+
+      printf("Event group take by Task receiver OR\n");
+
+    }
+
+    rtos::sleep(500ms);
+
+  }
+
+}
+
+void task_receiver_and_handler(taskStaticArg_t arg) {
+
+  while(true) {
+
+    if(event_group.waitAllFlags(EVENT_2|EVENT_3)) {
+
+      printf("Event group take by Task receiver AND\n");
+
+    }
+
+    rtos::sleep(500ms);
+
+  }
+
+}
+
+void task_transmiter_handler(taskStaticArg_t arg) {
+
+  while(true) {
+
+    event_group.set(EVENT_0);
+
+    rtos::sleep(1s);
+
+  }
+
+}
+
 void setup()
 {
 
@@ -30,6 +85,10 @@ void setup()
 
   lvgl::port::init();
   streamDeco::init();
+
+  task_receiver_or.attach(task_receiver_or_handler);
+  task_receiver_and.attach(task_receiver_and_handler);
+  task_Transmiter.attach(task_transmiter_handler);
 
 }
 
@@ -43,6 +102,8 @@ void loop()
   streamDeco::print_task_memory_usage();
   printf("Test Cycle: %d\n", test_count++);
   streamDeco::mutex_serial.give();
+  event_group.set(EVENT_1);
+  event_group.set(EVENT_2|EVENT_3);
   rtos::sleep(10s);
 
 }
