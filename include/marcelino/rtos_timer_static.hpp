@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RTOS_TIMER_HPP_
-#define _RTOS_TIMER_HPP_
+#ifndef _RTOS_TIMER_STATIC_HPP_
+#define _RTOS_TIMER_STATIC_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
@@ -54,7 +54,7 @@ namespace rtos {
  *               then period can be set to 5s. Time timer period must be greater than 0.
  * 
  * @code
- * rtos::Timer xTimer1("Timer one", 5s);
+ * rtos::TimerStatic xTimer1("Timer one", 5s);
  * 
  * void xTimerCallback(TimerHandle_t xTimerArg)
  * {
@@ -77,12 +77,10 @@ namespace rtos {
  * 
  * }
  */
-class Timer {
+class TimerStatic {
 public:
 
-  Timer(const char *name, milliseconds changePeriode);
-
-  ~Timer();
+  TimerStatic(const char *name, milliseconds changePeriode);
 
   /**
    * @brief    Attach the handler callback on timer
@@ -182,7 +180,7 @@ public:
    * @return  Timer periode in int64_t type specified in milliseconds
    * @note    Safe to use into ISR
    */
-  int64_t getPeriodeIntMS();
+  inline int64_t getPeriodeIntMS();
 
   /**
    * @brief    Verify the timer ID
@@ -209,11 +207,6 @@ public:
   bool verifyID(TimerHandle_t timer);
 
   /**
-   * @brief Deletes a timer that was previously created.
-   */
-  void timerDelete();
-
-  /**
    * @brief   Get timer name
    * @return  The text (human readable) name of the task
    * @note    Safe to be called in ISR, but not usable =P
@@ -224,13 +217,19 @@ private:
 
   /**
    * @var    _handle
-   * @brief  Keep task handle into object to easy access
+   * @brief  Keep timer handle into object to easy access
    */
   TimerHandle_t _handler = NULL;
 
   /**
+   * @var    _stack
+   * @brief  Keep timer stack into object to easy access
+   */
+  StaticTimer_t _stack;
+
+  /**
    * @var    _name
-   * @brief  Pointer to keep task name into object to easy access
+   * @brief  Pointer to keep timer name into object to easy access
    */
   const char *_name;
 
@@ -240,7 +239,7 @@ private:
    */
   milliseconds _periode;
 
-}; // class Timer
+}; // class TimerStatic
 
 } // namespace rtos
 

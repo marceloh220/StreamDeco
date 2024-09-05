@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RTOS_SEMAPHORE_HPP_
-#define _RTOS_SEMAPHORE_HPP_
+#ifndef _RTOS_SEMAPHORE_STATIC_HPP_
+#define _RTOS_SEMAPHORE_STATIC_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -29,19 +29,19 @@
 namespace rtos {
 
 /**
- * @sa       Task
+ * @sa       TaskStatic
  * @brief    Creates a new semathore instance
  * @details  Internally, within the FreeRTOS implementation, counting semaphores use a
  * block of memory, in which the counting semaphore structure is stored. If a 
- * counting semaphore is created using rtos::Semaphore then the required 
- * memory is automatically dynamically allocated inside the object.
+ * counting semaphore is created using rtos::SemaphoreStatic then the required 
+ * memory is automatically static allocated inside the object.
  * @param    count The maximum count value that can be reached. 
  * When the semaphore reaches this value it can no longer be 'given'.
  * @param    initialValue The count value assigned to the semaphore when it is created.
  * @code
- * rtos::Task task_receiver("Task Receiver");
+ * rtos::TaskStatic<2048> task_receiver("Task Receiver");
  * 
- * rtos::Semaphore semaphore;
+ * rtos::SemaphoreStatic semaphore;
  * 
  * void task_receiver_handler(taskStaticArg_t arg) {
  * 
@@ -77,20 +77,12 @@ namespace rtos {
  * 
  * }
  */
-class Semaphore {
+class SemaphoreStatic {
 
 public:
 
-  Semaphore(int count = 1, int initialValue = 0);
-  ~Semaphore();
-
-  /**
-   * @brief  Delete a semaphore. This function must be used with care,
-   * the task waiting for the semaphore will be blocked forever and ever.
-   * And ever... and ever.. and ever... and ever... and ever...
-   * I dont eve know why I left this method herer LOLOLOLOLOL
-   */
-  void semaphoreDelete();
+  SemaphoreStatic(int count = 1, int initialValue = 0);
+  ~SemaphoreStatic();
 
   /**
    * @sa      giveFromISR()
@@ -101,7 +93,7 @@ public:
    * an alternative which can be used from an ISR.
    */
   bool give();
-
+  
   /**
    * @brief   Release a semaphore. It is safe to use this function from
    * within an interrupt service routine.
@@ -129,6 +121,7 @@ public:
 private:
 
   SemaphoreHandle_t _handle = NULL;
+  StaticSemaphore_t _stack;
 
 };
 

@@ -32,6 +32,7 @@ namespace streamDeco
   /* Synchronizes ESP32-RTC with Computer clock */
   void synchro_clock(struct tm &tm_date)
   {
+    int attempts = 0;
     mutex_serial.take();
     while (1)
     {
@@ -76,7 +77,9 @@ namespace streamDeco
         settimeofday(&time_epoch, NULL);
         break;
       } // Serial.avaliable
-      rtos::sleep(100ms);
+      attempts++;
+      if(attempts > 20) break;
+      rtos::sleep(1s);
     } // loop check time
     mutex_serial.give();
   }

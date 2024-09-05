@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RTOS_EVENT_GROUP_HPP_
-#define _RTOS_EVENT_GROUP_HPP_
+#ifndef _RTOS_EVENT_GROUP_STATIC_HPP_
+#define _RTOS_EVENT_GROUP_STATIC_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -29,22 +29,22 @@
 namespace rtos {
 
 /**
- * @sa       Task
+ * @sa       TaskStatic
  * @brief    Creates a new event group instance.
  * @details  Internally, within the FreeRTOS implementation, event groups use a [small]
  * block of memory, in which the event group's structure is stored. If an event
  * groups is created using rtos::EventGroup then the required memory is
- * automatically dynamically allocated inside the object.
+ * automatically static allocated inside the object.
  * @note     Each event group has 24 usable bits (bit 0 to bit 23). The EventBits_t type is used to store
  * event bits within an event group.
  * @code 
- * rtos::Task task_receiver_or("Task Receiver OR");
+ * rtos::TaskStatic<2048> task_receiver_or("Task Receiver OR");
  * 
- * rtos::Task task_receiver_and("Task Receiver AND");
+ * rtos::TaskStatic<2048> task_receiver_and("Task Receiver AND");
  * 
- * rtos::Task task_Transmiter("Task Transmiter");
+ * rtos::TaskStatic<2048> task_Transmiter("Task Transmiter");
  * 
- * rtos::EventGroup event_group; 
+ * rtos::EventGroupStatic event_group; 
  * 
  * 
  * #define EVENT_0 (1 << 0)
@@ -123,13 +123,13 @@ namespace rtos {
  * 
  * }
  */
-class EventGroup {
+class EventGroupStatic {
 
 public:
 
-  EventGroup();
+  EventGroupStatic();
 
-  ~EventGroup();
+  ~EventGroupStatic();
 
   /**
    * @brief    Set bits within an event group.
@@ -260,13 +260,13 @@ public:
    * 
    * #define FLAG_2 (1 << 2)
    * 
-   * void task_waiting(taskArg_t arg) {
+   * rtos::EventGroupStatic eventGroup;
    * 
-   *    rtos::EventGroup *eventGroup = static_cast<rtos::EventGroup>(arg);
+   * void task_waiting(taskArg_t arg) {
    * 
    *    while(true) {
    * 
-   *      EventBits_t flags = eventGroup->wait(1s);
+   *      EventBits_t flags = eventGroup.wait(1s);
    * 
    *      if(flags) {
    * 
@@ -358,6 +358,7 @@ public:
 private:
 
   EventGroupHandle_t _handle = NULL;
+  StaticEventGroup_t _stack;
 
 }; // namespace EventGroup
 

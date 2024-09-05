@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RTOS_QUEUE_HPP_
-#define _RTOS_QUEUE_HPP_
+#ifndef _RTOS_QUEUE_STATIC_HPP_
+#define _RTOS_QUEUE_STATIC_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -28,21 +28,21 @@
 namespace rtos {
 
 /**
- * @sa       Task
+ * @sa       TaskStatic
  * @brief    Creates a new queue instance
  * @details  Internally, within the FreeRTOS implementation, queues use two blocks of
  * memory. The first block is used to hold the queue's data structures and the
  * second block is used to hold items placed into the queue, the class keep this blocks
- * internaly then both blocks of memory are automatically dynamically allocated.
+ * internaly then both blocks of memory are automatically static allocated.
  * This class is a template thaths allow creation or any type of data queue.
  * @tparam   type  Queue's data type
  * @tparam   SIZE  Queue's size, determine the number of elemtents that can be passed to Queue
  * @code
- * rtos::Task task_receiver("Task Receiver");
+ * rtos::TaskStatic<2048> task_receiver("Task Receiver");
  * 
- * rtos::Queue<int, 2> queue_intData;
+ * rtos::QueueStatic<int, 2> queue_intData;
  * 
- * void task_receiver_handler(taskArg_t arg) {
+ * void task_receiver_handler(taskStaticArg_t arg) {
  * 
  *  int counter = 0;
  * 
@@ -81,16 +81,16 @@ namespace rtos {
  * }
  */
 template <typename type, const uint32_t SIZE>
-class Queue {
+class QueueStatic {
 
 public:
-  Queue() { 
+  QueueStatic() {
     if(_handle != NULL)
       return;
-    _handle = xQueueCreate(SIZE, sizeof(type));
+    _handle = xQueueCreateStatic(SIZE, sizeof(type), _stakBuffer, &_stack);
   }
 
-  ~Queue() { 
+  ~QueueStatic() { 
     if(_handle == NULL)
       return;
     vQueueDelete(_handle);
@@ -99,7 +99,7 @@ public:
 
   /**
    * @brief   Post an item on a queue.
-   * @details  Block the task until a intem be posted on queue or an error occour
+   * @details  Block the task until a intem be posted on queue or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -171,6 +171,7 @@ public:
 
   /**
    * @brief   Post an item to the front of a queue.
+   * @details  Block the task until a intem be posted on queue or an error occour.
    * @param   data Data to the item that is to be placed on the queue.
    * The size of the items the queue will hold was defined when the queue was created, 
    * so this many bytes will be copied from data into the queue storage area.
@@ -180,7 +181,7 @@ public:
    */
   bool sendToFront(type &data) {
     if(_handle == NULL)
-      return false;
+      false;
     return xQueueSendToFront(_handle, (void *)&data, portMAX_DELAY);
   }
 
@@ -242,7 +243,7 @@ public:
    */
   bool sendToFrontFromISR(type &data) {
     if(_handle == NULL)
-      return false;
+      false;
     return xQueueSendToFrontFromISR(_handle, (void *)&data, NULL);
   }
 
@@ -306,7 +307,6 @@ public:
   /**
    * @brief   Return the number of free spaces available in a queue. This is equal to the
    * number of items that can be sent to the queue before the queue becomes full if no items are removed.
-   * @param   xQueue A handle to the queue being queried.
    * @return  The number of spaces available in the queue.
    */
   UBaseType_t spacesAvaliable() { 
@@ -335,11 +335,13 @@ public:
   }
 
 private:
-
+  
   QueueHandle_t _handle = NULL;
+  StaticQueue_t _stack;
+  uint8_t       _stakBuffer[sizeof(type) * SIZE];
   const int _size = SIZE;
 
-}; // class Queue
+}; // class QueueStatic
 
 } // namespace rtos
 

@@ -19,34 +19,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "marcelino/rtos_timer.hpp"
+#include "marcelino/rtos_timer_static.hpp"
 
 namespace rtos {
 
-  Timer::Timer(const char *name, milliseconds changePeriode)
+  TimerStatic::TimerStatic(const char *name, milliseconds changePeriode)
   : _name(name), _periode(changePeriode)
   {
 
   }
 
-  Timer::~Timer() {
-    timerDelete();
-  }
-
-  void Timer::attach(TimerCallbackFunction_t callback, UBaseType_t autoreload) {
+  void TimerStatic::attach(TimerCallbackFunction_t callback, UBaseType_t autoreload) {
     if(_handler != NULL)
       return;
     _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), autoreload, &_handler, callback);
   }
 
-  void Timer::start()
+  void TimerStatic::start()
   {
     if(_handler == NULL)
       return;
     xTimerStart(_handler, portMAX_DELAY);
   }
 
-  void Timer::startFromISR() {
+  void TimerStatic::startFromISR() {
     if(_handler == NULL)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -54,14 +50,14 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  void Timer::stop()
+  void TimerStatic::stop()
   {
     if(_handler == NULL)
       return;
     xTimerStop(_handler, portMAX_DELAY);
   }
 
-  void Timer::stopFromISR() {
+  void TimerStatic::stopFromISR() {
     if(_handler == NULL)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -69,14 +65,14 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  void Timer::reset()
+  void TimerStatic::reset()
   {
     if(_handler == NULL)
       return;
     xTimerReset(_handler, portMAX_DELAY);
   }
 
-  void Timer::resetFromISR() {
+  void TimerStatic::resetFromISR() {
     if(_handler == NULL)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -84,14 +80,14 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  void Timer::changePeriode(milliseconds periode) {
+  void TimerStatic::changePeriode(milliseconds periode) {
     if(_handler == NULL)
       return;
     _periode = periode;
     xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
   }
 
-  void Timer::changePeriodeFromISR(milliseconds periode) {
+  void TimerStatic::changePeriodeFromISR(milliseconds periode) {
     if(_handler == NULL)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -100,28 +96,22 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  milliseconds Timer::getPeriode() {
+  milliseconds TimerStatic::getPeriode() {
     return _periode;
   }
 
-  int64_t Timer::getPeriodeIntMS() {
+  int64_t TimerStatic::getPeriodeIntMS() {
     return _periode.count();
   }
 
-  bool Timer::verifyID(TimerHandle_t timer) {
+
+  bool TimerStatic::verifyID(TimerHandle_t timer) {
     if(_handler == NULL)
       return false;
     return pvTimerGetTimerID(timer) == &_handler ? true : false;
   }
 
-  void Timer::timerDelete() {
-    if(_handler == NULL)
-      return;
-    xTimerDelete(_handler, portMAX_DELAY);
-    _handler = NULL;
-  }
-
-  const char *Timer::name() {
+  const char *TimerStatic::name() {
     return _name;
   }
 

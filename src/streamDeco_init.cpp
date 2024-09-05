@@ -25,7 +25,7 @@
 
 #include "streamDeco_objects.hpp"
 #include "streamDeco_handlers.hpp"
-#include "streamDeco_interrupts.hpp"
+#include "streamDeco_timerCallback.hpp"
 #include "streamDeco_icons.h"
 
 namespace streamDeco
@@ -299,8 +299,12 @@ namespace streamDeco
     monitor.clock.set_pos(14 + 280 + 14, 25 + 200 + 20);
 
     /* register ISR to handle with timer_ui.backlight and uiResetTimer event */
-    timer_ui.backlight.attach(isr_timer);
-    timer_ui.uiReset.attach(isr_timer);
+    timer_ui.backlight.attach(timer_callback);
+    timer_ui.uiReset.attach(timer_callback);
+
+    /* start timer_ui.backlight and uiResetTimer */
+    timer_ui.backlight.start();
+    timer_ui.uiReset.start();
 
     task.buttons.attach(handleButtons, settings);
     task.uiReset.attach(handleUiReset);

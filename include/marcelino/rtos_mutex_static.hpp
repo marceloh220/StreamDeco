@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RTOS_MUTEX_HPP_
-#define _RTOS_MUTEX_HPP_
+#ifndef _RTOS_MUTEX_STATIC_HPP_
+#define _RTOS_MUTEX_STATIC_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -30,15 +30,15 @@
 namespace rtos {
 
 /**
- * @sa       Task
+ * @sa       TaskStatic
  * @brief    Creates a new mutex instance
  * @details  Internally, within the FreeRTOS implementation, mutex semaphores use a block
  * of memory, in which the mutex structure is stored. Then the required memory is automatically
- * dynamically allocated inside the object.
+ * static allocated inside the object.
  * @code 
- * rtos::Task task_receiver("Task Receiver");
+ * rtos::TaskStatic<2048> task_receiver("Task Receiver");
  * 
- * rtos::Mutex mutex;
+ * rtos::MutexStatic mutex;
  * 
  * 
  * void task_receiver_handler(taskStaticArg_t arg) {
@@ -90,11 +90,12 @@ namespace rtos {
  * 
  * }
  */
-class Mutex {
+class MutexStatic {
+
 public:
-    
-    Mutex();
-    ~Mutex();
+
+    MutexStatic();
+    ~MutexStatic();
 
     /**
      * @brief    Try to obtain the mutex
@@ -114,7 +115,7 @@ public:
     bool take(milliseconds timeout);
 
     /**
-     * @brief  Release the mutex to be used by otehrs tasks
+     * @brief  Release the mutex to be used by others tasks
      * @return true if the mutex was released.  
      *         false if an error occurred.
      *         Mutex are implemented using queues.  An error can occur if there is
@@ -126,23 +127,34 @@ public:
 private:
 
     SemaphoreHandle_t _handle = NULL;
+    StaticSemaphore_t _stack;
 
 };
 
 /**
- * @sa       Task
+ * @sa       TaskStatic
  * @brief    Creates a new recursive mutex instance
  * @details  Internally, within the FreeRTOS implementation, mutex semaphores use a block
  * of memory, in which the mutex structure is stored. Then the required memory is automatically
- * dynamically allocated inside the object.
+ * static allocated inside the object.
  * @details  Recursive mutexs are indicate to be safety called by functions or methods many times as nedded.  
  *           Once obteined a number of times, the mutex must be released by the same number of times.
  *           For example, if a task successfully takes the same mutex 5 times then the mutex will
  *           not be available to any other task until it has also given the mutex back exactly five times.
  * @code 
- * rtos::Task task_receiver("Task Receiver");
+ * rtos::TaskStatic<2048> task_receiver("Task Receiver");
  * 
- * rtos::MutexRecursyve mutex;
+ * rtos::MutexRecursive mutex;
+ * 
+ * void print_helloWorld() {
+ *  
+ *      mutex.take();
+ * 
+ *      printf("Hello World!\n");
+ * 
+ *      mutex.give();
+ * 
+ * }
  * 
  * 
  * void task_receiver_handler(taskStaticArg_t arg) {
@@ -152,6 +164,8 @@ private:
  *          if(mutex.take(500ms)) {
  * 
  *              printf("Mutex take by Task receiver\n");
+ * 
+ *              print_helloWorld();
  * 
  *              mutex.give();
  * 
@@ -194,12 +208,12 @@ private:
  * 
  * }
  */
-class MutexRecursive {
+class MutexRecursiveStatic {
 
 public:
 
-    MutexRecursive();
-    ~MutexRecursive();
+    MutexRecursiveStatic();
+    ~MutexRecursiveStatic();
 
     /**
      * @brief    Try to obtain the mutex
@@ -219,7 +233,7 @@ public:
     bool take(int timeout);
 
     /**
-     * @brief  Release the mutex to be used by otehrs tasks
+     * @brief  Release the mutex to be used by others tasks
      * @return true if the mutex was released.  
      *         false if an error occurred.
      *         Mutex are implemented using queues.  An error can occur if there is
@@ -231,6 +245,7 @@ public:
 private:
 
     SemaphoreHandle_t _handle = NULL;
+    StaticSemaphore_t _stack;
 
 };
 
