@@ -29,6 +29,13 @@
 #include "freertos/task.h"
 #include "time.h"
 
+/** User literals for time
+ * us to microseconds
+ * ms to milliseconds
+ * s to seconds
+ * min to minutes
+ * h to hour
+ */
 using namespace std::literals::chrono_literals;
 
 using std::chrono::hours;

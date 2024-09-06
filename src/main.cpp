@@ -35,7 +35,7 @@ void setup()
 
 void loop()
 {
-
+#if 0
   static int test_count = 0;
 
   streamDeco::mutex_serial.take();
@@ -43,6 +43,8 @@ void loop()
   streamDeco::print_task_memory_usage();
   printf("Test Cycle: %d\n", test_count++);
   streamDeco::mutex_serial.give();
+#endif
+
   rtos::sleep(10s);
 
 }

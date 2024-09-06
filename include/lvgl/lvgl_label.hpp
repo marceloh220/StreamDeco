@@ -23,6 +23,7 @@
 #define _LVGL_LABEL_HPP_
 
 #include "lvgl_object.hpp"
+#include "esp_heap_caps.h"
 #include "stdio.h"
 
 namespace lvgl {
@@ -83,9 +84,9 @@ public:
     va_start(args, fmt);
     int size = vsnprintf(NULL, 0, fmt, args);
     va_end(args);
-    char buffer[size + 1];
+    char *buffer = (char*)heap_caps_malloc(size+1, MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT);
     va_start(args, fmt);
-    vsnprintf(buffer, size + 1, fmt, args);
+    vsnprintf(buffer, size+1, fmt, args);
     va_end(args);
     port::mutex_take();
     lv_label_set_text(object, buffer);

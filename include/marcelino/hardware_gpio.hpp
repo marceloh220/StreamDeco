@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _GPIO_HPP_
-#define _GPIO_HPP_
+#ifndef __HARDWARE_GPIO_HPP_
+#define __HARDWARE_GPIO_HPP_
 
 #include "driver/gpio.h"
 #include "esp_intr_alloc.h"
@@ -41,6 +41,7 @@ namespace hardware {
 class GPIO {
 
 public:
+
   typedef enum state_e {
     LOW,
     HIGH,
@@ -63,102 +64,53 @@ public:
     HIGH_LEVEL = GPIO_INTR_HIGH_LEVEL,
   } interrupt_t;
 
-  GPIO(gpio_num_t pin, mode_t mode) : _pin(pin), _mode(mode) {
-    esp_rom_gpio_pad_select_gpio(pin);
-    this->mode(mode);
-  }
+  GPIO(gpio_num_t pin, mode_t mode);
 
-  ~GPIO() {
-    gpio_isr_handler_remove(_pin);
-    gpio_reset_pin(_pin);
-  }
+  ~GPIO();
 
-  inline gpio_num_t pinName() { return _pin; }
+  gpio_num_t pinName();
 
-  void mode(mode_t mode) {
-    _mode = mode;
-    switch (mode) {
-    case INPUT:
-    case OUTPUT:
-    case INPUT_OUTPUT:
-      gpio_set_direction(_pin, (gpio_mode_t)mode);
-      break;
-    case INPUT_PULLUP:
-      gpio_set_direction(_pin, GPIO_MODE_INPUT);
-      gpio_pulldown_dis(_pin);
-      gpio_pullup_en(_pin);
-      break;
-    case INPUT_PULLDOWN:
-      gpio_set_direction(_pin, GPIO_MODE_INPUT);
-      gpio_pullup_dis(_pin);
-      gpio_pulldown_en(_pin);
-      break;
-    }
-  }
+  void mode(mode_t mode);
 
-  inline mode_t mode() { return _mode; }
+  mode_t mode();
 
-  void attach(void function(void *), interrupt_t mode, void *arg) {
-    _interrupt = mode;
-    gpio_set_intr_type(_pin, (gpio_int_type_t)mode);
-    gpio_install_isr_service(ESP_INTR_FLAG_LOWMED);
-    gpio_isr_handler_add(_pin, function, arg);
-  }
+  void interruptAttach(void function(void *), interrupt_t mode, void *arg);
 
-  inline void dettach() { gpio_isr_handler_remove(_pin); }
+  void interruptDettach();
 
-  inline interrupt_t interruptType() { return _interrupt; }
+  interrupt_t interruptType();
 
-  inline void interruptDisable() { gpio_intr_disable(_pin); }
+  void interruptDisable();
 
-  inline void interruptEnable() { gpio_intr_enable(_pin); }
+  void interruptEnable();
 
-  inline bool read() { return gpio_get_level(_pin); }
+  bool read();
 
-  inline void write(bool state) {
-    _state = state;
-    gpio_set_level(_pin, state);
-  }
+  void write(bool state);
 
-  inline void toggle(int state = 1) {
-    if (state) {
-      _state ^= 1;
-      write(_state);
-    }
-  }
+  void toggle(int state = 1);
 
-  void freeze() {
-    gpio_hold_en(_pin);
-    gpio_deep_sleep_hold_en();
-  }
+  void freeze();
 
-  void unfreeze() {
-    gpio_hold_dis(_pin);
-    gpio_deep_sleep_hold_dis();
-  }
+  void unfreeze();
 
-  GPIO &operator=(GPIO &v) {
-    this->write(v.read());
-    return *this;
-  }
+  GPIO &operator=(GPIO &v);
 
-  GPIO &operator=(int v) {
-    this->write(v);
-    return *this;
-  }
+  GPIO &operator=(int v);
 
-  GPIO &operator^=(int v) {
-    this->toggle(v);
-    return *this;
-  }
+  GPIO &operator^=(GPIO &v);
 
-  inline operator int() { return read(); }
+  GPIO &operator^=(int v);
+
+  operator int();
 
 private:
+
   const gpio_num_t _pin;
   mode_t _mode;
   bool _state;
   interrupt_t _interrupt;
+
 };
 
 } // namespace hardware
