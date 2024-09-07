@@ -90,6 +90,7 @@ public:
     va_end(args);
     port::mutex_take();
     lv_label_set_text(object, buffer);
+    heap_caps_free(buffer);
     port::mutex_give();
   }
 
