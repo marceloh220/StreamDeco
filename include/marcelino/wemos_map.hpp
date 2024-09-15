@@ -26,7 +26,10 @@
 
 namespace wemos {
 
+ typedef enum pins_e {
+    
 
+ } pins_t;
 
 };
 
