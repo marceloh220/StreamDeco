@@ -29,12 +29,24 @@
 
 #include "esp_attr.h"
 
-#undef LOW
-#undef HIGH
-#undef INPUT
-#undef OUTPUT
-#undef INPUT_PULLUP
-#undef INPUT_PULLDOWN
+#ifdef LOW
+  #undef LOW
+#endif
+#ifdef HIGH
+  #undef HIGH
+#endif
+#ifdef INPUT
+  #undef INPUT
+#endif
+#ifdef OUTPUT
+  #undef OUTPUT
+#endif
+#ifdef INPUT_PULLUP
+  #undef INPUT_PULLUP
+#endif
+#ifdef INPUT_PULLDOWN
+  #undef INPUT_PULLDOWN
+#endif
 
 /**
  * @namespace  hardware
