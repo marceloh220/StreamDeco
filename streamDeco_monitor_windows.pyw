@@ -49,7 +49,7 @@
 # From Windows:
 #
 # Install the following Python modules:
-#     pip.exe install pyserial psutil pythonnet pyinstaller pstray pillow
+#     pip.exe install pyserial psutil pythonnet pyinstaller pystray pillow
 #
 # Make sure that 'OpenHardwareMonitorLib.dll', 'LibreHardwareMonitorLib.dll' and 'HidSharp.dll' is in the same folder 
 # as this Python script or the exe program
