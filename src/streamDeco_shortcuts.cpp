@@ -629,12 +629,7 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_reboot_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_ESC);
-            rtos::sleep(10ms);
-            bleKeyboard.releaseAll();
+            esp::reset();
             break;
 
         /** @brief    Shuntdown button is pressed

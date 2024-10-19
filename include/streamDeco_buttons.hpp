@@ -27,6 +27,7 @@
 
 namespace streamDeco
 {
+  
   class mainButton : public lvgl::Object
   {
   public:
@@ -87,7 +88,7 @@ namespace streamDeco
     {
       return (pos >= 9) ? false : true;
     }
-  }; // class configButtoniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+  }; // class configButton
 
 } // namespace streamDeco
 

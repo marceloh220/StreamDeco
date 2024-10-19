@@ -29,6 +29,7 @@
 #include "esp_log.h"
 
 #include "marcelino/rtos_chrono.hpp"
+#include "marcelino/hardware_esp.hpp"
 
 #include "marcelino/hardware_button.hpp"
 #include "marcelino/hardware_gpio.hpp"

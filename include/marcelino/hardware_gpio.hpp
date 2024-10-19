@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __HARDWARE_GPIO_HPP_
-#define __HARDWARE_GPIO_HPP_
+#ifndef __HARDWARE_GPIO_HPP__
+#define __HARDWARE_GPIO_HPP__
 
 #include "driver/gpio.h"
 #include "esp_intr_alloc.h"

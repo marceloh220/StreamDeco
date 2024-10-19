@@ -150,7 +150,7 @@ namespace streamDeco
         /* Third line */
         configButton("System Monitor", &sysmon_simp, NULL),
         configButton("System Config", &config_simp, NULL),
-        configButton("Shutdown", &shutdown_simp, NULL),
+        configButton("Reboot", &reboot_simp, NULL),
     };
 
     /**
@@ -263,7 +263,7 @@ namespace streamDeco
         button.rotation.color(color);
         button.sysmonitor.color(color);
         button.sysconfig.color(color);
-        button.shutdown.color(color);
+        button.reboot.color(color);
 
         monitor.cpu.color(color);
         monitor.gpu.color(color);

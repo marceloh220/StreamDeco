@@ -46,6 +46,8 @@ namespace streamDeco
      * @details  lv_color_t color_background
      *           lv_palette_t color_buttons
      *           int lcd_bright
+     * @note     This settings is passed to handleButtons task
+     *           so need be allocate into heap
      **/
     settings_t *settings = new settings_t;
 
@@ -95,6 +97,23 @@ namespace streamDeco
       }
       rtos::sleep(2s);
     }
+
+    /* change icon to waiting StreamDeco monitor Synchronization */
+    startScreen_label.set_text("Start StreamDeco monitor");
+    startScreen_icon.set_src(&keyboard_simp);
+    lvgl::screen::refresh();
+
+    /** This task wait for streamDeco monitor application to synchro clock
+     *  Affter 40 tryes without success in synchronization the StreamDeco 
+     *  start without correct date.
+    */
+    task.clock.attach(handleClock);
+
+    /** Give time to handleClock task start, and see more icon =) */
+    rtos::sleep(1s);
+
+    /** This mutex is take by synchronization task and make initialization wait by syncrho tryes */
+    mutex_serial.take();
 
     /* delete apresentation icons and text =( */
     startScreen_icon.del();
@@ -235,7 +254,7 @@ namespace streamDeco
 
     button.sysmonitor.create(canvas.configurations, 6);
     button.sysconfig.create(canvas.configurations, 7);
-    button.shutdown.create(canvas.configurations, 8);
+    button.reboot.create(canvas.configurations, 8);
 
     /* register the events of buttons */
     button.volmut.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_volmut_event);
@@ -248,7 +267,7 @@ namespace streamDeco
 
     button.sysmonitor.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_sysmonitor_event);
     button.sysconfig.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_sysconfig_event);
-    button.shutdown.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_shutdown_event);
+    button.reboot.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_reboot_event);
 
     /* configure slider bright */
     slider.backlightbright_slider.create(canvas.configurations);
@@ -306,10 +325,11 @@ namespace streamDeco
     timer_ui.backlight.start();
     timer_ui.uiReset.start();
 
+    mutex_serial.give();
+
     task.buttons.attach(handleButtons, settings);
     task.uiReset.attach(handleUiReset);
     task.monitor.attach(handleMonitor);
-    task.clock.attach(handleClock);
 
   } // function init end
 

@@ -487,11 +487,11 @@ namespace streamDeco
     configButton sysconfig;
 
     /**
-     * @var      shutdown
-     * @brief    Shutdown button
-     * @details  This button is supposed to shutdown on computer
+     * @var      reboot
+     * @brief    Reboot button
+     * @details  This button is supposed to restart StreamDeco
      **/
-    configButton shutdown;
+    configButton reboot;
 
   } button_t;
 
