@@ -24,49 +24,17 @@
 
 #include "esp32-hal.h"
 
-namespace esp
-{
+/**
+ * @namespace esp
+ * @brief     Miscellaneous System APIs functions
+ */
+namespace esp {
 
-    typedef enum {
-        WDTO_0MS    = 0,   //!< WDTO_0MS
-        WDTO_15MS   = 15,  //!< WDTO_15MS
-        WDTO_30MS   = 30,  //!< WDTO_30MS
-        WDTO_60MS   = 60,  //!< WDTO_60MS
-        WDTO_120MS  = 120, //!< WDTO_120MS
-        WDTO_250MS  = 250, //!< WDTO_250MS
-        WDTO_500MS  = 500, //!< WDTO_500MS
-        WDTO_1S     = 1000,//!< WDTO_1S
-        WDTO_2S     = 2000,//!< WDTO_2S
-        WDTO_4S     = 4000,//!< WDTO_4S
-        WDTO_8S     = 8000 //!< WDTO_8S
-    } WDTO_t;
-
-    typedef enum {
-        FM_QIO = 0x00,
-        FM_QOUT = 0x01,
-        FM_DIO = 0x02,
-        FM_DOUT = 0x03,
-        FM_FAST_READ = 0x04,
-        FM_SLOW_READ = 0x05,
-        FM_UNKNOWN = 0xff
-    } FlashMode_t;
-
-    typedef enum {
-        FS_1_MB = 0x00,
-        FS_2_MB,
-        FS_4_MB,
-        FS_8_MB,
-        FS_16_MB,
-        FS_SIZE_FAIL = -1,
-    } FlashSize_t;
-
-    typedef enum {
-        FS_40_MHz = 0x00,
-        FS_26_MHz,
-        FS_20_MHz,
-        FS_80_MHz,
-        FS_SPEED_FAIL = -1,
-    } FlashSpeed_t;
+/**
+ * @namespace system
+ * @brief     System functions
+ */
+namespace system {
 
     /**
      * @brief   Register shutdown handler.
@@ -92,7 +60,7 @@ namespace esp
     /**
      * @brief   Restart PRO and APP CPUs
      * @details This function can be called both from PRO and APP CPUs. 
-     *          After successful restart, CPU reset reason will be SW_CPU_RESET. 
+     *          After successful restart, CPU reset reason will be SW_RESET. 
      *          Peripherals, except for Wi-Fi, BT, UART0, SPI1, and legacy timers, are not reset. 
      */
     void reset();
@@ -141,7 +109,26 @@ namespace esp
      */
     void system_abort(const char *details);
 
-    const char * getSdkVersion();
+    /**
+     * @brief   Return full IDF version string, same as 'git describe' output.
+     * @note    If you are printing the ESP-IDF version in a log file or other information, 
+     * this function provides more information than using the numerical version macros. 
+     * For example, numerical version macros don't differentiate between development, 
+     * pre-release and release versions, but the output of this function does.
+     * @return  constant string from IDF_VER
+     *          Major version number (X.x.x)
+     *          Minor version number (x.X.x)
+     *          Patch version number (x.x.X)
+     */
+    const char *get_idf_version();
+
+} // namespace system
+
+/**
+ * @namespace chip
+ * @brief     Chip informations functions
+ */
+namespace chip {
 
     /**
      * @brief   Fill an esp_chip_info_t structure with information about the chip.
@@ -151,7 +138,7 @@ namespace esp
      *          uint16_t revision - chip revision number (in format MXX; where M - wafer major version, XX - wafer minor version)
      *          uint8_t cores - number of CPU cores
      */
-    esp_chip_info_t chipInfo();
+    esp_chip_info_t info();
 
     /**
      * @brief   Get a bit mask of CHIP_FEATURE_x feature flags
@@ -163,7 +150,7 @@ namespace esp
      *          CHIP_FEATURE_IEEE802154 - Chip has IEEE 802.15.4
      *          CHIP_FEATURE_EMB_PSRAM  - Chip has embedded psram
      */
-    uint32_t chipFeatures();
+    uint32_t features();
 
     /**
      * @brief   Get chip model
@@ -178,37 +165,57 @@ namespace esp
      *          CHIP_ESP32P4  - ESP32-P4
      *          CHIP_POSIX_LINUX - The code is running on POSIX/Linux simulator
      */
-    esp_chip_model_t chipModel();
+    esp_chip_model_t model();
 
     /**
      * @brief   Get chip revision number
      * @return  Chip revision number (in format MXX; where M - wafer major version, XX - wafer minor version)
      */
-    uint8_t chipRevision();
+    uint8_t revision();
 
     /**
      * @brief   Get number of cores embedded in chip
      * @return  Chip number of CPU cores
      */
-    uint8_t chipCores();
+    uint8_t cores();
+
+    /**
+     * @brief   Set base MAC address with the MAC address which is stored in BLK3 of EFUSE or external storage e.g. flash and EEPROM.
+     * @details Base MAC address is used to generate the MAC addresses used by network interfaces.
+     * If using a custom base MAC address, call this API before initializing any network interfaces.
+     * Refer to the ESP-IDF Programming Guide for details about how the Base MAC is used.
+     * @note    Base MAC must be a unicast MAC (least significant bit of first byte must be zero).
+     * If not using a valid OUI, set the "locally administered" bit (bit value 0x02 in the first byte) to avoid collisions.
+     * @param   mac -- base MAC address, length: 6 bytes. length: 6 bytes for MAC-48
+     * @return  ESP_OK on success ESP_ERR_INVALID_ARG If mac is NULL or is not a unicast MAC
+     */
+    esp_err_t base_mac_addr_set(const uint8_t *mac);
+
+} // namespace chip
+
+/**
+ * @namespace cpu
+ * @brief     CPU specific functions
+ */
+namespace cpu {
 
     /**
      * @brief   Stall a CPU core
      * @param   core_id -- The core's ID
      */
-    void cpu_stall(int core_id);
+    void stall(int core_id);
 
     /**
      * @brief   Unstall a CPU core
      * @param   core_id -- The core's ID
      */
-    void cpu_unstall(int core_id);
+    void unstall(int core_id);
 
     /**
      * @brief   Reset a CPU core
      * @param   core_id -- The core's ID
      */
-    void cpu_reset(int core_id);
+    void reset(int core_id);
 
 #ifndef ARDUINO_ARCH_ESP32
 
@@ -217,27 +224,191 @@ namespace esp
      * @details This function causes the current CPU core to execute its Wait For Interrupt (WFI or equivalent) instruction.  
      *          After executing this function, the CPU core will stop execution until an interrupt occurs.
      */
-    void cpu_wait_for_intr();
+    void wait_for_intr();
 
     /**
      * @brief   Get the current core's ID.
      * @details This function will return the ID of the current CPU (i.e., the CPU that calls this function).
-     * @returns The current core's ID [0..SOC_CPU_CORES_NUM - 1]
+     * @return  The current core's ID [0..SOC_CORES_NUM - 1]
      */
-    int cpu_get_core_id(void);
+    int get_core_id(void);
 
+    /**
+     * @brief   Get the current CPU core's cycle count.
+     * @details Each CPU core maintains an internal counter (i.e., cycle count) 
+     *          that increments every CPU clock cycle.
+     * @return  Current CPU's cycle count, 0 if not supported.
+     */
+    esp_cycle_count_t get_cycle_count(void);
+
+    /**
+     * @brief   Set the current CPU core's cycle count.
+     * @details Set the given value into the internal counter that increments every CPU clock cycle.
+     * @param   cycle_count -- CPU cycle count
+     */
+    void set_cycle_count(esp_cycle_count_t cycle_count);
+
+    /**
+     * @brief   Convert a program counter (PC) value to address.
+     * @details If the architecture does not store the true virtual address in the CPU's PC or return addresses, 
+     *          this function will convert the PC value to a virtual address. Otherwise, the PC is just returned
+     * @param   pc -- PC value
+     * @return  Virtual address
+     */
+    void *pc_to_addr(uint32_t pc);
+
+    /**
+     * @brief   Get a CPU interrupt's descriptor.
+     * @details Each CPU interrupt has a descriptor describing the interrupt's capabilities and restrictions. 
+     *          This function gets the descriptor of a particular interrupt on a particular CPU.
+     * @param   core_id -- [in] The core's ID
+     * @param   intr_num -- [in] Interrupt number
+     * @param   intr_desc_ret -- [out] The interrupt's descriptor
+     */
+    void intr_get_desc(int core_id, int intr_num, esp_intr_desc_t *intr_desc_ret);
+
+    /**
+     * @brief   Set the base address of the current CPU's Interrupt Vector Table (IVT)
+     * @param   ivt_addr -- Interrupt Vector Table's base address
+     */
+    void intr_set_ivt_addr(const void *ivt_addr);
+
+    /**
+     * @brief   Check if a particular interrupt already has a handler function.
+     * @details Check if a particular interrupt on the current CPU already has a handler function assigned.
+     * @note    This function simply checks if the IVT of the current CPU already has a handler assigned.
+     * @param   intr_num -- Interrupt number (from 0 to 31)
+     * @return  True if the interrupt has a handler function, false otherwise.
+     */
+    bool intr_has_handler(int intr_num);
+
+    /**
+     * @brief   Set the handler function of a particular interrupt.
+     * @details Assign a handler function (i.e., ISR) to a particular interrupt on the current CPU.
+     * @note    This function simply sets the handler function (in the IVT) and does not actually enable the interrupt.
+     * @param   intr_num -- Interrupt number (from 0 to 31)
+     * @param   handler -- Handler function
+     * @param   handler_arg -- Argument passed to the handler function
+     */
+    void intr_set_handler(int intr_num, esp_intr_handler_t handler, void *handler_arg);
+
+    /**
+     * @brief   Get a handler function's argument of.
+     * @details Get the argument of a previously assigned handler function on the current CPU.
+     * @param   intr_num -- Interrupt number (from 0 to 31)
+     * @return  The the argument passed to the handler function
+     */
+    void *intr_get_handler_arg(int intr_num);
+
+    /**
+     * @brief   Enable particular interrupts on the current CPU.
+     * @param   intr_mask -- Bit mask of the interrupts to enable
+     */
+    void intr_enable(uint32_t intr_mask);
+
+    /**
+     * @brief   Disable particular interrupts on the current CPU.
+     * @param   intr_mask -- Bit mask of the interrupts to disable
+     */
+    void intr_disable(uint32_t intr_mask);
+
+    /**
+     * @brief   Get the enabled interrupts on the current CPU.
+     * @return  Bit mask of the enabled interrupts
+     */
+    uint32_t intr_get_enabled_mask();
+
+    /**
+     * @brief   Acknowledge an edge interrupt.
+     * @param   intr_num -- Interrupt number (from 0 to 31)
+     */
+    void intr_edge_ack(int intr_num);
+
+    /**
+     * @brief   Configure the CPU to disable access to invalid memory regions.
+     */
+    void configure_region_protection();
+
+    /**
+     * @brief   Set and enable a hardware breakpoint on the current CPU.
+     * @details This function is meant to be called by the panic handler to set a breakpoint 
+     *          for an attached debugger during a panic.
+     * @note    Overwrites previously set breakpoint with same breakpoint number.
+     * @param   bp_num -- Hardware breakpoint number [0..SOC_BREAKPOINTS_NUM - 1]
+     * @param   bp_addr -- Address to set a breakpoint on
+     * @return  ESP_OK if breakpoint is set. Failure otherwise
+     */
+    esp_err_t set_breakpoint(int bp_num, const void *bp_addr);
+
+    /**
+     * @brief   Clear a hardware breakpoint on the current CPU.
+     * @note    Clears a breakpoint regardless of whether it was previously set
+     * @param   bp_num -- Hardware breakpoint number [0..SOC_BREAKPOINTS_NUM - 1]
+     * @return  ESP_OK if breakpoint is cleared. Failure otherwise
+     */
+    esp_err_t clear_breakpoint(int bp_num);
+
+    /**
+     * @brief   Set and enable a hardware watchpoint on the current CPU.
+     * @details Set and enable a hardware watchpoint on the current CPU, 
+     * specifying the memory range and trigger operation. 
+     * Watchpoints will break/panic the CPU when the CPU accesses (according to the trigger type) on a certain memory range.
+     * @note    Overwrites previously set watchpoint with same watchpoint number. 
+     * On RISC-V chips, this API uses method0(Exact matching) and method1(NAPOT matching) according to the riscv-debug-spec-0.13 specification for address matching. 
+     * If the watch region size is 1byte, it uses exact matching (method 0). If the watch region size is larger than 1byte, it uses NAPOT matching (method 1). 
+     * This mode requires the watching region start address to be aligned to the watching region size.
+     * @param   wp_num -- Hardware watchpoint number [0..SOC_WATCHPOINTS_NUM - 1]
+     * @param   wp_addr -- Watchpoint's base address, must be naturally aligned to the size of the region
+     * @param   size -- Size of the region to watch. Must be one of 2^n and in the range of [1 ... SOC_WATCHPOINT_MAX_REGION_SIZE]
+     * @param   trigger -- Trigger type
+     * @return  ESP_ERR_INVALID_ARG on invalid arg, ESP_OK otherwise
+     */
+    esp_err_t set_watchpoint(int wp_num, const void *wp_addr, size_t size, esp_watchpoint_trigger_t trigger);
+
+    /**
+     * @brief   Clear a hardware watchpoint on the current CPU.
+     * @note    Clears a watchpoint regardless of whether it was previously set
+     * @param   wp_num -- Hardware watchpoint number [0..SOC_WATCHPOINTS_NUM - 1]
+     * @return  ESP_OK if watchpoint was cleared. Failure otherwise.
+     */
+    esp_err_t clear_watchpoint(int wp_num);
+
+    /**
+     * @brief   Check if the current CPU has a debugger attached.
+     * @return  True if debugger is attached, false otherwise
+     */
+    bool dbgr_is_attached();
+
+    /**
+     * @brief   Trigger a call to the current CPU's attached debugger. 
+     */
+    void dbgr_break(void);
+
+    /**
+     * @brief   Given the return address, calculate the address of the preceding call instruction.  
+     *          This is typically used to answer the question "where was the function called from?".
+     * @param   return_address -- The value of the return address register. Typically set to the value of __builtin_return_address(0).
+     * @return  Address of the call instruction preceding the return address.
+     */
+    intptr_t get_call_addr(intptr_t return_address);
+
+    /**
+     * @brief   Atomic compare-and-set operation.
+     * @param   addr -- Address of atomic variable
+     * @param   compare_value -- Value to compare the atomic variable to 
+     * @param   new_value -- New value to set the atomic variable to
+     * @return  Whether the atomic variable was set or not
+     */
+    bool compare_and_set(volatile uint32_t *addr, uint32_t compare_value, uint32_t new_value);
 #endif
 
-    uint32_t getCycleCount();
-    
-    void deepSleep(uint32_t time_us);
-    FlashSize_t getFlashChipSize();
-    uint32_t getFlashChipSpeed();
-    FlashMode_t getFlashChipMode();
-    bool flashEraseSector(uint32_t sector);
-    bool flashWrite(uint32_t offset, uint32_t *data, size_t size);
-    bool flashRead(uint32_t offset, uint32_t *data, size_t size);
-    uint64_t getEfuseMac();
+    /**
+     * @brief   Read the current stack pointer address.
+     * @return  Stack pointer address
+     */
+    void *get_sp();
+
+}  // namespace cpu
 
 } // namespace chip
 

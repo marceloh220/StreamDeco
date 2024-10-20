@@ -629,7 +629,7 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_reboot_event:
-            esp::reset();
+            esp::system::reset();
             break;
 
         /** @brief    Shuntdown button is pressed
