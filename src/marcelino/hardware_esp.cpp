@@ -109,6 +109,34 @@ namespace chip {
         return esp_base_mac_addr_set(mac);
     }
 
+    esp_err_t base_mac_addr_get(uint8_t *mac) {
+        return esp_base_mac_addr_get(mac);
+    }
+
+    esp_err_t efuse_mac_get_default(uint8_t *mac) {
+        return esp_efuse_mac_get_default(mac);
+    }
+
+    esp_err_t read_mac(uint8_t *mac, esp_mac_type_t type) {
+        return esp_read_mac(mac, type);
+    }
+
+    esp_err_t derive_local_mac(uint8_t *local_mac, const uint8_t *universal_mac) {
+        return esp_derive_local_mac(local_mac, universal_mac);
+    }
+
+#ifndef ARDUINO_ARCH_ESP32
+
+    esp_err_t iface_mac_addr_set(const uint8_t *mac, esp_mac_type_t type) {
+        return esp_iface_mac_addr_set(mac, type);
+    }
+
+    size_t mac_addr_len_get(esp_mac_type_t type) {
+       return esp_mac_addr_len_get(type); 
+    }
+
+#endif
+
 } // namespace chip
 
 namespace cpu {
