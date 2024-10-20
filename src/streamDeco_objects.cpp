@@ -205,9 +205,9 @@ namespace streamDeco
 
     /**
      * @var  mutex_serial
-   * @brief  Serial interface mutex
-   * @note   Used to avoid Monitor and Clock task uses Serial interface in same instant
-   */
+     * @brief  Serial interface mutex
+     * @note   Used to avoid Monitor and Clock task uses Serial interface in same instant
+     */
     rtos::MutexRecursiveStatic mutex_serial;
 
     /**

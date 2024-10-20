@@ -61,7 +61,6 @@ namespace streamDeco
 
       streamDeco::mutex_serial.give();
 
-
       /**
        * if some event is received the UI is not inactive
        * backlight bright change to setpoint value

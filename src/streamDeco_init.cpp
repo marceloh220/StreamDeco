@@ -103,19 +103,33 @@ namespace streamDeco
     startScreen_icon.set_src(&keyboard_simp);
     lvgl::screen::refresh();
 
-    /** This task wait for streamDeco monitor application to synchro clock
-     *  Affter 40 tryes without success in synchronization the StreamDeco 
-     *  start without correct date.
-    */
-    task.clock.attach(handleClock);
-
-    /** Give time to handleClock task start, and see more icon =) */
+    /** See more icon =) */
     rtos::sleep(1s);
 
-    /** This mutex is take by synchronization task and make initialization wait by syncrho tryes */
-    mutex_serial.take();
+    /**
+     * @var    semaphoreinit
+     * @brief  Init semaphore used to wait for monitor syncro during initialization
+     * @note   This semaphore is passed to another task, so this need be allocated in heap
+     */
+    rtos::Semaphore *semaphoreInit = new rtos::Semaphore;
 
-    /* delete apresentation icons and text =( */
+    /** This task wait for streamDeco monitor application to synchro clock
+     *  Affter 40 tryes without success in synchronization the StreamDeco 
+     *  start without correct data.
+     *  The semaphoreInit is passed as argument.
+    */
+    task.clock.attach(handleClock, semaphoreInit);
+
+    /** This semaphore is give in handler handleClock(taskArg_t task_arg) by clock task 
+     *  and make initialization wait by syncrhonization with StreamDeco monitor application on computer.
+     *  Affter synchro happens with success or 40 tryes, this semaphore is given and initialization goes on. */
+    semaphoreInit->take();
+
+    /** This semaphore is only used to hold initialization */
+    semaphoreInit->semaphoreDelete();
+    delete semaphoreInit;
+
+    /* delete apresentation icons and text, sad =( */
     startScreen_icon.del();
     startScreen_label.del();
     lvgl::screen::refresh();
@@ -324,8 +338,6 @@ namespace streamDeco
     /* start timer_ui.backlight and uiResetTimer */
     timer_ui.backlight.start();
     timer_ui.uiReset.start();
-
-    mutex_serial.give();
 
     task.buttons.attach(handleButtons, settings);
     task.uiReset.attach(handleUiReset);

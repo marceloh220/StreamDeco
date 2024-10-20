@@ -88,10 +88,16 @@ namespace streamDeco
    * update clock time on Monitor canvas */
   void handleClock(taskArg_t task_arg)
   {
+
     struct tm tm_date = {0};
     int count = 0;
     synchro_clock(tm_date);
     synchro_clock(tm_date);
+
+    rtos::Semaphore *semaphoreInit = (rtos::Semaphore*)task_arg;
+
+    /* give init semaphore to initialization goes on */
+    semaphoreInit->give();
 
     while (1)
     {
