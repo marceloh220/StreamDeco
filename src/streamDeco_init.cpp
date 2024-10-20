@@ -32,6 +32,13 @@ namespace streamDeco
 {
 
   /**
+   * @brief    Synchronizes ESP32-RTC with Computer clock
+   * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
+   * @param    tryes - number oa ttemps to try sinchron clock with computer
+   */
+  void synchro_clock(int tryes);
+
+  /**
    * @brief   Init StreamDeco
    * @details Attach StreamDeco's tasks and made buttons configurations, layers and timers
    * @details Called in function main_app, function handler task or Arduino setup to init StreamDeco
@@ -106,28 +113,7 @@ namespace streamDeco
     /** See more icon =) */
     rtos::sleep(1s);
 
-    /**
-     * @var    semaphoreinit
-     * @brief  Init semaphore used to wait for monitor syncro during initialization
-     * @note   This semaphore is passed to another task, so this need be allocated in heap
-     */
-    rtos::Semaphore *semaphoreInit = new rtos::Semaphore;
-
-    /** This task wait for streamDeco monitor application to synchro clock
-     *  Affter 40 tryes without success in synchronization the StreamDeco 
-     *  start without correct data.
-     *  The semaphoreInit is passed as argument.
-    */
-    task.clock.attach(handleClock, semaphoreInit);
-
-    /** This semaphore is give in handler handleClock(taskArg_t task_arg) by clock task 
-     *  and make initialization wait by syncrhonization with StreamDeco monitor application on computer.
-     *  Affter synchro happens with success or 40 tryes, this semaphore is given and initialization goes on. */
-    semaphoreInit->take();
-
-    /** This semaphore is only used to hold initialization */
-    semaphoreInit->semaphoreDelete();
-    delete semaphoreInit;
+    synchro_clock(40);
 
     /* delete apresentation icons and text, sad =( */
     startScreen_icon.del();
@@ -339,9 +325,11 @@ namespace streamDeco
     timer_ui.backlight.start();
     timer_ui.uiReset.start();
 
+  /* attach tasks handlers and start them */
     task.buttons.attach(handleButtons, settings);
     task.uiReset.attach(handleUiReset);
     task.monitor.attach(handleMonitor);
+    task.clock.attach(handleClock);
 
   } // function init end
 

@@ -29,11 +29,19 @@
 namespace streamDeco
 {
 
-  /* Synchronizes ESP32-RTC with Computer clock */
-  void synchro_clock(struct tm &tm_date)
+  /**
+   * @brief    Synchronizes ESP32-RTC with Computer clock
+   * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
+   * @param    tryes - number oa ttemps to try sinchron clock with computer
+   */
+  void synchro_clock(int tryes)
   {
+    
     int attempts = 0;
+    struct tm tm_date = {0};
+    
     mutex_serial.take();
+
     while (1)
     {
       if (Serial.available())
@@ -75,13 +83,20 @@ namespace streamDeco
         time_epoch.tv_sec = time_local;
         time_epoch.tv_usec = 0;
         settimeofday(&time_epoch, NULL);
+        monitor.clock.set_time(tm_date);
+
         break;
+      
       } // Serial.avaliable
+      
       attempts++;
-      if(attempts > 20) break;
+      if(attempts > tryes) break;
       rtos::sleep(1s);
+    
     } // loop check time
+    
     mutex_serial.give();
+  
   }
 
   /* Handle the clock task,
@@ -91,13 +106,6 @@ namespace streamDeco
 
     struct tm tm_date = {0};
     int count = 0;
-    synchro_clock(tm_date);
-    synchro_clock(tm_date);
-
-    rtos::Semaphore *semaphoreInit = (rtos::Semaphore*)task_arg;
-
-    /* give init semaphore to initialization goes on */
-    semaphoreInit->give();
 
     while (1)
     {
@@ -106,8 +114,7 @@ namespace streamDeco
 
       if(count == (10*60)) {
         count = 0;
-        synchro_clock(tm_date);
-        synchro_clock(tm_date);
+        synchro_clock(40);
       }
 
       getLocalTime(&tm_date);
