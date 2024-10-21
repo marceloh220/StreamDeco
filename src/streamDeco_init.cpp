@@ -34,7 +34,7 @@ namespace streamDeco
   /**
    * @brief    Synchronizes ESP32-RTC with Computer clock
    * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
-   * @param    tryes - number oa ttemps to try sinchron clock with computer
+   * @param    tryes - number of attemps to try sinchron clock with computer
    */
   void synchro_clock(int tryes);
 
@@ -113,6 +113,7 @@ namespace streamDeco
     /** See more icon =) */
     rtos::sleep(1s);
 
+    /* make 40 tryes to synchro clock with StreamDeco monitor application */
     synchro_clock(40);
 
     /* delete apresentation icons and text, sad =( */

@@ -59,7 +59,8 @@ namespace streamDeco
              * @note     Need configuration on application or system
              **/
         case terminal_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press(KEY_RETURN);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -82,10 +83,7 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case web_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press('w');
-            rtos::sleep(10ms);
-            bleKeyboard.releaseAll();
+            bleKeyboard.write(KEY_MEDIA_WWW_HOME);
             break;
 
         /** @brief    Search button is pressed
@@ -94,7 +92,7 @@ namespace streamDeco
          **/
         case search_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(' ');
+            bleKeyboard.press('s');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -239,7 +237,6 @@ namespace streamDeco
         case left_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_LEFT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -253,7 +250,6 @@ namespace streamDeco
         case right_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_RIGHT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -605,7 +601,8 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case configuration_canvas_sysmonitor_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_ESC);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -618,8 +615,7 @@ namespace streamDeco
          **/
         case configuration_canvas_sysconfig_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_ESC);
+            bleKeyboard.press('i');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
