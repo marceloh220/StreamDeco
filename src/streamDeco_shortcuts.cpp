@@ -369,7 +369,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app4_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('c');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -380,7 +381,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app5_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
