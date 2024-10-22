@@ -293,7 +293,7 @@ namespace streamDeco
         case desktop_mode_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_F7);
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.desktop_mode.swapIcon();
             button.desktop_mode.pinned() ? button.desktop_mode.unpin() : button.desktop_mode.pin();
