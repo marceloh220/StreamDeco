@@ -44,6 +44,8 @@ namespace streamDeco
          * @brief    Nothing happens
          * @details  If nothing happens, do nothing is the better option
          * @note     If nothing happens, do nothing is the better option
+         * @param    nothing_event  do nothing
+         * @return   nothing
          */
         case nothing_event:
             /* do nothing */
@@ -107,10 +109,8 @@ namespace streamDeco
          *            Do nothing if Multimedia or Configurations canvas is pinned
          **/
         case applications_canvas_event:
-            if (button.multimedia_canvas.pinned() || button.configurations_canvas.pinned())
-            {
-                break;
-            }
+            if (button.multimedia_canvas.pinned())     break;
+            if (button.configurations_canvas.pinned()) break;
             button.applications_canvas.unpin();
             canvas.multimedia.hidden();
             canvas.configurations.hidden();
@@ -126,10 +126,8 @@ namespace streamDeco
          *  @note     Do nothing if Multimedia or Configurations canvas is pinned
          **/
         case applications_canvas_fix_event:
-            if (button.multimedia_canvas.pinned() || button.configurations_canvas.pinned())
-            {
-                break;
-            }
+            if (button.multimedia_canvas.pinned())     break;
+            if (button.configurations_canvas.pinned()) break;
             button.applications_canvas.pin();
             canvas.multimedia.hidden();
             canvas.monitor.hidden();
@@ -197,10 +195,8 @@ namespace streamDeco
          *  @note     Do nothing if Applications or Configurations canvas is pinned
          **/
         case multimedia_canvas_event: /* multimedia button receive a short click */
-            if (button.applications_canvas.pinned() || button.configurations_canvas.pinned())
-            {
-                break;
-            }
+            if (button.applications_canvas.pinned())   break;
+            if (button.configurations_canvas.pinned()) break;
             button.multimedia_canvas.unpin();
             canvas.applications.hidden();
             canvas.configurations.hidden();
@@ -216,10 +212,8 @@ namespace streamDeco
          *  @note     Do nothing if Applications or Configurations canvas is pinned
          **/
         case multimedia_canvas_fix_event:
-            if (button.applications_canvas.pinned() || button.configurations_canvas.pinned())
-            {
-                break;
-            }
+            if (button.applications_canvas.pinned())   break;
+            if (button.configurations_canvas.pinned()) break;
             button.multimedia_canvas.pin();
             canvas.applications.hidden();
             canvas.configurations.hidden();
@@ -311,10 +305,8 @@ namespace streamDeco
          *            The Configurations canvas have no pin function
          **/
         case configurations_canvas_event: /* configuration button is pressed */
-            if (button.applications_canvas.pinned() || button.multimedia_canvas.pinned())
-            {
-                break;
-            }
+            if (button.applications_canvas.pinned()) break;
+            if (button.multimedia_canvas.pinned())   break;
             button.configurations_canvas.unpin();
             canvas.applications.hidden();
             canvas.multimedia.hidden();
@@ -334,10 +326,8 @@ namespace streamDeco
          *  @note     Do nothing if Applications or Multimedia canvas is pinned
          **/
         case configurations_canvas_fix_event: /* configuration button is pressed */
-            if (button.applications_canvas.pinned() || button.multimedia_canvas.pinned())
-            {
-                break;
-            }
+            if (button.applications_canvas.pinned()) break;
+            if (button.multimedia_canvas.pinned())   break;
             button.configurations_canvas.pin();
             canvas.applications.hidden();
             canvas.multimedia.hidden();
