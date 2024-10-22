@@ -285,9 +285,11 @@ namespace streamDeco
             break;
 
         /** @brief    desktop_mode button is pressed
-         *  @details  Change desktop mode
+         *  @details  Change desktop mode between multi windows and single window (macos stage manager)
          *  @note     This media shortcut need be configured in application or system
-         *            This button is destaqued when pressed,
+         *            This button have two icons, mult_window_simp and single_window_simp
+         *            SwapIcon method change between this two icons
+         *            Also this button is destaqued when pressed,
          *            but have no feedback from computer to indentify the desktop state
          */
         case desktop_mode_event:
