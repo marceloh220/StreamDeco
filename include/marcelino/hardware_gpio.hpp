@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _GPIO_HPP_
-#define _GPIO_HPP_
+#ifndef __HARDWARE_GPIO_HPP__
+#define __HARDWARE_GPIO_HPP__
 
 #include "driver/gpio.h"
 #include "esp_intr_alloc.h"
@@ -29,23 +29,93 @@
 
 #include "esp_attr.h"
 
-#undef LOW
-#undef HIGH
-#undef INPUT
-#undef OUTPUT
-#undef INPUT_PULLUP
-#undef INPUT_PULLDOWN
+#ifdef LOW
+  #undef LOW
+#endif
+#ifdef HIGH
+  #undef HIGH
+#endif
+#ifdef INPUT
+  #undef INPUT
+#endif
+#ifdef OUTPUT
+  #undef OUTPUT
+#endif
+#ifdef INPUT_PULLUP
+  #undef INPUT_PULLUP
+#endif
+#ifdef INPUT_PULLDOWN
+  #undef INPUT_PULLDOWN
+#endif
 
+/**
+ * @namespace  hardware
+ * @brief      Low level hardware abstraction peripherals
+ * @details    This abstraction layer uses ESP-IDF API to use peripherals
+ */
 namespace hardware {
 
+/**
+ * @sa       rtos::sleep()
+ * @sa       rtos::Task
+ * @class    GPIO
+ * @brief    Abstraction class to GPIO PINS
+ * @details  Can configure pin as input, output or interrupt
+ * @code
+ * hardware::GPIO led_blink(GPIO_NUM_5, hardware::GPIO::OUTPUT);
+ * 
+ * hardware::GPIO led_controlledByButton(GPIO_NUM_6, hardware::GPIO::OUTPUT);
+ * 
+ * hardware::GPIO button(GPIO_NUM_7, hardware::GPIO::OUTPUT);
+ * 
+ * void task_blink_callback(taskArg_t arg) {
+ * 
+ *    while(true) {
+ * 
+ *      led_controlledByButton = button;
+ * 
+ *      rtos::sleep(100ms);
+ * 
+ *    }
+ * 
+ * }
+ * 
+ * extern "C" void app_main() {
+ * 
+ *    while(true) {
+ * 
+ *      led_blink = 1;
+ * 
+ *      rtos::sleep(500ms);
+ * 
+ *      led_blink = 0;
+ * 
+ *      rtos::sleep(500ms);
+ * 
+ *    }
+ * 
+ * 
+ * 
+ * }
+ */
 class GPIO {
 
 public:
+
+  /**
+   * @typedef  state_t
+   * @brief    GPIO states
+   * @details  Simples definitions of HIGH and LOW for logic level high and low
+   */
   typedef enum state_e {
     LOW,
     HIGH,
   } state_t;
 
+  /**
+   * @typedef  mode_t
+   * @brief    GPIO modes supported by API
+   */
   typedef enum mode_e {
     INPUT = GPIO_MODE_INPUT,
     OUTPUT = GPIO_MODE_OUTPUT,
@@ -54,6 +124,10 @@ public:
     INPUT_PULLDOWN,
   } mode_t;
 
+  /**
+   * @typedef  interrupt_t
+   * @brief    GPIO interrupt supported by API
+   */
   typedef enum interrupt_e {
     DISABLE = GPIO_INTR_DISABLE,
     RISING_EDGE = GPIO_INTR_POSEDGE,
@@ -63,102 +137,274 @@ public:
     HIGH_LEVEL = GPIO_INTR_HIGH_LEVEL,
   } interrupt_t;
 
-  GPIO(gpio_num_t pin, mode_t mode) : _pin(pin), _mode(mode) {
-    esp_rom_gpio_pad_select_gpio(pin);
-    this->mode(mode);
-  }
+  GPIO(gpio_num_t pin, mode_t mode);
 
-  ~GPIO() {
-    gpio_isr_handler_remove(_pin);
-    gpio_reset_pin(_pin);
-  }
+  ~GPIO();
 
-  inline gpio_num_t pinName() { return _pin; }
+  /**
+   * @brief   Return the GPIO pin name
+   * @return  GPIO pin name
+   */
+  gpio_num_t pinName();
 
-  void mode(mode_t mode) {
-    _mode = mode;
-    switch (mode) {
-    case INPUT:
-    case OUTPUT:
-    case INPUT_OUTPUT:
-      gpio_set_direction(_pin, (gpio_mode_t)mode);
-      break;
-    case INPUT_PULLUP:
-      gpio_set_direction(_pin, GPIO_MODE_INPUT);
-      gpio_pulldown_dis(_pin);
-      gpio_pullup_en(_pin);
-      break;
-    case INPUT_PULLDOWN:
-      gpio_set_direction(_pin, GPIO_MODE_INPUT);
-      gpio_pullup_dis(_pin);
-      gpio_pulldown_en(_pin);
-      break;
-    }
-  }
+  /**
+   * @sa      mode_t
+   * @brief   Change GPIO pin mode
+   * @param   mode  GPIO pin mode
+   */
+  void mode(mode_t mode);
 
-  inline mode_t mode() { return _mode; }
+  /**
+   * @brief   Return the GPIO pin mode
+   * @return  GPIO pin mode
+   */
+  mode_t mode();
 
-  void attach(void function(void *), interrupt_t mode, void *arg) {
-    _interrupt = mode;
-    gpio_set_intr_type(_pin, (gpio_int_type_t)mode);
-    gpio_install_isr_service(ESP_INTR_FLAG_LOWMED);
-    gpio_isr_handler_add(_pin, function, arg);
-  }
+  /**
+   * @brief   Attach an interrupt on the pin and associate this interrupt 
+   *          with an handler callback function
+   * @param   function  The function callback to handle interrupt
+   * @param   mode      The interrupt mode, must be type mode_t
+   * @param   arg       Some argument to be passed by API to function callback
+   * @note    The callback function must return and receive an void pointer argument, 
+   *          also the IRAM_ATTR attribute must be used to copy the function code onto
+   *          the instruction RAM section while SoC initialization. Since this space is not large,
+   *          interrupts functions must be brief and execute only urgent actions.
+   *          Complicated things must be left be made by some task.
+   * @code
+   * rtos::Task task_to_do_more_complicated_things("Button Pressed!");
+   * 
+   * hardware::GPIO button(GPIO_NUM_5, hardware::GPIO::INPUT);
+   * 
+   * hardware::GPIO led(GPIO_NUM_6, hardware::GPIO::OUTPUT);
+   * 
+   * void IRAM_ATTR isr_button(void *arg) {
+   * 
+   *    // do some urgents and simples things. Don't print herer!
+   * 
+   *    led ^= 1;
+   *    
+   *    // left the rest to do  by some task
+   * 
+   *    task_to_do_more_complicated_things.sendNotifyFromISR(42);
+   * 
+   * }
+   * 
+   * void task_to_do_more_complicated_things_callback(taskArg_t arg) {
+   * 
+   *    while(true) {
+   * 
+   *      uint32_t notification = task_to_do_more_complicated_things.takeNotify();
+   * 
+   *      if(notification == 42) {
+   * 
+   *        printf("This is not a simulation! The button was pressed!")
+   * 
+   *      }
+   * 
+   *    }
+   * 
+   * }
+   * 
+   * extern "C" void app_main() {
+   * 
+   *    button.attach(isr_button, hardware::GPIO::RISING_EDGE);
+   *    
+   *    task_to_do_more_complicated_things.attach(task_to_do_more_complicated_things_callback);
+   * 
+   *    while(true) {
+   * 
+   *      printf("Hour off!\n");
+   * 
+   *      rtos::sleep(1h);
+   * 
+   *    }
+   * 
+   * }
+   */
+  void interruptAttach(void function(void *), interrupt_t mode, void *arg = NULL);
 
-  inline void dettach() { gpio_isr_handler_remove(_pin); }
+  /**
+   * @brief   Detach the interrupt from GPIO pin
+   */
+  void interruptDettach();
 
-  inline interrupt_t interruptType() { return _interrupt; }
+  /**
+   * @sa      interrupt_t
+   * @brief   Get the interrupt type
+   * @return  interrupt_t  Interrupt type
+   */
+  interrupt_t interruptType();
 
-  inline void interruptDisable() { gpio_intr_disable(_pin); }
+  /**
+   * @brief   Disable the interrupt
+   * @note    This method don't remove the interrupt ISR service,
+   *          interruptEnable method can be used to enable interrupt again.
+   */
+  void interruptDisable();
 
-  inline void interruptEnable() { gpio_intr_enable(_pin); }
+  /**
+   * @brief    Enable an disabled interrupt
+   */
+  void interruptEnable();
 
-  inline bool read() { return gpio_get_level(_pin); }
+  /**
+   * @brief   Read the pin state
+   * @return  true if pin state are in high level 
+   *          false if pin state are in low level 
+   */
+  bool read();
 
-  inline void write(bool state) {
-    _state = state;
-    gpio_set_level(_pin, state);
-  }
+  /**
+   * @brief   Write an state in pin
+   * @param   state  Pin state, this can be true, 1 or 
+   *          hardware::GPIO::HIGH to set pin to high level.
+   *          Or false, or 0 or hardware::GPIO::LOW to clear 
+   *          the state of pin.
+   */
+  void write(bool state);
 
-  inline void toggle(int state = 1) {
-    if (state) {
-      _state ^= 1;
-      write(_state);
-    }
-  }
+  /**
+   * @brief   Toggle the state of GPIO pin.
+   * @details If pin is in LOW level it's become HIGH level.
+   * @details If pin is in HIGH level it's become LOW level.
+   * @note    Useful to make Hello World programs
+   */
+  void toggle(int state = 1);
 
-  void freeze() {
-    gpio_hold_en(_pin);
-    gpio_deep_sleep_hold_en();
-  }
+  /**
+   * @brief   Trying discover what the fluid it does
+   */
+  void freeze();
 
-  void unfreeze() {
-    gpio_hold_dis(_pin);
-    gpio_deep_sleep_hold_dis();
-  }
+  /**
+   * @brief   Trying discover what the fluid it does
+   */
+  void unfreeze();
 
-  GPIO &operator=(GPIO &v) {
-    this->write(v.read());
-    return *this;
-  }
+  /**
+   * @sa      write()
+   * @sa      read()
+   * @sa      operator int
+   * @brief   Object write method shortcuts
+   * @code
+   * hardware::GPIO led(GPIO_NUM_5, hardware::GPIO::OUTPUT);
+   * 
+   * hardware::GPIO button(GPIO_NUM_6, hardware::GPIO::INPUT_PULLDOWN);
+   * 
+   * extern "C" app_main() {
+   * 
+   *    while(true) {
+   * 
+   *      led = button; //same as led.write(button.read())
+   *  
+   *      rtos::sleep(50ms);
+   * 
+   *    }
+   * 
+   * }
+   */
+  GPIO &operator=(GPIO &v);
 
-  GPIO &operator=(int v) {
-    this->write(v);
-    return *this;
-  }
+  /**
+   * @sa      write()
+   * @brief   Object write method shortcuts
+   * @code
+   * hardware::GPIO led(GPIO_NUM_5, hardware::GPIO::OUTPUT);
+   * 
+   * extern "C" app_main() {
+   * 
+   *    while(true) {
+   * 
+   *      led = 1; //same as led.write(1)
+   *  
+   *      rtos::sleep(500ms);
+   *  
+   *      led = 0; //same as led.write(0)
+   * 
+   *      rtos::sleep(500ms);
+   * 
+   *    }
+   * 
+   * }
+   */
+  GPIO &operator=(int v);
 
-  GPIO &operator^=(int v) {
-    this->toggle(v);
-    return *this;
-  }
+  /**
+   * @sa      toogle()
+   * @sa      read()
+   * @sa      operator int
+   * @brief   Object toogle method shortcuts.
+   * @details Toggle state level of GPIO pin if pin passed as parameter is in HIGH level state.
+   * @code
+   * hardware::GPIO led(GPIO_NUM_5, hardware::GPIO::OUTPUT);
+   * 
+   * hardware::GPIO button(GPIO_NUM_6, hardware::GPIO::INPUT_PULLDOWN);
+   * 
+   * extern "C" app_main() {
+   * 
+   *    while(true) {
+   * 
+   *      led ^= button; //same as led.toggle(button.read())
+   *  
+   *      rtos::sleep(50ms);
+   * 
+   *    }
+   * 
+   * }
+   */
+  GPIO &operator^=(GPIO &v);
 
-  inline operator int() { return read(); }
+  /**
+   * @sa      toggle()
+   * @brief   Object toogle method shortcuts.
+   * @details Toggle state level of GPIO pin if true are passed as parameter.
+   * @code
+   * hardware::GPIO led(GPIO_NUM_5, hardware::GPIO::OUTPUT);
+   * 
+   * extern "C" app_main() {
+   * 
+   *    while(true) {
+   * 
+   *      led ^= 1; //same as led.toggle(1)
+   *  
+   *      rtos::sleep(50ms);
+   * 
+   *    }
+   * 
+   * }
+   */
+  GPIO &operator^=(int v);
+
+  /**
+   * @sa      read()
+   * @brief   Object read method shortcuts.
+   * @details Read state level of GPIO pin.
+   * @code
+   * hardware::GPIO button(GPIO_NUM_6, hardware::GPIO::INPUT_PULLDOWN);
+   * 
+   * extern "C" app_main() {
+   * 
+   *    while(true) {
+   * 
+   *      if(button) //same as if(button.read())
+   *        printf("The button is pressed!\n");
+   *      
+   *      rtos::sleep(1ms);
+   * 
+   *    }
+   * 
+   * }
+   */
+  operator int();
 
 private:
+
   const gpio_num_t _pin;
   mode_t _mode;
   bool _state;
   interrupt_t _interrupt;
+
 };
 
 } // namespace hardware

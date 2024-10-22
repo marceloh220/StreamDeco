@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _TIMER_HPP_
-#define _TIMER_HPP_
+#ifndef _RTOS_TIMER_HPP_
+#define _RTOS_TIMER_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
@@ -29,74 +29,218 @@
 
 namespace rtos {
 
+/**
+ * @brief  Creates a new software timer instance.
+ *
+ * Internally, within the FreeRTOS implementation, software timers use a block
+ * of memory, in which the timer data structure is stored. If a software timer
+ * is created using rtos::Timer then the required memory is automatically
+ * dynamically allocated inside the class.
+ *
+ * Timers are created in the dormant state, a callback function to handle timer 
+ * event must be attached with rtos::Timer::attach() method.
+ * The rtos::Timer::start(), rtos::Timer::reset(), rtos::Timer::startFromISR(), 
+ * rtos::Timer::resetFromISR(), rtos::Timer::period() and rtos::Timer::periodFromISR() 
+ * API functions can all be used to transition a timer into the active state.
+ *
+ * @param name A text name that is assigned to the timer. This is done
+ * purely to assist debugging. The kernel itself only ever references a timer
+ * by its handle, and never by its name.
+ *
+ * @param period The timer period specified in milliseconds, seconds, minutres or hours.
+ *               For example, if the timer must expire after 100 milliseconds, 
+ *               then period should be set to 100ms.
+ *               Alternatively, if the timer must expire after 5 seconds,
+ *               then period can be set to 5s. Time timer period must be greater than 0.
+ * 
+ * @code
+ * rtos::Timer xTimer1("Timer one", 5s);
+ * 
+ * void xTimerCallback(TimerHandle_t xTimerArg)
+ * {
+ * 
+ *    if(xTimer1.verifyID(xTimerArg))
+ *    {
+ * 
+ *      printf("%s: event occour!\n", xTimer1.name());
+ * 
+ *    }
+ * 
+ * }
+ * 
+ * extern "C" int app_main()
+ * {
+ * 
+ *    xTimer1.attach(xTimerCallback);
+ * 
+ *    xTimer1.start();   
+ * 
+ * }
+ */
 class Timer {
-
 public:
-  Timer(const char *name, TimerCallbackFunction_t callback, milliseconds periode, UBaseType_t autoreload = true)
-      : _name(name), _periode(periode), _autoreload(autoreload) {
-    attach(callback);
-  }
 
-  Timer(const char *name, milliseconds periode, UBaseType_t autoreload = true)
-      : _name(name), _periode(periode), _autoreload(autoreload) {}
+  Timer(const char *name, milliseconds changePeriode);
 
-  void attach(TimerCallbackFunction_t callback) {
-    _id = &_handler;
-    _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), _autoreload, _id, callback);
-    start();
-  }
+  ~Timer();
 
-  void start() { xTimerStart(_handler, portMAX_DELAY); }
+  /**
+   * @brief    Attach the handler callback on timer
+   * @details  Affter instanciate the timer still not running
+   *           and must have an handler attached to enter in execution and be started
+   * @param    callback  Function callback to handler the timer execution
+   * @param autoReload If autoReload is set to true then the timer will
+   * expire repeatedly with a frequency set by the period parameter.
+   * If autoReload is set to false then the timer will be a one-shot timer and
+   * enter the dormant state after it expires.
+   * @note     The handler function must be type void and receive arg type TimerHandle_t
+   * @code
+   *           void timer_callback(TimerHandler_t arg)
+   *           {
+   * 
+   *             printf("Timer changePeriode expire =)\n");
+   * 
+   *           }
+   */
+  void attach(TimerCallbackFunction_t callback, UBaseType_t autoreload = true);
 
-  void startFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerStartFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @brief  Starts a timer that was previously attached using the
+   * rtos::Timer::attach method. If the timer had already been started and was
+   * already in the active state, then has equivalent functionality
+   * to the rtos::Timer::reset method.
+   */
+  void start();
 
-  void stop() { xTimerStop(_handler, portMAX_DELAY); }
+  /**
+   * @sa    rtos::Timer::start()
+   * @brief A version of rtos::Timer::start that can be called from an interrupt 
+   * service routine.
+   */
+  void startFromISR();
 
-  void stopFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerStopFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @brief  Stops a timer that was previously started using either of the
+   * rtos::Timer::start(), rtos::Timer::reset(), rtos::Timer::startFromISR(),
+   * rtos::Timer::resetFromISR(), rtos::Timer::period() or rtos::Timer::periodFromISR()
+   * methods.
+   */
+  void stop();
 
-  void reset() { xTimerReset(_handler, portMAX_DELAY); }
+  /**
+   * @sa     rtos::Timer::stop()
+   * @brief  A version of rtos::Timer::stop() that can be called from an interrupt 
+   * service routine.
+   */
+  void stopFromISR();
 
-  void resetFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTimerResetFromISR(_handler, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @sa     rtos::Tomar::start()
+   * @brief  Te-starts a timer that was previously created using the. 
+   * If the timer had already been started and was already in the active state, 
+   * then rtos::Timer::reset() will cause the timer to re-evaluate its expiry time 
+   * so that it is relative to when rtos::Timer::reset() was called. 
+   * @note   If the timer was in the dormant state then rtos::Timer::reset() has
+   * equivalent functionality to the rtos::Timer::start() API function.
+   */
+  void reset();
 
-  void periode(milliseconds periode) {
-    _periode = periode;
-    xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
-  }
+/**
+ * @sa    rtos::Timer::reset()
+ * @brief A version of rtos::Timer::reset() that can be called from an 
+ * interrupt service routine.
+ */
+  void resetFromISR();
+  /**
+   * @brief  Changes the period of a timer that was previously created.
+   * @param period The timer period specified in milliseconds, seconds, minutres or hours.
+   *               For example, if the timer must expire after 100 milliseconds, 
+   *               then period should be set to 100ms.
+   *               Alternatively, if the timer must expire after 5 seconds,
+   *               then period can be set to 5s. Time timer period must be greater than 0.
+   * @note   rtos::Timer::period() can be called to change the period of an active or
+   * dormant state timer.
+   */
+  void changePeriode(milliseconds periode);
 
-  void periodeFromISR(milliseconds periode) {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    _periode = periode;
-    xTimerChangePeriodFromISR(_handler, CHRONO_TO_TICK(periode), &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @sa     rtos::Timer::changePeriod()
+   * @brief  A version of rtos::Timer::changePeriod() that can be called from an interrupt
+   * service routine.
+   */
+  void changePeriodeFromISR(milliseconds periode);
 
-  milliseconds periode() { return _periode; }
+  /**
+   * @brief   Get timer periode
+   * @return  Timer periode in milliseconds type
+   * @note    Safe to use into ISR
+   */
+  milliseconds getPeriode();
 
-  bool verifyID(TimerHandle_t timer) {
-    if (pvTimerGetTimerID(timer) == _id)
-      return true;
-    return false;
-  }
+  /**
+   * @brief   Get timer periode
+   * @return  Timer periode in int64_t type specified in milliseconds
+   * @note    Safe to use into ISR
+   */
+  int64_t getPeriodeIntMS();
+
+  /**
+   * @brief    Verify the timer ID
+   * @details  Each timer has a unic ID created by class during timer creation.
+   *           This method verify if timer received by callbak parameter
+   *           correspond to the timer.
+   * @return   Return true if ID of argument correspond with timer ID
+   *           Or false if don't
+   * @code
+   * rtos::Timer xTimer1("Timer one", 5s);
+   * 
+   * void xTimerCallback(TimerHandle_t xTimerArg)
+   * {
+   * 
+   *    if(xTimer1.verifyID(xTimerArg))
+   *    {
+   * 
+   *      printf("%s: event occour!\n", xTimer1.name());
+   * 
+   *    }
+   * 
+   * }
+   */
+  bool verifyID(TimerHandle_t timer);
+
+  /**
+   * @brief Deletes a timer that was previously created.
+   */
+  void timerDelete();
+
+  /**
+   * @brief   Get timer name
+   * @return  The text (human readable) name of the task
+   * @note    Safe to be called in ISR, but not usable =P
+   */
+  const char *name();
 
 private:
-  TimerHandle_t _handler;
+
+  /**
+   * @var    _handle
+   * @brief  Keep task handle into object to easy access
+   */
+  TimerHandle_t _handler = NULL;
+
+  /**
+   * @var    _name
+   * @brief  Pointer to keep task name into object to easy access
+   */
   const char *_name;
+
+  /**
+   * @var    _periode
+   * @brief  Keep timer periode into object to easy access
+   */
   milliseconds _periode;
-  UBaseType_t _autoreload;
-  void* _id;
-};
+
+}; // class Timer
 
 } // namespace rtos
 

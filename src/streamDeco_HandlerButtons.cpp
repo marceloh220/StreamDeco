@@ -32,8 +32,8 @@ namespace streamDeco
    * @brief   Handle the buttons task to manager buttons events
    * @details The events can generate a keyboard code to send to computer throug BLE Bluetooth
    *          or change StreamDeco configurations
-   */
-  void handleButtons(arg_t arg)
+   **/
+  void handleButtons(taskArg_t task_arg)
   {
 
     /**
@@ -44,7 +44,7 @@ namespace streamDeco
      *           int lcd_bright
      * @note     This arg reside on heap and is passed in attach method during StreamDeco::init
      **/
-    settings_t *settings = (settings_t *)arg;
+    settings_t *settings = static_cast<settings_t*>(task_arg);
 
     while (1)
     {
@@ -53,8 +53,13 @@ namespace streamDeco
        * this notification is sent by LVGL button with a event code */
       uint32_t button_event = task.buttons.takeNotify();
 
+      /* BleKeyboard uses serial interface to make verbose things */
+      streamDeco::mutex_serial.take();
+
       /* function in streamDeco_shortcuts.cpp */
       process_event(button_event, settings);
+
+      streamDeco::mutex_serial.give();
 
       /**
        * if some event is received the UI is not inactive
@@ -64,7 +69,7 @@ namespace streamDeco
       timer_ui.backlight.reset();
       timer_ui.uiReset.reset();
 
-      rtos::delay(100ms);
+      rtos::sleep(100ms);
 
     } // end handleButtons's infinit loop
 

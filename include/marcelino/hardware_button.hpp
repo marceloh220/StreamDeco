@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _BUTTOM_HPP_
-#define _BUTTOM_HPP_
+#ifndef __HARDWARE_BUTTOM_HPP__
+#define __HARDWARE_BUTTOM_HPP__
 
 #include "freertos/projdefs.h"
 #include "hardware_input.hpp"
@@ -46,7 +46,7 @@ public:
     }
     else if (!state && _lock)
     {
-      rtos::delay(_debounce);
+      rtos::sleep(_debounce);
       if (!Input::read())
       {
         _lock = false;

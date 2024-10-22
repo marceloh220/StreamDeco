@@ -63,13 +63,13 @@ void TAMC_GT911::setResolution(uint16_t _width, uint16_t _height) {
 void TAMC_GT911::read(void) {
   // Serial.println("TAMC_GT911::read");
   uint8_t data[7];
-  uint8_t id;
-  uint16_t x, y, size;
+  //uint8_t id;
+  //uint16_t x, y, size;
 
   uint8_t pointInfo = readByteData(GT911_POINT_INFO);
   uint8_t bufferStatus = pointInfo >> 7 & 1;
-  uint8_t proximityValid = pointInfo >> 5 & 1;
-  uint8_t haveKey = pointInfo >> 4 & 1;
+  //uint8_t proximityValid = pointInfo >> 5 & 1;
+  //uint8_t haveKey = pointInfo >> 4 & 1;
   isLargeDetect = pointInfo >> 6 & 1;
   touches = pointInfo & 0xF;
   // Serial.print("bufferStatus: ");Serial.println(bufferStatus);

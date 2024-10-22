@@ -104,3 +104,6 @@ Can I change icons?
 Can I change command shortcuts?
    YES. In file streamDeco_shortcuts.cpp the shortcuts code are sended.
 
+Additional terms of use:
+
+    You can only use this project if you accept the name StreamDeco as the legitimate name of the product. It's not Stream Deck, it's not iDeck and it's not Google Deck. The name is StreamDeco!

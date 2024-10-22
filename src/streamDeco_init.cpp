@@ -25,11 +25,18 @@
 
 #include "streamDeco_objects.hpp"
 #include "streamDeco_handlers.hpp"
-#include "streamDeco_interrupts.hpp"
+#include "streamDeco_timerCallback.hpp"
 #include "streamDeco_icons.h"
 
 namespace streamDeco
 {
+
+  /**
+   * @brief    Synchronizes ESP32-RTC with Computer clock
+   * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
+   * @param    tryes - number of attemps to try sinchron clock with computer
+   */
+  void synchro_clock(int tryes);
 
   /**
    * @brief   Init StreamDeco
@@ -46,6 +53,8 @@ namespace streamDeco
      * @details  lv_color_t color_background
      *           lv_palette_t color_buttons
      *           int lcd_bright
+     * @note     This settings is passed to handleButtons task
+     *           so need be allocate into heap
      **/
     settings_t *settings = new settings_t;
 
@@ -74,7 +83,7 @@ namespace streamDeco
     startScreen_icon.set_src(&keyboard_simp);
     lvgl::screen::refresh();
 
-    rtos::delay(1s); /* see my icon =) */
+    rtos::sleep(1s); /* see my icon =) */
 
     /* start bluetooth keyboard interface */
     bleKeyboard.begin();
@@ -84,7 +93,7 @@ namespace streamDeco
     startScreen_icon.set_src(&bluetooth_simp);
     lvgl::screen::refresh();
 
-    rtos::delay(500ms); /* see more icon =) */
+    rtos::sleep(500ms); /* see more icon =) */
 
     /* try connection, while you see icons and text =) */
     while (1)
@@ -93,10 +102,21 @@ namespace streamDeco
       {
         break;
       }
-      rtos::delay(2s);
+      rtos::sleep(2s);
     }
 
-    /* delete apresentation icons and text =( */
+    /* change icon to waiting StreamDeco monitor Synchronization */
+    startScreen_label.set_text("Start StreamDeco monitor");
+    startScreen_icon.set_src(&keyboard_simp);
+    lvgl::screen::refresh();
+
+    /** See more icon =) */
+    rtos::sleep(1s);
+
+    /* make 40 tryes to synchro clock with StreamDeco monitor application */
+    synchro_clock(40);
+
+    /* delete apresentation icons and text, sad =( */
     startScreen_icon.del();
     startScreen_label.del();
     lvgl::screen::refresh();
@@ -235,7 +255,7 @@ namespace streamDeco
 
     button.sysmonitor.create(canvas.configurations, 6);
     button.sysconfig.create(canvas.configurations, 7);
-    button.shutdown.create(canvas.configurations, 8);
+    button.reboot.create(canvas.configurations, 8);
 
     /* register the events of buttons */
     button.volmut.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_volmut_event);
@@ -248,7 +268,7 @@ namespace streamDeco
 
     button.sysmonitor.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_sysmonitor_event);
     button.sysconfig.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_sysconfig_event);
-    button.shutdown.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_shutdown_event);
+    button.reboot.callback(buttons_callback, LV_EVENT_PRESSED, configuration_canvas_reboot_event);
 
     /* configure slider bright */
     slider.backlightbright_slider.create(canvas.configurations);
@@ -299,9 +319,14 @@ namespace streamDeco
     monitor.clock.set_pos(14 + 280 + 14, 25 + 200 + 20);
 
     /* register ISR to handle with timer_ui.backlight and uiResetTimer event */
-    timer_ui.backlight.attach(isr_timer);
-    timer_ui.uiReset.attach(isr_timer);
+    timer_ui.backlight.attach(timer_callback);
+    timer_ui.uiReset.attach(timer_callback);
 
+    /* start timer_ui.backlight and uiResetTimer */
+    timer_ui.backlight.start();
+    timer_ui.uiReset.start();
+
+  /* attach tasks handlers and start them */
     task.buttons.attach(handleButtons, settings);
     task.uiReset.attach(handleUiReset);
     task.monitor.attach(handleMonitor);

@@ -55,28 +55,28 @@ namespace streamDeco
      * @brief    Task buttons
      * @details  Task to manager buttons configurations and events
      **/
-    rtos::Task buttons;
+    rtos::TaskStatic<STACK_BUTTONS_SIZE> buttons;
     
     /**
      * @var      uiReset
      * @brief    Task uiReset
      * @details  Task to hidde inactivities canvas
      **/
-    rtos::Task uiReset;
+    rtos::TaskStatic<1024> uiReset;
     
     /** 
      * @var      monitor
      * @brief    Task monitor
      * @details  Task to show computer metrics on monitor canvas
      **/
-    rtos::Task monitor;
+    rtos::TaskStatic<3*1024> monitor;
     
     /**
      * @var      clock
      * @brief    Task clock
      * @details  Task to update clock
      **/
-    rtos::Task clock;
+    rtos::TaskStatic<3*1024> clock;
   } task_t;
 
   /**
@@ -112,7 +112,7 @@ namespace streamDeco
      * @details  and return to Main screen in inactivitie
      * @note     The timer value can be change in file streamDeco_objects.cpp
      **/
-    rtos::Timer uiReset;
+    rtos::TimerStatic uiReset;
     
     /** 
      * @var      backlight
@@ -120,7 +120,7 @@ namespace streamDeco
      * @details  Timer to reduce screen backlight in inactivitie
      * @note     The timer value can be change in file streamDeco_objects.cpp
     */
-    rtos::Timer backlight;
+    rtos::TimerStatic backlight;
   } timer_t;
 
   /**
@@ -487,11 +487,11 @@ namespace streamDeco
     configButton sysconfig;
 
     /**
-     * @var      shutdown
-     * @brief    Shutdown button
-     * @details  This button is supposed to shutdown on computer
+     * @var      reboot
+     * @brief    Reboot button
+     * @details  This button is supposed to restart StreamDeco
      **/
-    configButton shutdown;
+    configButton reboot;
 
   } button_t;
 
@@ -590,7 +590,7 @@ namespace streamDeco
    * @brief  Reference to serial interface mutex
    * @note   Used to avoid Monitor and Clock task uses Serial interface in same time
    */
-  extern rtos::Mutex mutex_serial;
+  extern rtos::MutexRecursiveStatic mutex_serial;
 
   /**
    * @enum     event_e
@@ -599,6 +599,8 @@ namespace streamDeco
    **/
   enum event_e
   {
+
+    nothing_event,
 
     /* --- MAIN CANVAS EVENTS --- */
     terminal_event,

@@ -29,6 +29,7 @@
 #include "esp_log.h"
 
 #include "marcelino/rtos_chrono.hpp"
+#include "marcelino/hardware_esp.hpp"
 
 #include "marcelino/hardware_button.hpp"
 #include "marcelino/hardware_gpio.hpp"
@@ -37,11 +38,17 @@
 #include "marcelino/hardware_output.hpp"
 
 #include "marcelino/rtos_eventGroup.hpp"
+#include "marcelino/rtos_eventGroup_static.hpp"
 #include "marcelino/rtos_mutex.hpp"
+#include "marcelino/rtos_mutex_static.hpp"
 #include "marcelino/rtos_queue.hpp"
+#include "marcelino/rtos_queue_static.hpp"
 #include "marcelino/rtos_semaphore.hpp"
+#include "marcelino/rtos_semaphore_static.hpp"
 #include "marcelino/rtos_task.hpp"
+#include "marcelino/rtos_task_static.hpp"
 #include "marcelino/rtos_timer.hpp"
+#include "marcelino/rtos_timer_static.hpp"
 
 #include "lvgl/lvgl_arc.hpp"
 #include "lvgl/lvgl_bar.hpp"

@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __INTERRUPT_HPP__
-#define __INTERRUPT_HPP__
+#ifndef __HARDWARE_INTERRUPT_HPP__
+#define __HARDWARE_INTERRUPT_HPP__
 
 #include "hardware_input.hpp"
 
@@ -44,16 +44,16 @@ public:
   Interrupt(gpio_num_t pin, Input::mode_t mode, void function(void *),
             interrupt_t interrupt, void *arg)
       : GPIO(pin, (GPIO::mode_t)mode) {
-    GPIO::attach(function, (GPIO::interrupt_t)interrupt, arg);
+    GPIO::interruptAttach(function, (GPIO::interrupt_t)interrupt, arg);
   }
 
   [[nodiscard]] inline gpio_num_t pinName() { return GPIO::pinName(); }
 
   inline void attach(void function(void *), interrupt_t interrupt, void *arg) {
-    GPIO::attach(function, (GPIO::interrupt_t)interrupt, arg);
+    GPIO::interruptAttach(function, (GPIO::interrupt_t)interrupt, arg);
   }
 
-  inline void dettach() { GPIO::dettach(); }
+  inline void dettach() { GPIO::interruptDettach(); }
 
   inline void disable() { GPIO::interruptDisable(); }
 

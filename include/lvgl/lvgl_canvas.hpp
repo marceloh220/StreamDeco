@@ -30,27 +30,25 @@ class Canvas : public Object {
 
 public:
   inline void create(lv_obj_t *parent = NULL) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     if (parent == NULL)
       parent = lv_scr_act();
     object = lv_obj_create(parent);
     port::mutex_give();
-    created = true;
   }
 
   inline void create(Object &parent) {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     object = lv_obj_create(parent.get_object());
     port::mutex_give();
-    created = true;
   }
 
   void set_bg_color(lv_color_t color) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_obj_set_style_bg_color(object, color, LV_PART_MAIN);
@@ -59,7 +57,7 @@ public:
   }
 
   void set_bg_color(lv_palette_t color) {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     lv_obj_set_style_bg_color(object, lv_palette_main(color), LV_PART_MAIN);

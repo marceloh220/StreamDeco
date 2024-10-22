@@ -29,6 +29,13 @@
 #include "freertos/task.h"
 #include "time.h"
 
+/** User literals for time
+ * us to microseconds
+ * ms to milliseconds
+ * s to seconds
+ * min to minutes
+ * h to hour
+ */
 using namespace std::literals::chrono_literals;
 
 using std::chrono::hours;
@@ -71,7 +78,8 @@ template <typename t>
   return std::chrono::duration_cast<t>(time).count();
 }
 
-inline void delay(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
+inline void sleep(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
+inline void sleep(uint32_t time) { vTaskDelay(pdMS_TO_TICKS(time)); }
 
 template <typename t>
 [[nodiscard]] inline t time()

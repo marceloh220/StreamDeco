@@ -26,7 +26,7 @@ namespace lvgl
 {
   void Button::create(lv_obj_t *parent)
   {
-    if (created)
+    if (object != NULL)
     {
       return;
     }
@@ -34,18 +34,16 @@ namespace lvgl
     if (parent == NULL)
       parent = lv_scr_act();
     object = lv_btn_create(parent);
-    created = true;
     _init();
     port::mutex_give();
   } // Button::create(lv_obj_t *parent)
 
   void Button::create(Object &parent)
   {
-    if (created)
+    if (object != NULL)
       return;
     port::mutex_take();
     object = lv_btn_create(parent.get_object());
-    created = true;
     _init();
     port::mutex_give();
   } // Button::create(Object &parent)
@@ -96,7 +94,7 @@ namespace lvgl
 
   void Button::text(const char *text)
   {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     _label.set_text(text);
@@ -105,7 +103,7 @@ namespace lvgl
 
   void Button::buttonColor(lv_palette_t color)
   {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     button.set_bg_color(lv_palette_main(color));
@@ -116,7 +114,7 @@ namespace lvgl
 
   void Button::iconColor(lv_palette_t color)
   {
-    if (!created)
+    if (object == NULL)
       return;
     port::mutex_take();
     icon.set_img_recolor(color);
@@ -125,7 +123,7 @@ namespace lvgl
 
   void Button::swapIcon()
   {
-    if (!created)
+    if (object == NULL)
       return;
     if (_icon1_scr == NULL || _icon2_scr == NULL)
       return;

@@ -29,10 +29,19 @@
 namespace streamDeco
 {
 
-  /* Synchronizes ESP32-RTC with Computer clock */
-  void synchro_clock(struct tm &tm_date)
+  /**
+   * @brief    Synchronizes ESP32-RTC with Computer clock
+   * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
+   * @param    tryes - number oa ttemps to try sinchron clock with computer
+   */
+  void synchro_clock(int tryes)
   {
+    
+    int attempts = 0;
+    struct tm tm_date = {0};
+    
     mutex_serial.take();
+
     while (1)
     {
       if (Serial.available())
@@ -74,21 +83,29 @@ namespace streamDeco
         time_epoch.tv_sec = time_local;
         time_epoch.tv_usec = 0;
         settimeofday(&time_epoch, NULL);
+        monitor.clock.set_time(tm_date);
+
         break;
+      
       } // Serial.avaliable
-      rtos::delay(100ms);
+      
+      attempts++;
+      if(attempts > tryes) break;
+      rtos::sleep(1s);
+    
     } // loop check time
+    
     mutex_serial.give();
+  
   }
 
   /* Handle the clock task,
    * update clock time on Monitor canvas */
-  void handleClock(arg_t arg)
+  void handleClock(taskArg_t task_arg)
   {
+
     struct tm tm_date = {0};
     int count = 0;
-    synchro_clock(tm_date);
-    synchro_clock(tm_date);
 
     while (1)
     {
@@ -97,14 +114,13 @@ namespace streamDeco
 
       if(count == (10*60)) {
         count = 0;
-        synchro_clock(tm_date);
-        synchro_clock(tm_date);
+        synchro_clock(40);
       }
 
       getLocalTime(&tm_date);
       monitor.clock.set_time(tm_date);
 
-      rtos::delay(500ms);
+      rtos::sleep(500ms);
     }
   }
 

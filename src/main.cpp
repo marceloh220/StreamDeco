@@ -21,6 +21,7 @@
 
 #include "marcelino.hpp"
 #include "streamDeco_init.hpp"
+#include "streamDeco_objects.hpp"
 
 void setup()
 {
@@ -29,13 +30,21 @@ void setup()
 
   lvgl::port::init();
   streamDeco::init();
+
 }
 
 void loop()
 {
+#if 0
+  static int test_count = 0;
 
+  streamDeco::mutex_serial.take();
   lvgl::port::print_task_memory_usage();
   streamDeco::print_task_memory_usage();
+  printf("Test Cycle: %d\n", test_count++);
+  streamDeco::mutex_serial.give();
+#endif
 
-  rtos::delay(10s);
+  rtos::sleep(10s);
+
 }

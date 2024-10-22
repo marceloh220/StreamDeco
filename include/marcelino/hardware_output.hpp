@@ -19,21 +19,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _OUTPUT_HPP_
-#define _OUTPUT_HPP_
+#ifndef __HARDWARE_OUTPUT_HPP__
+#define __HARDWARE_OUTPUT_HPP__
 
 #include "driver/gpio.h"
 #include "esp_rom_gpio.h"
 #include "hal/gpio_types.h"
 
 #include "hardware_gpio.hpp"
-
-#undef LOW
-#undef HIGH
-#undef INPUT
-#undef OUTPUT
-#undef INPUT_PULLUP
-#undef INPUT_PULLDOWN
 
 namespace hardware {
 

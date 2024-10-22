@@ -30,7 +30,7 @@ namespace streamDeco
 
   /* Handle the monitor task,
    * show computer metrics on configure pinned canvas */
-  void handleMonitor(arg_t arg)
+  void handleMonitor(taskArg_t task_arg)
   {
 
     while (1)
@@ -75,7 +75,7 @@ namespace streamDeco
       }
       mutex_serial.give();
 
-      rtos::delay(1s);
+      rtos::sleep(1s);
     }
   }
 

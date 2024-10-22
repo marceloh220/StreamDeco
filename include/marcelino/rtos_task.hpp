@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _TASK_HPP_
-#define _TASK_HPP_
+#ifndef _RTOS_TASK_HPP_
+#define _RTOS_TASK_HPP_
 
 #include "esp_err.h"
 #include "esp_log.h"
@@ -31,170 +31,313 @@
 
 #include "rtos_chrono.hpp"
 
-typedef void *arg_t;
+/**
+ * @typedef  taskArg_t
+ * @brief    Parameters passed to task handler
+ */
+typedef void *taskArg_t;
 
+/**
+ * @namespace  rtos
+ * @brief      Name space with freeRTOS functions
+ */
 namespace rtos {
 
+/**
+ * @class    Task
+ * @brief    Create a new task.
+ * @details  This class is similar to xTaskCreate in a self conteined object 
+ * @details  with all proprieties needed by a task in SMP system.
+ *
+ * @param name A descriptive name for the task.  This is mainly used to
+ * facilitate debugging.  Max length defined by configMAX_TASK_NAME_LEN - default
+ * is 16.
+ *
+ * @param priority The priority at which the task should run. Systems that
+ * include MPU support can optionally create tasks in a privileged (system)
+ * mode by setting bit portPRIVILEGE_BIT of the priority parameter. For example,
+ * to create a privileged task at priority 2 the uxPriority parameter
+ * should be set to ( 2 | portPRIVILEGE_BIT ).
+ * 
+ * @param stackSize The size of the task stack specified as the number of
+ * bytes. Note that this differs from vanilla FreeRTOS.
+ *
+ * @param core If the value is tskNO_AFFINITY, the created task is not
+ * pinned to any CPU, and the scheduler can run it on any core available.
+ * Values 0 or 1 indicate the index number of the CPU which the task should
+ * be pinned to. Specifying values larger than (portNUM_PROCESSORS - 1) will
+ * cause the function to fail.
+ * 
+ * @code
+ * rtos::Task task_one("Task One");
+ * 
+ * rtos::Task task_two("Task Two");
+ * 
+ * void task_handler(taskArg_t arg)
+ * {
+ * 
+ *     while(true)
+ *     {
+ * 
+ *          printf("Runing: %s\n", static_cast<const char*>(arg));
+ * 
+ *          rtos::sleep(1s);
+ * 
+ *     }
+ * 
+ * }
+ * 
+ * extern 'C' main_app()
+ * {
+ * 
+ *    task_one.attach(task_handler, task_one.name());
+ * 
+ *    task_two.attach(task_handler, task_two.name());
+ * 
+ * } 
+ *
+ */
 class Task {
-
 public:
   typedef enum pinCore {
     CORE_0,
     CORE_1,
-    NO_AFINITY,
+    NO_AFINITY = tskNO_AFFINITY,
   } pinCore_t;
 
-  Task(TaskFunction_t callback, const char *name, UBaseType_t priority = 0, uint32_t stackSize = 6 * 1024, arg_t args = NULL, pinCore_t core = NO_AFINITY)
-      : _callback(callback), _name(name), _priority(priority), _core(core),
-        _stackSize(stackSize), _args(args) {
-    attach(_callback, args);
+  Task(const char *name, UBaseType_t priority = 2, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY);
+
+  /**
+   * @brief Remove a task from the RTOS real time kernel's management
+   */
+  ~Task();
+
+  /**
+   * @brief    Attach the handler callback on task
+   * @details  Affter instanciate the task still not running
+   *           and must have an handler attached to enter in execution
+   * @param    callback  Function callback to handler the task execution
+   * @param    args      Parameter that can be passed to task handler
+   * @note     The handler function must be type void and receive arg type taskArg_t
+   *           and are not allowed to return, running into a infinit loop.
+   * @code
+   *           void task_handler(taskArg_t arg)
+   *           {
+   *                while(true)
+   *                {
+   * 
+   *                   printf("Task runing =)\n");
+   * 
+   *                   rtos::sleep(1s);
+   * 
+   *                }
+   * 
+   *           }
+   */
+  void attach(TaskFunction_t callback, taskArg_t args = NULL);
+
+  /**
+   * @see      rtos::Task::attach(TaskFunction_t callback, taskArg_t args)
+   * @brief    Shortcut template to attach method
+   * @details  Work as attach function but receivint any type of args with auto convertion
+   */
+  template <typename T>
+  void attach(TaskFunction_t callback, T args) {
+    attach(callback, (taskArg_t)args);
   }
 
-  Task(const char *name, UBaseType_t priority = 0, uint32_t stackSize = 2 * 1024, pinCore_t core = NO_AFINITY)
-      : _name(name), _priority(priority), _core(core), _stackSize(stackSize) {}
+  /**
+   * @see      rtos::Task::takeNotify()
+   * @see      rtos::Task::takeNotify(millisecond time)
+   * @brief    Sends a direct to task notification to task
+   * @details  The task will wait for a notification using method takeNotify
+   * @param    notification  Data index sended to notify task
+   * @note     Similar to giving a counter semaphore
+  */
+  void sendNotify(uint32_t notification);
 
-  ~Task() { taskDelete(); }
+  /**
+   * @see      rtos::Task::takeNotify()
+   * @see      rtos::Task::takeNotify(millisecond time)
+   * @brief    Sends a direct to task notification to task from a ISR
+   * @details  The task will wait for a notification using method takeNotify
+   * @param    notification  Data index sended to notify task
+   * @note     Similar to giving a counter semaphore
+  */
+  void sendNotifyFromISR(uint32_t notification);
 
-  inline void attach(TaskFunction_t callback, arg_t args = NULL) {
-    if (_created)
-      return;
-    _callback = callback;
-    _args = args;
-    esp_err_t error;
-    if (_core == NO_AFINITY) {
-      error =
-          xTaskCreate(_callback, _name, _stackSize, _args, _priority, &_handle);
-    } else
-      error = xTaskCreatePinnedToCore(_callback, _name, _stackSize, _args,
-                                      _priority, &_handle, _core);
-    if (error == pdPASS) {
-      ESP_LOGI(_name, "Task created");
-      _created = true;
-    } else {
-      ESP_LOGE(_name, "Task faill in creation");
-    }
-  }
+  /**
+   *
+   * @brief    Wait until task receive a notification
+   * @return   Unsigned interger number with notification passed
+   * @note     Similar to waiting for a counter semaphore
+   *           The task will not consume any processing time while 
+   *           it is in the Blocked state
+  */
+  uint32_t takeNotify();
 
-  inline void sendNotify() {
-    if (!_created)
-      return;
-    xTaskNotifyGive(_handle);
-  }
+  /**
+   * @brief    Wait until task receive a notification until the passed time
+   * @param    time  Time to wait notification be received
+   * @return   Unsigned interger number with notification passed
+   *           Return 0 in the end of block time
+   * @note     Similar to waiting for a counter semaphore
+   *           The task will not consume any processing time while 
+   *           it is in the Blocked state, run in the end of this time
+  */
+  uint32_t takeNotify(milliseconds time);
 
-  inline void sendNotify(uint32_t sendBit) {
-    if (!_created)
-      return;
-    xTaskNotify(_handle, sendBit, eSetBits);
-  }
+  /**
+   * @brief   Put task in Blocked until a specified time.
+   * @details This method can be used by periodic
+   *          tasks to ensure a constant execution frequency.
+   * @param time The cycle time period. The task will be unblocked at
+   *             time last sleep time + time. Calling sleepUntil with the
+   *             same time parameter value will cause the task to execute with
+   *             a fixed interface period.
+   */
+  void sleepUntil(milliseconds time);
 
-  inline void sendNotifyFromISR() {
-    if (!_created)
-      return;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @brief   Wakeup the task from a sleep changing they state from Blocked to Ready.
+   * @return  If the task was not in the Blocked state then pdFAIL is returned.
+   *          Otherwise pdPASS is returned.
+   */
+  BaseType_t wakeup();
 
-  inline void sendNotifyFromISR(uint32_t sendBit) {
-    if (!_created)
-      return;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTaskNotifyFromISR(_handle, sendBit, eSetBits, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-  }
+  /**
+   * @brief    Suspend the task.
+   * @details  When suspended a task will never get any microcontroller
+   *           processing time, no matter what its priority.
+   * @note     A suspended task can be resumed with resume method
+   *           Calls to suspend are not accumulative -
+   *           i.e. calling suspend() twice on the same task still only requires one
+   *           call to resume() to ready the suspended task.
+   */
+  void suspend();
 
-  inline uint32_t takeNotify() { return ulTaskNotifyTake(true, portMAX_DELAY); }
+  /**
+   * @brief    Resumes a suspended task.
+   * @details  A task that has been suspended by one or more calls to suspend()
+   *           will be made available for running again by a single call to
+   *           resume().
+   */
+  void resume();
 
-  inline uint32_t takeNotify(TickType_t time) {
-    return ulTaskNotifyTake(true, pdMS_TO_TICKS(time));
-  }
+  /**
+   * @brief    Resumes a suspended task that can be called from within an ISR.
+   * @details  A task that has been suspended by one or more calls to suspend()
+   *           will be made available for running again by a single call to
+   *           resume().
+   */
+  void resumeFromISR();
 
-  inline void delayUntil(milliseconds time) {
-    vTaskDelayUntil(&previousTime, CHRONO_TO_TICK(time));
-  }
+  /**
+   * @brief Remove a task from the RTOS real time kernel's management. The task being
+   * deleted will be removed from all ready, blocked, suspended and event lists.
+   *
+   * @note The idle task is responsible for freeing the kernel allocated
+   * memory from tasks that have been deleted. It is therefore important that
+   * the idle task is not starved of microcontroller processing time if your
+   * application makes any calls to taskDelete.
+   */
+  void taskDelete();
+  
+  /**
+   * @brief   Get task name
+   * @return  The text (human readable) name of the task
+   * @note    Safe to be called in ISR, but not usable =P
+   */
+  inline const char *name() {return _name;}
 
-  inline BaseType_t abortDelay() {
-    if (!_created)
-      return 0;
-    return xTaskAbortDelay(_handle);
-  }
+  /**
+   * @brief  Set the priority of task.
+   * @param  priority The priority to which the task will be set.
+   * @note   A context switch will occur before the method returns if the priority
+   *         being set is higher than the currently executing task.
+   */
+  void priority(UBaseType_t priority);
 
-  template <typename type> inline void call(type parameter = NULL) {
-    xTaskCallApplicationTaskHook(_handle, (void*)parameter);
-  }
+  /**
+   * @brief   Get the priority of task.
+   * @return  The priority of task
+   * @note    Higher number means higher priority
+   */
+  inline UBaseType_t priority() {return _priority;}
 
-  inline void suspend() {
-    if (!_created)
-      return;
-    vTaskSuspend(_handle);
-  }
+  /**
+   * @brief   Get the priority of task that can be called from within an ISR.
+   * @return  The priority of task
+   * @note    Higher number means higher priority
+   */
+  inline UBaseType_t priorityFromISR() {return _priority;}
 
-  inline void resume() {
-    if (!_created)
-      return;
-    vTaskResume(_handle);
-  }
+  /**
+   * @brief   Get task stack size specified as the number of bytes.
+   * @return  Unsigned integer number of stack size specified as the number of bytes.
+   * @note    Safe to be called in ISR
+   */
+  inline uint32_t stackSize() {return _stackSize;}
 
-  inline BaseType_t resumeFromISR() {
-    if (!_created)
-      return 0;
-    return xTaskResumeFromISR(_handle);
-  }
+  /**
+   * @brief   Get core where task are pinned
+   * @return  Core where task are pinned
+   * @note    Safe to be called in ISR
+   */
+  inline pinCore_t core() {return static_cast<pinCore_t>(_core);}
 
-  inline void taskDelete() {
-    if (!_created)
-      return;
-    vTaskDelete(_handle);
-    _created = false;
-  }
+  /**
+   * @brief   Get task memory used in stack specified as the number of bytes.
+   * @return  Unsigned integer number of stack memory used specified as the number of bytes.
+   * @note    NSFI - Not Safe For ISR
+   */
+  uint32_t memUsage();
 
-  inline const char *name() { return _name; }
-
-  inline UBaseType_t priority() { return _priority; }
-  inline UBaseType_t priorityFromISR() { return _priority; }
-
-  inline void priority(UBaseType_t priority) {
-    if (!_created)
-      return;
-    _priority = priority;
-    vTaskPrioritySet(_handle, priority);
-  }
-
-  inline uint32_t stackSize() { return _stackSize; }
-
-  template <typename type> inline type args() {
-    return static_cast<type>(_args);
-  }
-
-  template <typename type> inline void args(type args) {
-    _args = static_cast<arg_t>(args);
-  }
-
-  inline BaseType_t core() { return _core; }
-
-  inline uint32_t memUsage() {
-    if (!_created)
-      return 0;
-    return _stackSize - uxTaskGetStackHighWaterMark(_handle);
-  }
-
-  inline uint32_t memFree() {
-    if (!_created)
-      return 0;
-    return uxTaskGetStackHighWaterMark(_handle);
-  }
+  /**
+   * @brief   Get task memory avaliable in stack specified as the number of bytes.
+   * @return  Unsigned integer number of stack memory avaliable specified as the number of bytes.
+   * @note    NSFI - Not Safe For ISR
+   */
+  uint32_t memFree();
 
 private:
-  TaskFunction_t _callback;
+  /**
+   * @var    _name
+   * @brief  Pointer to keep task name into object to easy access
+   */
   const char *_name;
+
+  /**
+   * @var    _priority
+   * @brief  Keep task priority into object to easy access
+   */
   UBaseType_t _priority;
+
+  /**
+   * @var    _core
+   * @brief  Keep task pinned core into object to easy access
+   */
   UBaseType_t _core;
+
+  /**
+   * @var    _stackSize
+   * @brief  Keep task stack size into object to easy access
+   */
   uint32_t _stackSize;
-  arg_t _args;
-  TaskHandle_t _handle;
-  bool _created = false;
-  TickType_t previousTime = 0;
-};
+
+  /**
+   * @var    _handle
+   * @brief  Keep task handle into object to easy access
+   */
+  TaskHandle_t _handle = NULL;
+
+  /**
+   * @var    _previousTime
+   * @brief  Previous time used to call sleepUntil method
+   */
+  TickType_t _previousTime = 0;
+  
+}; // class Task
 
 } // namespace rtos
 

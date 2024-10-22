@@ -40,6 +40,15 @@ namespace streamDeco
         switch (button_event)
         {
 
+        /**
+         * @brief    Nothing happens
+         * @details  If nothing happens, do nothing is the better option
+         * @note     If nothing happens, do nothing is the better option
+         */
+        case nothing_event:
+            /* do nothing */
+            break;
+
             /* --- MAIN CANVAS --- */
 
             /* First row buttons */
@@ -51,9 +60,9 @@ namespace streamDeco
              **/
         case terminal_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_F1);
-            rtos::delay(10ms);
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(KEY_RETURN);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -64,7 +73,7 @@ namespace streamDeco
         case files_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press('e');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -82,9 +91,9 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows 11 and Linux KDE Plasma
          **/
         case search_event:
-            bleKeyboard.press(KEY_LEFT_ALT);
-            bleKeyboard.press(' ');
-            rtos::delay(10ms);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('s');
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -172,7 +181,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_F2);
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.desktop_mode.swapIcon();
             button.desktop_mode.pinned() ? button.desktop_mode.unpin() : button.desktop_mode.pin();
@@ -229,7 +238,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ARROW);
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -242,7 +251,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_RIGHT_ARROW);
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -256,7 +265,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press('t');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.pin.swapIcon();
             button.pin.pinned() ? button.pin.unpin() : button.pin.pin();
@@ -270,7 +279,7 @@ namespace streamDeco
         #if 0
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press('l');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
         #endif
             break;
@@ -344,7 +353,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('9');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -356,7 +365,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('0');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -368,7 +377,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('8');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -378,9 +387,9 @@ namespace streamDeco
          **/
         case applications_canvas_app4_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('f');
-            rtos::delay(10ms);
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press('c');
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -390,9 +399,9 @@ namespace streamDeco
          **/
         case applications_canvas_app5_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('g');
-            rtos::delay(10ms);
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press('t');
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -412,7 +421,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('b');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -424,7 +433,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('u');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -436,7 +445,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('s');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -450,7 +459,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('e');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.mult1.swapIcon();
             button.mult1.pinned() ? button.mult1.unpin() : button.mult1.pin(); 
@@ -464,7 +473,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('m');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.mult2.swapIcon();
             button.mult2.pinned() ? button.mult2.unpin() : button.mult2.pin();
@@ -478,7 +487,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('c');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.mult3.swapIcon();
             button.mult3.pinned() ? button.mult3.unpin() : button.mult3.pin();
@@ -492,7 +501,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('r');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -504,7 +513,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('t');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -516,7 +525,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('k');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -528,7 +537,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('i');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -540,7 +549,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('o');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -552,7 +561,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('p');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -614,7 +623,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_ESC);
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 
@@ -626,6 +635,8 @@ namespace streamDeco
         case configuration_canvas_sysconfig_event:
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press('i');
+            rtos::sleep(10ms);
+            bleKeyboard.releaseAll();
             break;
 
         /** @brief    Reboot button is pressed
@@ -633,11 +644,7 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_reboot_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('2');
-            rtos::delay(10ms);
-            bleKeyboard.releaseAll();
+            esp::system::reset();
             break;
 
         /** @brief    Shuntdown button is pressed
@@ -648,7 +655,7 @@ namespace streamDeco
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('k');
-            rtos::delay(10ms);
+            rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
 

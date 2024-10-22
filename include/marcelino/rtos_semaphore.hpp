@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _SEMAPHORE_HPP_
-#define _SEMAPHORE_HPP_
+#ifndef _RTOS_SEMAPHORE_HPP_
+#define _RTOS_SEMAPHORE_HPP_
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -28,34 +28,108 @@
 
 namespace rtos {
 
+/**
+ * @sa       Task
+ * @brief    Creates a new semathore instance
+ * @details  Internally, within the FreeRTOS implementation, counting semaphores use a
+ * block of memory, in which the counting semaphore structure is stored. If a 
+ * counting semaphore is created using rtos::Semaphore then the required 
+ * memory is automatically dynamically allocated inside the object.
+ * @param    count The maximum count value that can be reached. 
+ * When the semaphore reaches this value it can no longer be 'given'.
+ * @param    initialValue The count value assigned to the semaphore when it is created.
+ * @code
+ * rtos::Task task_receiver("Task Receiver");
+ * 
+ * rtos::Semaphore semaphore;
+ * 
+ * void task_receiver_handler(taskStaticArg_t arg) {
+ * 
+ *  int counter = 0;
+ * 
+ *  while(true) {
+ *    
+ *    if(semaphore.take(500ms)) {
+ * 
+ *      printf("Semaphore received\n");
+ *    
+ *    } else {
+ *    
+ *      printf("Semaphore not received\n");
+ *    
+ *    }
+ *    
+ *  }
+ * 
+ * }
+ * 
+ * extern "C" app_main() {
+ *  
+ *  task_receiver.attach(task_receiver_handler);
+ * 
+ *  while(true) {
+ *  
+ *    semaphore.give();
+ *  
+ *    rtos::sleep(1s);
+ * 
+ *  }
+ * 
+ * }
+ */
 class Semaphore {
+
 public:
-  Semaphore(int count = 1, int initialValue = 0) {
-    if (count > 1)
-      _handle = xSemaphoreCreateCounting(count, initialValue);
-    else
-      _handle = xSemaphoreCreateBinary();
-  }
 
-  ~Semaphore() { vSemaphoreDelete(_handle); }
+  Semaphore(int count = 1, int initialValue = 0);
+  ~Semaphore();
 
-  inline BaseType_t take() { return xSemaphoreTake(_handle, portMAX_DELAY); }
+  /**
+   * @brief  Delete a semaphore. This function must be used with care,
+   * the task waiting for the semaphore will be blocked forever and ever.
+   * And ever... and ever.. and ever... and ever... and ever...
+   * I dont eve know why I left this method herer LOLOLOLOLOL
+   */
+  void semaphoreDelete();
 
-  inline BaseType_t take(milliseconds timeout) {
-    return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
-  }
+  /**
+   * @sa      giveFromISR()
+   * @brief   Release a semaphore. The semaphore must be obtained using take().
+   * @return  pdTRUE if the semaphore was released
+   *          pdFALSE if an error occurred
+   * @note    This macro must not be used from an ISR. See giveFromISR() for
+   * an alternative which can be used from an ISR.
+   */
+  bool give();
 
-  inline BaseType_t give() { return xSemaphoreGive(_handle); }
+  /**
+   * @brief   Release a semaphore. It is safe to use this function from
+   * within an interrupt service routine.
+   * @return  pdTRUE if the semaphore was released
+   *          pdFALSE if an error occurred
+   */
+  BaseType_t giveFromISR();
 
-  inline BaseType_t giveFromISR() {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    return ret;
-  }
+  /**
+   * @brief    Obtain a semaphore
+   * @details  Block the task until semaphore be received
+   * @return   This return is not utilizable, only for legacy  compatibility
+   */
+  bool take();
+
+  /**
+   * @brief    Obtain a semaphore
+   * @details  Block the task until semaphore be received or timeout expire
+   * @param    timeout The time in ticks to wait for the semaphore to become available
+   * @return   pdTRUE if the semaphore was obtained
+   *           pdFALSE if timeout expired without the semaphore becoming available
+   */
+  bool take(milliseconds timeout);
 
 private:
-  SemaphoreHandle_t _handle;
+
+  SemaphoreHandle_t _handle = NULL;
+
 };
 
 } // namespace rtos
