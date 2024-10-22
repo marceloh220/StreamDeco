@@ -287,11 +287,11 @@ namespace streamDeco
     mainButton pin;
 
     /**
-     * @var      lock
+     * @var      desktop_mode
      * @brief    Lock button
-     * @details  This button is supposed to lock computer
+     * @details  This button is supposed to desktop_mode computer
      **/
-    mainButton lock;
+    mainButton desktop_mode;
 
     /**
      * @var      configurations_canvas
@@ -619,6 +619,7 @@ namespace streamDeco
     right_workspace_event,
     pin_window_event,
     lock_computer_event,
+    desktop_mode_event,
     configurations_canvas_event,
     configurations_canvas_fix_event,
 

@@ -174,8 +174,8 @@ namespace streamDeco
             bleKeyboard.press(KEY_F2);
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
-            button.multimedia_mic.swapIcon();
-            button.multimedia_mic.pinned() ? button.multimedia_mic.unpin() : button.multimedia_mic.pin();
+            button.desktop_mode.swapIcon();
+            button.desktop_mode.pinned() ? button.desktop_mode.unpin() : button.desktop_mode.pin();
             break;
 
         /** @brief    Multimedia button receive a short click
@@ -267,10 +267,27 @@ namespace streamDeco
          *  @note     This shortcut may work by default on Windows and Linux
          **/
         case lock_computer_event:
+        #if 0
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press('l');
             rtos::delay(10ms);
             bleKeyboard.releaseAll();
+        #endif
+            break;
+
+        /** @brief    desktop_mode button is pressed
+         *  @details  Change desktop mode
+         *  @note     This media shortcut need be configured in application or system
+         *            This button is destaqued when pressed,
+         *            but have no feedback from computer to indentify the desktop state
+         */
+        case desktop_mode_event:
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_F7);
+            rtos::delay(10ms);
+            bleKeyboard.releaseAll();
+            button.desktop_mode.swapIcon();
+            button.desktop_mode.pinned() ? button.desktop_mode.unpin() : button.desktop_mode.pin();
             break;
 
         /** @brief    Configurations button receive a short click

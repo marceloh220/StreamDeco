@@ -120,7 +120,7 @@ namespace streamDeco
     button.left_workspace.create(10);
     button.right_workspace.create(11);
     button.pin.create(12);
-    button.lock.create(13);
+    button.desktop_mode.create(13);
     button.configurations_canvas.create(14);
 
     /* register buttons event */
@@ -141,7 +141,7 @@ namespace streamDeco
     button.left_workspace.callback(buttons_callback, LV_EVENT_PRESSED, left_workspace_event);
     button.right_workspace.callback(buttons_callback, LV_EVENT_PRESSED, right_workspace_event);
     button.pin.callback(buttons_callback, LV_EVENT_PRESSED, pin_window_event);
-    button.lock.callback(buttons_callback, LV_EVENT_PRESSED, lock_computer_event);
+    button.desktop_mode.callback(buttons_callback, LV_EVENT_PRESSED, desktop_mode_event);
     button.configurations_canvas.callback(buttons_callback, LV_EVENT_SHORT_CLICKED, configurations_canvas_event);
     button.configurations_canvas.callback(buttons_callback, LV_EVENT_LONG_PRESSED, configurations_canvas_fix_event);
 

@@ -98,7 +98,7 @@ namespace streamDeco
         mainButton("Left Workspace", &previous_workspace_simp, NULL),
         mainButton("Right Workspace", &next_workspace_simp, NULL),
         mainButton("Pin", &pin_simp, &unpin_simp),
-        mainButton("Lock", &locked_simp, NULL),
+        mainButton("Desktop Mode", &mult_window_simp, &single_window_simp),
         mainButton("Config", &config_simp, NULL),
 
         /* ---   Applications canvas buttons   --- */
@@ -232,7 +232,7 @@ namespace streamDeco
         button.left_workspace.color(color);
         button.right_workspace.color(color);
         button.pin.color(color);
-        button.lock.color(color);
+        button.desktop_mode.color(color);
         button.configurations_canvas.color(color);
 
         button.app1.color(color);

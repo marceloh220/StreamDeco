@@ -95,6 +95,9 @@ extern const lv_img_dsc_t btntheme_simp;
 extern const lv_img_dsc_t brightness_simp;
 extern const lv_img_dsc_t rotation_simp;
 
+extern const lv_img_dsc_t single_window_simp;
+extern const lv_img_dsc_t mult_window_simp;
+
 extern const lv_img_dsc_t process_simp;
 
 extern const lv_img_dsc_t switch_user_simp;
