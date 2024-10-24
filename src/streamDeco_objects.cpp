@@ -67,10 +67,10 @@ namespace streamDeco
      * @brief   Buttons of StreamDeco
      * @details Buttons's icons can be changed herer
      * 
-     * @note    The difference between mainIcon, canvasButton and configButton
+     * @note    The difference between mainIcon, CanvasButton and ConfigButton
      *          is position map
      * @code
-     * mainButton(
+     * MainButton(
      *          "Terminal",     // name, show name if icon not used
      *          &terminal_simp, // first icon
      *          NULL            // second icon, if used the icons can be swaped using swap_icon
@@ -81,76 +81,76 @@ namespace streamDeco
         /* ---   Main screen buttons   --- */
 
         /* Applications line, first line of buttons */
-        mainButton("Terminal", &terminal_simp, NULL),
-        mainButton("Files", &files_simp, NULL),
-        mainButton("Web", &web_simp, NULL),
-        mainButton("Search", &search_simp, NULL),
-        mainButton("Application", &applications_simp, NULL),
+        MainButton("Terminal", &terminal_simp, NULL),
+        MainButton("Files", &files_simp, NULL),
+        MainButton("Web", &web_simp, NULL),
+        MainButton("Search", &search_simp, NULL),
+        MainButton("Application", &applications_simp, NULL),
 
         /* Multimedia line, second line of buttons */
-        mainButton("Prev", &backward_simp, NULL),
-        mainButton("Play/Pause", &play_simp, &pause_simp),
-        mainButton("Next", &forward_simp, NULL),
-        mainButton("Mic", &mic_on_simp, &mic_off_simp),
-        mainButton("Multimedia", &multimedia_simp, NULL),
+        MainButton("Prev", &backward_simp, NULL),
+        MainButton("Play/Pause", &play_simp, &pause_simp),
+        MainButton("Next", &forward_simp, NULL),
+        MainButton("Mic", &mic_on_simp, &mic_off_simp),
+        MainButton("Multimedia", &multimedia_simp, NULL),
 
         /* Configurations line, third line of buttons */
-        mainButton("Left Workspace", &previous_workspace_simp, NULL),
-        mainButton("Right Workspace", &next_workspace_simp, NULL),
-        mainButton("Pin", &pin_simp, &unpin_simp),
-        mainButton("Desktop Mode", &mult_window_simp, &single_window_simp),
-        mainButton("Config", &config_simp, NULL),
+        MainButton("Left Workspace", &previous_workspace_simp, NULL),
+        MainButton("Right Workspace", &next_workspace_simp, NULL),
+        MainButton("Pin", &pin_simp, &unpin_simp),
+        MainButton("Desktop Mode", &mult_window_simp, &single_window_simp),
+        MainButton("Config", &config_simp, NULL),
 
         /* ---   Applications canvas buttons   --- */
 
         /* First line */
-        canvasButton("app1", &gogcom_simp, NULL),
-        canvasButton("app2", &discord_simp, NULL),
-        canvasButton("app3", &fps_simp, NULL),
+        CanvasButton("app1", &gogcom_simp, NULL),
+        CanvasButton("app2", &discord_simp, NULL),
+        CanvasButton("app3", &fps_simp, NULL),
 
         /* Second line */
-        canvasButton("app4", &code_simp, NULL),
-        canvasButton("app5", &texcompiler_simp, NULL),
-        canvasButton("app6", &calculator_simp, NULL),
+        CanvasButton("app4", &code_simp, NULL),
+        CanvasButton("app5", &texcompiler_simp, NULL),
+        CanvasButton("app6", &calculator_simp, NULL),
 
         /* Third line */
-        canvasButton("app7", &build_simp, NULL),
-        canvasButton("app8", &download_simp, NULL),
-        canvasButton("app9", &serialport_simp, NULL),
+        CanvasButton("app7", &build_simp, NULL),
+        CanvasButton("app8", &download_simp, NULL),
+        CanvasButton("app9", &serialport_simp, NULL),
 
         /* ---   Multimedia canvas buttons   --- */
 
         /* First line */
-        canvasButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
-        canvasButton("mult 2", &mic_off_simp, &mic_on_simp),
-        canvasButton("mult 3", &cam_off_simp, &cam_on_simp),
+        CanvasButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
+        CanvasButton("mult 2", &mic_off_simp, &mic_on_simp),
+        CanvasButton("mult 3", &cam_off_simp, &cam_on_simp),
 
         /* Second line */
-        canvasButton("mult 4", &add_clip_simp, NULL),
-        canvasButton("mult 5", &ripple_simp, NULL),
-        canvasButton("mult 6", &rolling_simp, NULL),
+        CanvasButton("mult 4", &add_clip_simp, NULL),
+        CanvasButton("mult 5", &ripple_simp, NULL),
+        CanvasButton("mult 6", &rolling_simp, NULL),
 
         /* Third line */
-        canvasButton("mult 7", &seek_backward_simp, NULL),
-        canvasButton("mult 8", &play_simp, NULL),
-        canvasButton("mult 9", &seek_forward_simp, NULL),
+        CanvasButton("mult 7", &seek_backward_simp, NULL),
+        CanvasButton("mult 8", &play_simp, NULL),
+        CanvasButton("mult 9", &seek_forward_simp, NULL),
 
         /* ---   Configurations canvas buttons   --- */
 
         /* First line */
-        configButton("Vol Mute", &volume_mute_simp, NULL),
-        configButton("Vol Down", &volume_low_simp, NULL),
-        configButton("Vol Up", &volume_high_simp, NULL),
+        ConfigButton("Vol Mute", &volume_mute_simp, NULL),
+        ConfigButton("Vol Down", &volume_low_simp, NULL),
+        ConfigButton("Vol Up", &volume_high_simp, NULL),
 
         /* Second line */
-        configButton("Color BG", &bgtheme_simp, NULL),
-        configButton("Color Buttons", &btntheme_simp, NULL),
-        configButton("Rotation", &rotation_simp, NULL),
+        ConfigButton("Color BG", &bgtheme_simp, NULL),
+        ConfigButton("Color Buttons", &btntheme_simp, NULL),
+        ConfigButton("Rotation", &rotation_simp, NULL),
 
         /* Third line */
-        configButton("System Monitor", &sysmon_simp, NULL),
-        configButton("System Config", &config_simp, NULL),
-        configButton("Reboot", &reboot_simp, NULL),
+        ConfigButton("System Monitor", &sysmon_simp, NULL),
+        ConfigButton("System Config", &config_simp, NULL),
+        ConfigButton("Reboot", &reboot_simp, NULL),
     };
 
     /**

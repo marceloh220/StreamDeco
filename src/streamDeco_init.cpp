@@ -123,7 +123,7 @@ namespace streamDeco
 
     /* --- MAIN BUTTONS --- */
 
-    /* the class mainButton deal with position buttons,
+    /* the class MainButton deal with position buttons,
      * is only necessary pass the order */
     button.terminal.create(0);
     button.files.create(1);

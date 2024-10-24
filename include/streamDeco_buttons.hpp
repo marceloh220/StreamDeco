@@ -28,11 +28,11 @@
 namespace streamDeco
 {
   
-  class mainButton : public lvgl::Object
+  class MainButton : public lvgl::Object
   {
   public:
-    mainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
-    : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {};
+    MainButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL, bool flatIcons = true)
+    : text_scr(text), icon1_scr(icon1), icon2_scr(icon2), flat_icons(flatIcons) {};
     void create(uint8_t pos);
     void create(Object &parent, uint8_t pos);
     void text(const char *text);
@@ -56,39 +56,40 @@ namespace streamDeco
     lvgl::Style style_button;
     lvgl::Style style_buttonPressed;
     lvgl::Style style_buttonFixed;
-    lvgl::Style style_icon;
+    lvgl::Style style_iconFixed;
     const char *text_scr;
     const void *icon1_scr;
     const void *icon2_scr;
     bool icon_now = true; // start with icon 1
     bool pinnedState = false;
-  }; // class mainButton
+    bool flat_icons;
+  }; // class MainButton
 
-  class canvasButton : public mainButton
+  class CanvasButton : public MainButton
   {
   public:
-    canvasButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
-        : mainButton(text, icon1, icon2) {}
+    CanvasButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL, bool flatIcons = true)
+        : MainButton(text, icon1, icon2, flatIcons) {}
     void position(uint8_t pos);
   private:
     bool assertPosition(uint8_t pos)
     {
       return (pos >= 9) ? false : true;
     }
-  }; // class canvasButton
+  }; // class CanvasButton
 
-  class configButton : public mainButton
+  class ConfigButton : public MainButton
   {
   public:
-    configButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL)
-        : mainButton(text, icon1, icon2) {}
+    ConfigButton(const char *text, const void *icon1 = NULL, const void *icon2 = NULL, bool flatIcons = true)
+        : MainButton(text, icon1, icon2, flatIcons) {}
     void position(uint8_t pos);
   private:
     bool assertPosition(uint8_t pos)
     {
       return (pos >= 9) ? false : true;
     }
-  }; // class configButton
+  }; // class ConfigButton
 
 } // namespace streamDeco
 

@@ -200,105 +200,105 @@ namespace streamDeco
      * @brief    terminal button
      * @details  This button is supposed to open terminal on computer
      **/
-    mainButton terminal;
+    MainButton terminal;
     
     /**
      * @var      files
      * @brief    files button
      * @details  This button is supposed to open file explorer on computer
      **/
-    mainButton files;
+    MainButton files;
     
     /**
      * @var      web
      * @brief    web button
      * @details  This button is supposed to open web browser on computer
      **/
-    mainButton web;
+    MainButton web;
     
     /**
      * @var      search
      * @brief    search button
      * @details  This button is supposed to open search mechanism on computer
      **/
-    mainButton search;
+    MainButton search;
     
     /**
      * @var      applications_canvas
      * @brief    applications_canvas button
      * @details  This button open, close or pin Applications canvas
      **/
-    mainButton applications_canvas;
+    MainButton applications_canvas;
 
     /**
      * @var      multimedia_prev
      * @brief    Multimedia prev button
      * @details  This button pass to previous media on music player computer
      **/
-    mainButton multimedia_prev;
+    MainButton multimedia_prev;
     
     /**
      * @var      multimedia_play
      * @brief    Multimedia play button
      * @details  This button play/pause media on music player computer
      **/
-    mainButton multimedia_play;
+    MainButton multimedia_play;
 
     /**
      * @var      multimedia_next
      * @brief    Multimedia next button
      * @details  This button pass to next media on music player computer
      **/
-    mainButton multimedia_next;
+    MainButton multimedia_next;
 
     /**
      * @var      multimedia_mic
      * @brief    Multimedia mic button
      * @details  This button is supposed to mute/unmute microphone computer
      **/
-    mainButton multimedia_mic;
+    MainButton multimedia_mic;
 
     /**
      * @var      multimedia_canvas
      * @brief    multimedia_canvas button
      * @details  This button open, close or pin Multimedia canvas
      **/
-    mainButton multimedia_canvas;
+    MainButton multimedia_canvas;
 
     /**
      * @var      left_workspace
      * @brief    Left workspace mic button
      * @details  This button is supposed to change to left workspace on computer
      **/
-    mainButton left_workspace;
+    MainButton left_workspace;
 
     /**
      * @var      right_workspace
      * @brief    Right workspace mic button
      * @details  This button is supposed to change to right workspace on computer
      **/
-    mainButton right_workspace;
+    MainButton right_workspace;
 
     /**
      * @var      pin
      * @brief    Pin button
      * @details  This button is supposed to pin/unpin window computer
      **/
-    mainButton pin;
+    MainButton pin;
 
     /**
      * @var      desktop_mode
      * @brief    Lock button
      * @details  This button is supposed to desktop_mode computer
      **/
-    mainButton desktop_mode;
+    MainButton desktop_mode;
 
     /**
      * @var      configurations_canvas
      * @brief    configurations_canvas button
      * @details  This button open, close or pin Configurations canvas
      **/
-    mainButton configurations_canvas;
+    MainButton configurations_canvas;
 
     /* --- APPLICATIONS BUTTONS --- */
 
@@ -307,63 +307,63 @@ namespace streamDeco
      * @brief    Application 1 button
      * @details  This button open app 1 on computer
      **/
-    canvasButton app1;
+    CanvasButton app1;
 
     /**
      * @var      app2
      * @brief    Application 2 button
      * @details  This button open app 2 on computer
      **/
-    canvasButton app2;
+    CanvasButton app2;
 
     /**
      * @var      app3
      * @brief    Application 3 button
      * @details  This button open app 3 on computer
      **/
-    canvasButton app3;
+    CanvasButton app3;
 
     /**
      * @var      app4
      * @brief    Application 4 button
      * @details  This button open app 4 on computer
      **/
-    canvasButton app4;
+    CanvasButton app4;
 
     /**
      * @var      app5
      * @brief    Application 5 button
      * @details  This button open app 5 on computer
      **/
-    canvasButton app5;
+    CanvasButton app5;
 
     /**
      * @var      app6
      * @brief    Application 6 button
      * @details  This button open app 6 on computer
      **/
-    canvasButton app6;
+    CanvasButton app6;
 
     /**
      * @var      app7
      * @brief    Application 7 button
      * @details  This button open app 7 on computer
      **/
-    canvasButton app7;
+    CanvasButton app7;
 
     /**
      * @var      app8
      * @brief    Application 8 button
      * @details  This button open app 8 on computer
      **/
-    canvasButton app8;
+    CanvasButton app8;
 
     /**
      * @var      app9
      * @brief    Application 9 button
      * @details  This button open app 9 on computer
      **/
-    canvasButton app9;
+    CanvasButton app9;
 
     /* --- MULTIMEDIA BUTTONS --- */
 
@@ -372,63 +372,63 @@ namespace streamDeco
      * @brief    Multimedia 1 button
      * @details  This button execute multimedia action 1 on computer
      **/
-    canvasButton mult1;
+    CanvasButton mult1;
 
     /**
      * @var      mult2
      * @brief    Multimedia 2 button
      * @details  This button execute multimedia action 2 on computer
      **/
-    canvasButton mult2;
+    CanvasButton mult2;
 
     /**
      * @var      mult3
      * @brief    Multimedia 3 button
      * @details  This button execute multimedia action 3 on computer
      **/
-    canvasButton mult3;
+    CanvasButton mult3;
 
     /**
      * @var      mult4
      * @brief    Multimedia 4 button
      * @details  This button execute multimedia action 4 on computer
      **/
-    canvasButton mult4;
+    CanvasButton mult4;
 
     /**
      * @var      mult5
      * @brief    Multimedia 5 button
      * @details  This button execute multimedia action 5 on computer
      **/
-    canvasButton mult5;
+    CanvasButton mult5;
 
     /**
      * @var      mult6
      * @brief    Multimedia 6 button
      * @details  This button execute multimedia action 6 on computer
      **/
-    canvasButton mult6;
+    CanvasButton mult6;
 
     /**
      * @var      mult7
      * @brief    Multimedia 7 button
      * @details  This button execute multimedia action 7 on computer
      **/
-    canvasButton mult7;
+    CanvasButton mult7;
 
     /**
      * @var      mult8
      * @brief    Multimedia 8 button
      * @details  This button execute multimedia action 8 on computer
      **/
-    canvasButton mult8;
+    CanvasButton mult8;
 
     /**
      * @var      mult9
      * @brief    Multimedia 9 button
      * @details  This button execute multimedia action 9 on computer
      **/
-    canvasButton mult9;
+    CanvasButton mult9;
 
     /* --- CONFIGURATIONS BUTTONS --- */
 
@@ -437,61 +437,61 @@ namespace streamDeco
      * @brief    Volume mute button
      * @details  This button mute/unmute audio output on computer
      **/
-    configButton volmut;
+    ConfigButton volmut;
 
     /**
      * @var      voldown
      * @brief    Volume down button
      * @details  This button lower volume of audio output on computer
      **/
-    configButton voldown;
+    ConfigButton voldown;
 
     /**
      * @var      volup
      * @brief    Volume up button
      * @details  This button riser volume of audio output on computer
      **/
-    configButton volup;
+    ConfigButton volup;
 
     /**
      * @var      color_background
      * @brief    Color backgound button
      * @details  Change background color of StreamDeco
      **/
-    configButton color_background;
+    ConfigButton color_background;
 
     /**
      * @var      color_button
      * @brief    Color button button
      * @details  Change button color of StreamDeco
      **/
-    configButton color_button;
+    ConfigButton color_button;
     
     /**
      * @brief in work
      */
-    configButton rotation;
+    ConfigButton rotation;
 
     /**
      * @var      sysmonitor
      * @brief    System Monitor button
      * @details  This button is supposed to open system monitor on computer
      **/
-    configButton sysmonitor;
+    ConfigButton sysmonitor;
 
     /**
      * @var      sysconfig
      * @brief    System Configurations button
      * @details  This button is supposed to open configurations panel on computer
      **/
-    configButton sysconfig;
+    ConfigButton sysconfig;
 
     /**
      * @var      reboot
      * @brief    Reboot button
      * @details  This button is supposed to restart StreamDeco
      **/
-    configButton reboot;
+    ConfigButton reboot;
 
   } button_t;
 

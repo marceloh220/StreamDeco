@@ -57,40 +57,37 @@ namespace streamDeco
       {-148,  148}, {0,  148}, {148,  148},
   };
 
-  void mainButton::create(uint8_t pos)
+  void MainButton::create(uint8_t pos)
   {
-    if (assertPosition(pos) == false || object != NULL)
-      return;
+    if (assertPosition(pos) == false) return;
+    if (object != NULL) return;
     lvgl::port::mutex_take();
     object = lv_btn_create(lv_scr_act());
     init();
     position(pos);
     lvgl::port::mutex_give();
-  } // mainButton::create(uint8_t pos)
+  } // MainButton::create(uint8_t pos)
 
-  void mainButton::create(Object &parent, uint8_t pos)
+  void MainButton::create(Object &parent, uint8_t pos)
   {
-    if (assertPosition(pos) == false || object != NULL)
-      return;
+    if (assertPosition(pos) == false) return;
+    if (object != NULL) return;
     lvgl::port::mutex_take();
     object = lv_btn_create(parent.get_object());
     init();
     position(pos);
     lvgl::port::mutex_give();
-  } // mainButton::create(Object &parent, uint8_t pos)
+  } // MainButton::create(Object &parent, uint8_t pos)
 
-  void mainButton::init()
+  void MainButton::init()
   {
     lv_color_t color = lv_color_make(41, 45, 50);
     style_buttonFixed.set_bg_color(color);
-    //style_buttonFixed.set_bg_grad_color(color);
     style_buttonFixed.set_outline_color(color);
     style_buttonFixed.set_border_color(lv_color_black());
     style_button.set_radius(6);
     style_button.set_bg_opa(LV_OPA_100);
     style_button.set_bg_color(LV_PALETTE_PURPLE);
-    //style_button.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
-    //style_button.set_bg_grad_dir(LV_GRAD_DIR_VER);
     style_button.set_border_opa(LV_OPA_40);
     style_button.set_border_width(2);
     style_button.set_border_color(lv_palette_main(LV_PALETTE_GREY));
@@ -106,7 +103,12 @@ namespace streamDeco
     style_buttonPressed.set_translate_y(5);
     style_buttonPressed.set_shadow_ofs_y(3);
     style_buttonPressed.set_bg_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
-    //style_buttonPressed.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 4));
+    if(!flat_icons) {
+      style_buttonFixed.set_bg_grad_color(color);
+      style_button.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
+      style_button.set_bg_grad_dir(LV_GRAD_DIR_VER);
+      style_buttonPressed.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 4));
+    }
     remove_style_all();
     add_style(style_button, LV_STATE_DEFAULT);
     add_style(style_buttonPressed, LV_STATE_PRESSED);
@@ -116,10 +118,15 @@ namespace streamDeco
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
-      style_icon.set_img_recolor(lv_color_white());
-      style_icon.set_img_recolor_opa(100);
-    }
-    else
+      style_iconFixed.set_img_recolor(lv_color_white());
+      style_iconFixed.set_img_recolor_opa(100);
+    } else if (icon2_scr != NULL) {
+      icon.create(*this);
+      icon.center();
+      icon.set_src(icon2_scr);
+      style_iconFixed.set_img_recolor(lv_color_white());
+      style_iconFixed.set_img_recolor_opa(100);
+    } else
     {
       label.create(*this);
       label.set_text(text_scr);
@@ -127,93 +134,90 @@ namespace streamDeco
     }
   }
 
-  void mainButton::text(const char *text)
+  void MainButton::text(const char *text)
   {
-    if (object == NULL)
-      return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     label.set_text(text);
     lvgl::port::mutex_give();
-  } // mainButton::text
+  } // MainButton::text
 
-  void mainButton::color(lv_palette_t color)
+  void MainButton::color(lv_palette_t color)
   {
-    if (object == NULL)
-      return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     style_button.set_bg_color(lv_palette_main(color));
-    //style_button.set_bg_grad_color(lv_palette_darken(color, 2));
     style_button.set_outline_color(lv_palette_main(color));
     style_buttonPressed.set_bg_color(lv_palette_darken(color, 2));
-    //style_buttonPressed.set_bg_grad_color(lv_palette_darken(color, 4));
+    if (!flat_icons) {
+      style_button.set_bg_grad_color(lv_palette_darken(color, 2));
+      style_buttonPressed.set_bg_grad_color(lv_palette_darken(color, 4));
+    }
     lvgl::port::mutex_give();
-  } // mainButton::color
+  } // MainButton::color
 
-  void mainButton::iconColor(lv_palette_t color)
+  void MainButton::iconColor(lv_palette_t color)
   {
-    if (object == NULL)
-      return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
-    style_icon.set_img_recolor(color);
+    style_iconFixed.set_img_recolor(color);
     lvgl::port::mutex_give();
-  } // mainButton::iconColor
+  } // MainButton::iconColor
 
-  void mainButton::iconColor(lv_color_t color)
+  void MainButton::iconColor(lv_color_t color)
   {
-    if (object == NULL)
-      return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
-    style_icon.set_img_recolor(color);
+    style_iconFixed.set_img_recolor(color);
     lvgl::port::mutex_give();
-  } // mainButton::iconColor
+  } // MainButton::iconColor
 
-  void mainButton::callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data)
+  void MainButton::callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data)
   {
-    if (object == NULL)
-      return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     add_event_cb(callback, code, (void *)user_data);
     lvgl::port::mutex_give();
-  } // mainButton::callback
+  } // MainButton::callback
 
-  void mainButton::swapIcon()
+  void MainButton::swapIcon()
   {
-    bool test_invalid = (object == NULL);
-    test_invalid |= (icon1_scr == NULL);
-    test_invalid |= (icon2_scr == NULL);
-    if(test_invalid)
-      return;
+    if (object == NULL) return;
+    if (icon1_scr == NULL) return;
+    if (icon2_scr == NULL) return;
     icon_now ^= true;
     lvgl::port::mutex_take();
-    icon_now == true ? icon.set_src(icon1_scr) : icon.set_src(icon2_scr);
-    lvgl::port::mutex_take();
-  } // mainButton::swapIcon
+    icon_now ? icon.set_src(icon1_scr) : icon.set_src(icon2_scr);
+    lvgl::port::mutex_give();
+  } // MainButton::swapIcon
 
-  void mainButton::pin()
+  void MainButton::pin()
   {
+    if (object == NULL) return;
     add_style(style_buttonFixed, LV_STATE_DEFAULT);
     add_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.add_style(style_icon, LV_PART_MAIN);
+    icon.add_style(style_iconFixed, LV_PART_MAIN);
     pinnedState = true;
-  } // mainButton::pin
+  } // MainButton::pin
 
-  void mainButton::unpin()
+  void MainButton::unpin()
   {
+    if (object == NULL) return;
     remove_style(style_buttonFixed, LV_STATE_DEFAULT);
     remove_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.remove_style(style_icon, LV_PART_MAIN);
+    icon.remove_style(style_iconFixed, LV_PART_MAIN);
     pinnedState = false;
-  } // mainButton::unpin
+  } // MainButton::unpin
 
-  bool mainButton::pinned() { return pinnedState; }
+  bool MainButton::pinned() { return pinnedState; }
 
-  void mainButton::position(uint8_t pos)
+  void MainButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || object == NULL)
-      return;
+    if (assertPosition(pos) == false) return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    int x, y;
+    int x = 0, y = 0;
     switch(rotation) {
       case LV_DISP_ROT_NONE:
       case LV_DISP_ROT_180:
@@ -229,15 +233,15 @@ namespace streamDeco
     align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
-  } // mainButton::position
+  } // MainButton::position
 
-  void canvasButton::position(uint8_t pos)
+  void CanvasButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || object == NULL)
-      return;
+    if (assertPosition(pos) == false) return; 
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    int x, y;
+    int x = 0, y = 0;
     switch(rotation) {
       case LV_DISP_ROT_NONE:
       case LV_DISP_ROT_180:
@@ -253,15 +257,15 @@ namespace streamDeco
     align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
-  } // canvasButton::position
+  } // CanvasButton::position
 
-  void configButton::position(uint8_t pos)
+  void ConfigButton::position(uint8_t pos)
   {
-    if (assertPosition(pos) == false || object == NULL)
-      return;
+    if (assertPosition(pos) == false) return;
+    if (object == NULL) return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    int x, y;
+    int x = 0, y = 0;
     switch(rotation) {
       case LV_DISP_ROT_NONE:
       case LV_DISP_ROT_180:
@@ -277,6 +281,6 @@ namespace streamDeco
     align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
-  } // configButton::position
+  } // ConfigButton::position
 
 } // namespace streamDeco
