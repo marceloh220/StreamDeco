@@ -178,23 +178,15 @@ namespace streamDeco
 
   void mainButton::swapIcon()
   {
-    if (object == NULL)
-      return;
-    if (icon1_scr == NULL || icon2_scr == NULL)
+    bool test_invalid = (object == NULL);
+    test_invalid |= (icon1_scr == NULL);
+    test_invalid |= (icon2_scr == NULL);
+    if(test_invalid)
       return;
     icon_now ^= true;
-    if(icon_now == true)
-    {
-      lvgl::port::mutex_take();
-      icon.set_src(icon1_scr);
-      lvgl::port::mutex_give();
-    }
-    else
-    {
-      lvgl::port::mutex_take();
-      icon.set_src(icon2_scr);
-      lvgl::port::mutex_give();
-    }
+    lvgl::port::mutex_take();
+    icon_now == true ? icon.set_src(icon1_scr) : icon.set_src(icon2_scr);
+    lvgl::port::mutex_take();
   } // mainButton::swapIcon
 
   void mainButton::pin()
@@ -221,14 +213,20 @@ namespace streamDeco
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    if (rotation == LV_DISP_ROT_NONE || rotation == LV_DISP_ROT_180)
-    {
-      align(LV_ALIGN_CENTER, mainButtons_position_map_landscape[pos].x, mainButtons_position_map_landscape[pos].y);
+    int x, y;
+    switch(rotation) {
+      case LV_DISP_ROT_NONE:
+      case LV_DISP_ROT_180:
+        x = mainButtons_position_map_landscape[pos].x;
+        y = mainButtons_position_map_landscape[pos].y;
+        break;
+      case LV_DISP_ROT_90:
+      case LV_DISP_ROT_270:
+        x = mainButtons_position_map_porttrait[pos].x;
+        y = mainButtons_position_map_porttrait[pos].y;
+        break;
     }
-    else
-    {
-      align(LV_ALIGN_CENTER, mainButtons_position_map_porttrait[pos].x, mainButtons_position_map_porttrait[pos].y);
-    }
+    align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
   } // mainButton::position
@@ -239,14 +237,20 @@ namespace streamDeco
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    if (rotation == LV_DISP_ROT_NONE || rotation == LV_DISP_ROT_180)
-    {
-      align(LV_ALIGN_CENTER, canvasButtons_position_map_landscape[pos].x, canvasButtons_position_map_landscape[pos].y);
+    int x, y;
+    switch(rotation) {
+      case LV_DISP_ROT_NONE:
+      case LV_DISP_ROT_180:
+        x = canvasButtons_position_map_landscape[pos].x;
+        y = canvasButtons_position_map_landscape[pos].y;
+        break;
+      case LV_DISP_ROT_90:
+      case LV_DISP_ROT_270:
+        x = canvasButtons_position_map_porttrait[pos].x;
+        y = canvasButtons_position_map_porttrait[pos].y;
+        break;
     }
-    else
-    {
-      align(LV_ALIGN_CENTER, canvasButtons_position_map_porttrait[pos].x, canvasButtons_position_map_porttrait[pos].y);
-    }
+    align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
   } // canvasButton::position
@@ -257,14 +261,20 @@ namespace streamDeco
       return;
     lvgl::port::mutex_take();
     lv_disp_rot_t rotation = lvgl::screen::get_rotation();
-    if (rotation == LV_DISP_ROT_NONE || rotation == LV_DISP_ROT_180)
-    {
-      align(LV_ALIGN_CENTER, canvasButtons_position_map_landscape[pos].x - 42, canvasButtons_position_map_landscape[pos].y);
+    int x, y;
+    switch(rotation) {
+      case LV_DISP_ROT_NONE:
+      case LV_DISP_ROT_180:
+        x = canvasButtons_position_map_landscape[pos].x - 42;
+        y = canvasButtons_position_map_landscape[pos].y;
+        break;
+      case LV_DISP_ROT_90:
+      case LV_DISP_ROT_270:
+        x = canvasButtons_position_map_porttrait[pos].x;
+        y = canvasButtons_position_map_porttrait[pos].y - 42;
+        break;
     }
-    else
-    {
-      align(LV_ALIGN_CENTER, canvasButtons_position_map_porttrait[pos].x, canvasButtons_position_map_porttrait[pos].y - 42);
-    }
+    align(LV_ALIGN_CENTER, x, y);
     update_layout();
     lvgl::port::mutex_give();
   } // configButton::position
