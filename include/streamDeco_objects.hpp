@@ -675,6 +675,10 @@ namespace streamDeco
 
     hidden_canvas_event,
 
+    /* --- Reduce backlight bright event --- */
+
+    rest_backlight_event,
+
   };
 
   /**

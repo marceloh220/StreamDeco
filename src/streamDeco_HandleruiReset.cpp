@@ -37,19 +37,28 @@ namespace streamDeco
     while (1)
     {
       uint32_t e = task.uiReset.takeNotify();
-      if (e == hidden_canvas_event)
+      switch (e)
       {
-        if (!button.applications_canvas.pinned())
-        {
-          canvas.applications.hidden();
-        }
-        if (!button.multimedia_canvas.pinned())
-        {
-          canvas.multimedia.hidden();
-        }
-        /* Aways hidden Configurations canvas
-         * and never hidden Monitor canvas */
-        canvas.configurations.hidden();
+        case hidden_canvas_event:
+          if (!button.applications_canvas.pinned())
+          {
+            canvas.applications.hidden();
+          }
+          if (!button.multimedia_canvas.pinned())
+          {
+            canvas.multimedia.hidden();
+          }
+          /* Aways hidden Configurations canvas
+          * and never hidden Monitor canvas */
+          canvas.configurations.hidden();
+          break;
+        case rest_backlight_event:
+          // only change backlight bright if are no pinned canvas
+          if (button.applications_canvas.pinned()) break;
+          if (button.multimedia_canvas.pinned()) break;
+          if (button.configurations_canvas.pinned()) break;
+          lvgl::port::backlight_set(.1);
+          break;
       }
     }
   }

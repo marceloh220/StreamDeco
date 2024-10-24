@@ -19,35 +19,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file  streamDeco_timerCallback.cpp
- * @brief Callback for timers of StreamDeco
+ * @file  streamDeco_buttonsCallback.cpp
+ * @brief Callback for buttons event of LVGL
  */
 
 #include "streamDeco_objects.hpp"
-#include <time.h>
 
 namespace streamDeco
 {
 
   /**
-   * @brief    Callback function to handle timers
-   * @details  Set backlight bright to 10% affter timer backlight overflow
-   * @details  Hidden canvas affter timer uiReset overflow
-   * @param    timerHandle The rtos timer send the timer handler to callback function
-   * @note     The timerHandle can be used to verify what timer generate the interrupt
-   * @note     by the timer ID
+   * @brief   Callback registred in buttons
+   * @details Send a notifications with event code to task buttons handler
+   * @param   lvglEvent  Event received by the callback
+   * @note    This callback is registred on buttons and slider objects
+   * @note    Each button and slider send a different event
    **/
-  void timer_callback(TimerHandle_t timerHandle)
+  void buttons_callback(lvgl::event::event_t lvglEvent)
   {
-    // verify what timer generated the event by ID
-    if (timer_ui.backlight.verifyID(timerHandle))
-    {
-      task.uiReset.sendNotify(rest_backlight_event);
-    }
-    if (timer_ui.uiReset.verifyID(timerHandle))
-    {
-      task.uiReset.sendNotify(hidden_canvas_event);
-    }
+    // userdata passed are int type
+    int event = lvgl::event::get_user_data<int>(lvglEvent);
+    task.buttons.sendNotify(event);
   }
 
-} // namespace streamDeco
+}  // namespace streamDeco
