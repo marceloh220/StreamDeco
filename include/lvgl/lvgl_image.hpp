@@ -33,6 +33,10 @@ namespace lvgl
   public:
     Image() {}
 
+    /**
+     * @brief   Create an image object
+     * @param   parent pointer to an object, it will be the parent of the new image
+     */
     inline void create(lv_obj_t *parent = NULL)
     {
       if (object != NULL)
@@ -44,6 +48,10 @@ namespace lvgl
       port::mutex_give();
     }
 
+    /**
+     * @brief   Create an image object
+     * @param   parent pointer to an object, it will be the parent of the new image
+     */
     inline void create(Object &parent)
     {
       if (object != NULL)

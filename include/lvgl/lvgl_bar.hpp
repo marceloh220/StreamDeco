@@ -13,7 +13,6 @@ namespace lvgl
         /**
          * Create a bar object
          * @param parent    pointer to an object, it will be the parent of the new bar
-         * @return          pointer to the created bar
          */
         inline void create(lv_obj_t *parent = NULL)
         {

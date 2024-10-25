@@ -11,9 +11,8 @@ namespace lvgl
 
     public:
         /**
-         * Create a bar object
-         * @param parent    pointer to an object, it will be the parent of the new bar
-         * @return          pointer to the created bar
+         * Create a arc object
+         * @param parent    pointer to an object, it will be the parent of the new arc
          */
         inline void create(lv_obj_t *parent)
         {
