@@ -181,8 +181,8 @@ namespace streamDeco
             bleKeyboard.press(KEY_F2);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
-            button.desktop_mode.swapIcon();
-            button.desktop_mode.pinned() ? button.desktop_mode.unpin() : button.desktop_mode.pin();
+            button.multimedia_mic.swapIcon();
+            button.multimedia_mic.pinned() ? button.multimedia_mic.unpin() : button.multimedia_mic.pin();
             break;
 
         /** @brief    Multimedia button receive a short click
