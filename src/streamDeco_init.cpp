@@ -237,6 +237,12 @@ namespace streamDeco
     button.mult8.callback(buttons_callback, LV_EVENT_PRESSED, multimedia_canvas_mult8_event);
     button.mult9.callback(buttons_callback, LV_EVENT_PRESSED, multimedia_canvas_mult9_event);
 
+    /* change pinned color of some buttons */
+    button.mult1.colorIconPinned(lv_color_make(255, 0, 0));
+    button.mult1.colorButtonPinned(LV_PALETTE_CYAN);
+    button.mult2.colorIconPinned(lv_color_make(255, 0, 0));
+    button.mult2.colorButtonPinned(LV_PALETTE_CYAN);
+
     /* --- CONFIGURATIONS --- */
 
     /* Configurations canvas */

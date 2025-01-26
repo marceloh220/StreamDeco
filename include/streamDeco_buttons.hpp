@@ -36,9 +36,12 @@ namespace streamDeco
     void create(uint8_t pos);
     void create(Object &parent, uint8_t pos);
     void text(const char *text);
-    void color(lv_palette_t color);
-    void iconColor(lv_palette_t color);
-    void iconColor(lv_color_t color);
+    void colorButton(lv_palette_t color);
+    void colorButtonPinned(lv_palette_t color);
+    void colorIcon(lv_palette_t color);
+    void colorIcon(lv_color_t color);
+    void colorIconPinned(lv_palette_t color);
+    void colorIconPinned(lv_color_t color);
     void callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data);
     void swapIcon();
     void pin();
@@ -55,8 +58,9 @@ namespace streamDeco
     lvgl::Image icon;
     lvgl::Style style_button;
     lvgl::Style style_buttonPressed;
-    lvgl::Style style_buttonFixed;
-    lvgl::Style style_iconFixed;
+    lvgl::Style style_buttonPinned;
+    lvgl::Style style_icon;
+    lvgl::Style style_iconPinned;
     const char *text_scr;
     const void *icon1_scr;
     const void *icon2_scr;

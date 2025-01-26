@@ -123,6 +123,7 @@ extern const lv_img_dsc_t slip_simp;
 
 extern const lv_img_dsc_t video_start_capt_simp;
 extern const lv_img_dsc_t video_stop_capt_simp;
+extern const lv_img_dsc_t screen_capt_simp;
 extern const lv_img_dsc_t cam_on_simp;
 extern const lv_img_dsc_t cam_off_simp;
 

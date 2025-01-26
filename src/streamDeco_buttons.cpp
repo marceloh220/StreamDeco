@@ -82,9 +82,9 @@ namespace streamDeco
   void MainButton::init()
   {
     lv_color_t color = lv_color_make(41, 45, 50);
-    style_buttonFixed.set_bg_color(color);
-    style_buttonFixed.set_outline_color(color);
-    style_buttonFixed.set_border_color(lv_color_black());
+    style_buttonPinned.set_bg_color(color);
+    style_buttonPinned.set_outline_color(color);
+    style_buttonPinned.set_border_color(lv_color_black());
     style_button.set_radius(6);
     style_button.set_bg_opa(LV_OPA_100);
     style_button.set_bg_color(LV_PALETTE_PURPLE);
@@ -104,7 +104,7 @@ namespace streamDeco
     style_buttonPressed.set_shadow_ofs_y(3);
     style_buttonPressed.set_bg_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
     if(!flat_icons) {
-      style_buttonFixed.set_bg_grad_color(color);
+      style_buttonPinned.set_bg_grad_color(color);
       style_button.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
       style_button.set_bg_grad_dir(LV_GRAD_DIR_VER);
       style_buttonPressed.set_bg_grad_color(lv_palette_darken(LV_PALETTE_PURPLE, 4));
@@ -118,14 +118,18 @@ namespace streamDeco
       icon.create(*this);
       icon.center();
       icon.set_src(icon1_scr);
-      style_iconFixed.set_img_recolor(lv_color_white());
-      style_iconFixed.set_img_recolor_opa(100);
+      style_icon.set_img_recolor(lv_color_black());
+      style_icon.set_img_recolor_opa(100);
+      style_iconPinned.set_img_recolor(lv_color_white());
+      style_iconPinned.set_img_recolor_opa(100);
     } else if (icon2_scr != NULL) {
       icon.create(*this);
       icon.center();
       icon.set_src(icon2_scr);
-      style_iconFixed.set_img_recolor(lv_color_white());
-      style_iconFixed.set_img_recolor_opa(100);
+      style_icon.set_img_recolor(lv_color_black());
+      style_icon.set_img_recolor_opa(100);
+      style_iconPinned.set_img_recolor(lv_color_white());
+      style_iconPinned.set_img_recolor_opa(100);
     } else
     {
       label.create(*this);
@@ -142,7 +146,7 @@ namespace streamDeco
     lvgl::port::mutex_give();
   } // MainButton::text
 
-  void MainButton::color(lv_palette_t color)
+  void MainButton::colorButton(lv_palette_t color)
   {
     if (object == NULL) return;
     lvgl::port::mutex_take();
@@ -154,23 +158,51 @@ namespace streamDeco
       style_buttonPressed.set_bg_grad_color(lv_palette_darken(color, 4));
     }
     lvgl::port::mutex_give();
-  } // MainButton::color
+  } // MainButton::colorButton
 
-  void MainButton::iconColor(lv_palette_t color)
+  void MainButton::colorButtonPinned(lv_palette_t color)
   {
     if (object == NULL) return;
     lvgl::port::mutex_take();
-    style_iconFixed.set_img_recolor(color);
+    style_buttonPinned.set_bg_color(lv_palette_main(color));
+    style_buttonPinned.set_outline_color(lv_palette_main(color));
+    if (!flat_icons) {
+      style_buttonPinned.set_bg_grad_color(lv_palette_darken(color, 2));
+    }
     lvgl::port::mutex_give();
-  } // MainButton::iconColor
+  } // MainButton::colorButtonPinned
 
-  void MainButton::iconColor(lv_color_t color)
+  void MainButton::colorIcon(lv_palette_t color)
   {
     if (object == NULL) return;
     lvgl::port::mutex_take();
-    style_iconFixed.set_img_recolor(color);
+    style_icon.set_img_recolor(color);
     lvgl::port::mutex_give();
-  } // MainButton::iconColor
+  } // MainButton::colorIcon
+
+  void MainButton::colorIcon(lv_color_t color)
+  {
+    if (object == NULL) return;
+    lvgl::port::mutex_take();
+    style_icon.set_img_recolor(color);
+    lvgl::port::mutex_give();
+  } // MainButton::colorIcon
+
+  void MainButton::colorIconPinned(lv_palette_t color)
+  {
+    if (object == NULL) return;
+    lvgl::port::mutex_take();
+    style_iconPinned.set_img_recolor(color);
+    lvgl::port::mutex_give();
+  } // MainButton::colorIconPinned
+
+  void MainButton::colorIconPinned(lv_color_t color)
+  {
+    if (object == NULL) return;
+    lvgl::port::mutex_take();
+    style_iconPinned.set_img_recolor(color);
+    lvgl::port::mutex_give();
+  } // MainButton::colorIconPinned
 
   void MainButton::callback(lvgl::event::callback_t callback, lv_event_code_t code, int user_data)
   {
@@ -194,18 +226,20 @@ namespace streamDeco
   void MainButton::pin()
   {
     if (object == NULL) return;
-    add_style(style_buttonFixed, LV_STATE_DEFAULT);
-    add_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.add_style(style_iconFixed, LV_PART_MAIN);
+    add_style(style_buttonPinned, LV_STATE_DEFAULT);
+    add_style(style_buttonPinned, LV_STATE_PRESSED);
+    icon.remove_style(style_icon, LV_PART_MAIN);
+    icon.add_style(style_iconPinned, LV_PART_MAIN);
     pinnedState = true;
   } // MainButton::pin
 
   void MainButton::unpin()
   {
     if (object == NULL) return;
-    remove_style(style_buttonFixed, LV_STATE_DEFAULT);
-    remove_style(style_buttonFixed, LV_STATE_PRESSED);
-    icon.remove_style(style_iconFixed, LV_PART_MAIN);
+    remove_style(style_buttonPinned, LV_STATE_DEFAULT);
+    remove_style(style_buttonPinned, LV_STATE_PRESSED);
+    icon.remove_style(style_iconPinned, LV_PART_MAIN);
+    icon.add_style(style_icon, LV_PART_MAIN);
     pinnedState = false;
   } // MainButton::unpin
 

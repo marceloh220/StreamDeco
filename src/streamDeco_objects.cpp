@@ -121,9 +121,9 @@ namespace streamDeco
         /* ---   Multimedia canvas buttons   --- */
 
         /* First line */
-        CanvasButton("mult 1", &video_start_capt_simp, &video_stop_capt_simp),
+        CanvasButton("mult 1", &video_stop_capt_simp, &video_start_capt_simp),
         CanvasButton("mult 2", &mic_off_simp, &mic_on_simp),
-        CanvasButton("mult 3", &cam_off_simp, &cam_on_simp),
+        CanvasButton("mult 3", &screen_capt_simp, NULL),
 
         /* Second line */
         CanvasButton("mult 4", &add_clip_simp, NULL),
@@ -217,53 +217,53 @@ namespace streamDeco
      **/
     void change_color_buttons(lv_palette_t color)
     {
-        button.terminal.color(color);
-        button.files.color(color);
-        button.web.color(color);
-        button.search.color(color);
-        button.applications_canvas.color(color);
+        button.terminal.colorButton(color);
+        button.files.colorButton(color);
+        button.web.colorButton(color);
+        button.search.colorButton(color);
+        button.applications_canvas.colorButton(color);
 
-        button.multimedia_prev.color(color);
-        button.multimedia_play.color(color);
-        button.multimedia_next.color(color);
-        button.multimedia_mic.color(color);
-        button.multimedia_canvas.color(color);
+        button.multimedia_prev.colorButton(color);
+        button.multimedia_play.colorButton(color);
+        button.multimedia_next.colorButton(color);
+        button.multimedia_mic.colorButton(color);
+        button.multimedia_canvas.colorButton(color);
 
-        button.left_workspace.color(color);
-        button.right_workspace.color(color);
-        button.pin.color(color);
-        button.desktop_mode.color(color);
-        button.configurations_canvas.color(color);
+        button.left_workspace.colorButton(color);
+        button.right_workspace.colorButton(color);
+        button.pin.colorButton(color);
+        button.desktop_mode.colorButton(color);
+        button.configurations_canvas.colorButton(color);
 
-        button.app1.color(color);
-        button.app2.color(color);
-        button.app3.color(color);
-        button.app4.color(color);
-        button.app5.color(color);
-        button.app6.color(color);
-        button.app7.color(color);
-        button.app8.color(color);
-        button.app9.color(color);
+        button.app1.colorButton(color);
+        button.app2.colorButton(color);
+        button.app3.colorButton(color);
+        button.app4.colorButton(color);
+        button.app5.colorButton(color);
+        button.app6.colorButton(color);
+        button.app7.colorButton(color);
+        button.app8.colorButton(color);
+        button.app9.colorButton(color);
 
-        button.mult1.color(color);
-        button.mult2.color(color);
-        button.mult3.color(color);
-        button.mult4.color(color);
-        button.mult5.color(color);
-        button.mult6.color(color);
-        button.mult7.color(color);
-        button.mult8.color(color);
-        button.mult9.color(color);
+        button.mult1.colorButton(color);
+        button.mult2.colorButton(color);
+        button.mult3.colorButton(color);
+        button.mult4.colorButton(color);
+        button.mult5.colorButton(color);
+        button.mult6.colorButton(color);
+        button.mult7.colorButton(color);
+        button.mult8.colorButton(color);
+        button.mult9.colorButton(color);
 
-        button.volmut.color(color);
-        button.voldown.color(color);
-        button.volup.color(color);
-        button.color_background.color(color);
-        button.color_button.color(color);
-        button.rotation.color(color);
-        button.sysmonitor.color(color);
-        button.sysconfig.color(color);
-        button.reboot.color(color);
+        button.volmut.colorButton(color);
+        button.voldown.colorButton(color);
+        button.volup.colorButton(color);
+        button.color_background.colorButton(color);
+        button.color_button.colorButton(color);
+        button.rotation.colorButton(color);
+        button.sysmonitor.colorButton(color);
+        button.sysconfig.colorButton(color);
+        button.reboot.colorButton(color);
 
         monitor.cpu.color(color);
         monitor.gpu.color(color);

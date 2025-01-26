@@ -448,9 +448,9 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult1_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('e');
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press('r');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             button.mult1.swapIcon();
@@ -462,8 +462,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult2_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('m');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -476,13 +476,11 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult3_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('c');
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(KEY_PRTSC);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
-            button.mult3.swapIcon();
-            button.mult3.pinned() ? button.mult3.unpin() : button.mult3.pin();
             break;
 
         /** @brief    Mult4 button is pressed
