@@ -35,12 +35,12 @@ namespace streamDeco
         class Complete : public lvgl::Object
         {
         public:
-            Complete(const char *text, const void *icon = NULL) : text_scr(text), icon_scr(icon) {}
-            void create(lv_obj_t *parent = NULL);
+            Complete(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            void create(lvgl::object_t *parent = NULL);
             void create(Object &parent);
             void set_bg_color(lv_color_t color);
-            void set_bg_color(lv_palette_t color);
-            void color(lv_palette_t color);
+            void set_bg_color(lvgl::palette::palette_t color);
+            void color(lvgl::palette::palette_t color);
             void arc_set_value(int16_t value);
             void bar1_set_range(int32_t min, int32_t max);
             void bar2_set_range(int32_t min, int32_t max);
@@ -49,7 +49,7 @@ namespace streamDeco
         protected:
             virtual void init_conf();
             const char *text_scr;
-            const void *icon_scr;
+            lvgl::icon_t icon_scr;
             lvgl::Style monitor_style;
             lvgl::Style metric_style;
             lvgl::Style metric_indicator_style;
@@ -67,12 +67,12 @@ namespace streamDeco
         class Basic : public lvgl::Object
         {
         public:
-            Basic(const char *text, const void *icon = NULL) : text_scr(text), icon_scr(icon) {}
-            void create(lv_obj_t *parent = NULL);
+            Basic(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            void create(lvgl::object_t *parent = NULL);
             void create(Object &parent);
             void set_bg_color(lv_color_t color);
-            void set_bg_color(lv_palette_t color);
-            void color(lv_palette_t color);
+            void set_bg_color(lvgl::palette::palette_t color);
+            void color(lvgl::palette::palette_t color);
             void bar1_set_range(int32_t min, int32_t max);
             void bar2_set_range(int32_t min, int32_t max);
             void bar1_set_value(int32_t value, const char *prefix, const char *sufix = "");
@@ -80,7 +80,7 @@ namespace streamDeco
         private:
             void init_conf();
             const char *text_scr;
-            const void *icon_scr;
+            lvgl::icon_t icon_scr;
             lvgl::Style monitor_style;
             lvgl::Style metric_style;
             lvgl::Style metric_indicator_style;
@@ -96,17 +96,17 @@ namespace streamDeco
         class Clock : public lvgl::Object
         {
         public:
-            Clock(const char *text, const void *icon = NULL) : text_scr(text), icon_scr(icon) {}
-            void create(lv_obj_t *parent = NULL);
+            Clock(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            void create(lvgl::object_t *parent = NULL);
             void create(Object &parent);
             void set_bg_color(lv_color_t color);
-            void set_bg_color(lv_palette_t color);
-            void color(lv_palette_t color);
+            void set_bg_color(lvgl::palette::palette_t color);
+            void color(lvgl::palette::palette_t color);
             void set_time(struct tm &value);
         private:
             void init_conf();
             const char *text_scr;
-            const void *icon_scr;
+            lvgl::icon_t icon_scr;
             lvgl::Label monitor_label;
             lvgl::Image monitor_icon;
             lvgl::Label date;

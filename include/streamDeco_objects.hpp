@@ -168,10 +168,17 @@ namespace streamDeco
     lvgl::Canvas monitor;
     
     /**
-     * @var     style
-     * @brief   Style Canvas
-     * @details Style for canvas */
-    lvgl::Style style;
+     * @var     style_landscape
+     * @brief   Style Canvas in landscape
+     * @details Style for canvas in landscape */
+    lvgl::Style style_landscape;
+
+    /**
+     * @var     style_portrait
+     * @brief   Style Canvas in portrait
+     * @details Style for canvas in portrait */
+    lvgl::Style style_portrait;
+
   } canvas_t;
 
   /**
@@ -701,7 +708,7 @@ namespace streamDeco
      * @brief    StreamDeco buttons color
      * @details  Used to change color of StreamDeco buttons
      **/
-    lv_palette_t color_buttons;
+    lvgl::palette::palette_t color_buttons;
 
     /**
      * @var lcd_bright
@@ -725,7 +732,7 @@ namespace streamDeco
    * @brief  Change buttons color
    * @param  color  color of button
    **/
-  void change_color_buttons(lv_palette_t color);
+  void change_color_buttons(lvgl::palette::palette_t color);
 
   /**
    * @brief    Change scrren rotation

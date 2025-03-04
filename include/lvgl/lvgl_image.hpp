@@ -33,11 +33,13 @@ namespace lvgl
   public:
     Image() {}
 
-    /**
-     * @brief   Create an image object
-     * @param   parent pointer to an object, it will be the parent of the new image
-     */
-    inline void create(lv_obj_t *parent = NULL)
+   /**
+    * @brief  Create a new image
+    * @param  parent object parent of the new image
+    * @note   The new image will be created into parent
+    * @note   If any parent is passed the image will be created into main screen
+    */
+    inline void create(object_t *parent = NULL)
     {
       if (object != NULL)
         return;
@@ -48,10 +50,11 @@ namespace lvgl
       port::mutex_give();
     }
 
-    /**
-     * @brief   Create an image object
-     * @param   parent pointer to an object, it will be the parent of the new image
-     */
+   /**
+    * @brief  Create a new image
+    * @param  parent object parent of the new image
+    * @note   The new image will be created into parent
+    */
     inline void create(Object &parent)
     {
       if (object != NULL)
@@ -67,7 +70,7 @@ namespace lvgl
      *                  2) path to an image file (e.g. "S:/dir/img.bin") or
      *                  3) a SYMBOL (e.g. LV_SYMBOL_OK)
      */
-    void set_src(const void *src)
+    void set_src(icon_t src)
     {
       if (object == NULL)
         return;
@@ -81,7 +84,7 @@ namespace lvgl
      * from the new origin.
      * @param x         the new offset along x axis.
      */
-    void set_offset_x(lv_coord_t x)
+    void set_offset_x(coordinates_t x)
     {
       if (object == NULL)
         return;
@@ -95,7 +98,7 @@ namespace lvgl
      * so the image will be displayed from the new origin.
      * @param y         the new offset along y axis.
      */
-    void set_offset_y(lv_coord_t y)
+    void set_offset_y(coordinates_t y)
     {
       if (object == NULL)
         return;
@@ -126,7 +129,7 @@ namespace lvgl
      * @param x         rotation center x of the image
      * @param y         rotation center y of the image
      */
-    void set_pivot(lv_coord_t x, lv_coord_t y)
+    void set_pivot(coordinates_t x, coordinates_t y)
     {
       if (object == NULL)
         return;
@@ -176,12 +179,12 @@ namespace lvgl
      *
      * @param mode      the new size mode.
      */
-    void set_size_mode(lv_img_size_mode_t mode)
+    void set_size_mode(lvgl::image::size_mode_t mode)
     {
       if (object == NULL)
         return;
       port::mutex_take();
-      lv_img_set_size_mode(object, mode);
+      lv_img_set_size_mode(object, (lv_img_size_mode_t)mode);
       port::mutex_give();
     }
 
@@ -204,9 +207,9 @@ namespace lvgl
      * Get the offset's x attribute of the image object.
      * @return          offset X value.
      */
-    lv_coord_t get_offset_x()
+    coordinates_t get_offset_x()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -219,9 +222,9 @@ namespace lvgl
      * Get the offset's y attribute of the image object.
      * @return          offset Y value.
      */
-    lv_coord_t get_offset_y()
+    coordinates_t get_offset_y()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -249,7 +252,7 @@ namespace lvgl
      * Get the pivot (rotation center) of the image.
      * @param pivot     store the rotation center here
      */
-    void get_pivot(lv_point_t *pivot) { lv_img_get_pivot(object, pivot); }
+    void get_pivot(point_t *pivot) { lv_img_get_pivot(object, pivot); }
 
     /**
      * Get the zoom factor of the image.
@@ -283,15 +286,15 @@ namespace lvgl
 
     /**
      * Get the size mode of the image
-     * @return          element of @ref lv_img_size_mode_t
+     * @return          element of @ref image::size_mode_t
      */
-    lv_img_size_mode_t get_size_mode()
+    image::size_mode_t get_size_mode()
     {
-      lv_img_size_mode_t ret = 0;
+      image::size_mode_t ret = image::SIZE_MODE_VIRTUAL;
       if (object == NULL)
         return ret;
       port::mutex_take();
-      ret = lv_img_get_size_mode(object);
+      ret = (image::size_mode_t)lv_img_get_size_mode(object);
       port::mutex_give();
       return ret;
     }

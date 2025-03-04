@@ -23,13 +23,21 @@
 #define _LVGL_CANVAS_HPP_
 
 #include "lvgl_object.hpp"
+#include "lvgl_color.hpp"
 
 namespace lvgl {
 
 class Canvas : public Object {
 
 public:
-  inline void create(lv_obj_t *parent = NULL) {
+
+  /**
+   * @brief  Create a new canvas
+   * @param  parent object parent of the new canvas
+   * @note   The new canvas will be created into parent
+   * @note   If any parent is passed the canvas will be created into main screen
+   */
+  inline void create(object_t *parent = NULL) {
     if (object != NULL)
       return;
     port::mutex_take();
@@ -39,6 +47,11 @@ public:
     port::mutex_give();
   }
 
+  /**
+   * @brief  Create a new canvas
+   * @param  parent object parent of the new canvas
+   * @note   The new canvas will be created into parent
+   */
   inline void create(Object &parent) {
     if (object != NULL)
       return;
@@ -47,23 +60,32 @@ public:
     port::mutex_give();
   }
 
-  void set_bg_color(lv_color_t color) {
+  /**
+   * @brief   Set the background color of canvas
+   * @param   color Color of background in display format
+   */
+  void set_bg_color(lvgl::color_t color) {
     if (object == NULL)
       return;
     port::mutex_take();
-    lv_obj_set_style_bg_color(object, color, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(object, color, lvgl::part::MAIN);
     invalidate();
     port::mutex_give();
   }
 
-  void set_bg_color(lv_palette_t color) {
+  /**
+   * @brief   Set the background color canvas
+   * @param   color Color of background on lvgl paletton
+   */
+  void set_bg_color(lvgl::palette::palette_t color) {
     if (object == NULL)
       return;
     port::mutex_take();
-    lv_obj_set_style_bg_color(object, lv_palette_main(color), LV_PART_MAIN);
+    lv_obj_set_style_bg_color(object, lv_palette_main((lv_palette_t)color), lvgl::part::MAIN);
     invalidate();
     port::mutex_give();
   }
+
 };
 
 } // namespace lvgl

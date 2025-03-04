@@ -58,7 +58,7 @@
 #     pythonw.exe .\streamDeco_monitor_windows.py
 #
 # Create your own exe with commander
-#     pyinstaller.exe --icon=streamDeco.ico .\streamDeco_monitor_windows.pyw
+#     pyinstaller.exe -F --icon=streamDeco.ico .\streamDeco_monitor_windows.pyw
 #
 # The COM device is searched until find ESP32 USB chip
 #
@@ -321,7 +321,7 @@ if __name__ == '__main__':
     import PIL.Image
     
     task = Task(monitor)
-    iconTray = PIL.Image.open('streamDeco.ico')
+    iconTray = PIL.Image.open('./streamDeco.ico')
     tray = pystray.Icon(name = 'StreamDeco', title = 'StreamDeco', icon = iconTray, 
                         menu = pystray.Menu(
                                             pystray.MenuItem('Sair', task.close)

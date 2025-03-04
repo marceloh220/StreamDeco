@@ -23,15 +23,31 @@
 #define _STREAMDECO_SETTTING_HPP_
 
 #include <lvgl.h>
+#include "lvgl/lvgl_color.hpp"
 
 namespace streamDeco {
 
+/**
+ * @namespace settings
+ * @brief     Offer some settings configurations
+ */
 namespace settings {
 
 enum { SIZE_CONTENT = LV_SIZE_CONTENT };
 
-lv_palette_t buttonColor();
-lv_color_t backgroundColor();
+/**
+ * @brief   Select one background color on colors pool
+ * @note    This colors pool are defined in streamDeco_settings.cpp file
+ *          on colors_background array, new colors can be add to this pool
+ */
+lvgl::color_t backgroundColor();
+
+/**
+ * @brief   Select one button color on colors pool
+ * @note    This colors pool are defined in streamDeco_settings.cpp file
+ *          on palette_buttons array, and I dont have a clue to make dhis like an color =/
+ */
+lvgl::palette::palette_t buttonColor();
 
 } // namespace settings
 

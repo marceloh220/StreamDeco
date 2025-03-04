@@ -21,8 +21,8 @@
  * 
  * @file    streamDeco_HandleruiReset.cpp
  * @brief   Hidden canvas
- * @details This handler hidden canvas if buttons are not pinned
- * @details affter receive a notify sended by a timer
+ * @details This handler hidden canvas or put backlight brigrht to minimum
+ * @details if buttons are not pinned affter receive a notify sended by a timer
  */
 
 #include "streamDeco_objects.hpp"
@@ -31,7 +31,8 @@ namespace streamDeco
 {
 
   /* Handler of UI reset task, 
-   * hidden canvas if they are not pinned. */
+   * hidden canvas if they are not pinned or
+   * put backlight on rest mode reducing the bright to minimum. */
   void handleUiReset(taskArg_t task_arg)
   {
     while (1)

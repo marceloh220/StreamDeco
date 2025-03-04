@@ -23,9 +23,9 @@
 #ifndef _LVGL_OBJECT_HPP_
 #define _LVGL_OBJECT_HPP_
 
+#include "lvgl_types.hpp"
 #include "lvgl_port.hpp"
 #include "lvgl_style.hpp"
-#include <lvgl.h>
 
 /**
  * @namespace lvgl.
@@ -42,13 +42,26 @@ namespace lvgl
   {
 
   public:
+    
     Object() {}
-    ~Object() {del();}
-
-    inline lv_obj_t *get_object() { return object; }
 
     /**
+     * @brief Delete the object on descontruction 
+     */
+    ~Object() {del();}
+
+    /**
+     * @brief   Get the pointer to address of this object into LVGL memory pool
+     * @return  Pointer address to his object into LVGL memory pool
+     */
+    inline object_t *get_object() { return object; }
+
+    /**
+     * @sa    Object::hidden()
      * @brief Delete the object
+     * @note  This method frees up the object's memory space in the LVGL pool and make the object unusable.
+     *        The object can be recreated later, but its characteristics will be lost and will need to be reconfigured.
+     *        To stop showing the object for a while, use the Object::hidden method.
      */
     inline void del()
     {
@@ -70,7 +83,7 @@ namespace lvgl
       if (object == NULL)
         return;
       port::mutex_take();
-      lv_obj_t *parent = lv_obj_get_parent(object);
+      object_t *parent = lv_obj_get_parent(object);
       lv_obj_move_to_index(object, lv_obj_get_child_cnt(parent) - 1);
       port::mutex_give();
     }
@@ -91,9 +104,9 @@ namespace lvgl
 
     /**
      * @brief Set one or more flags
-     * @param f     R-ed values from `lv_obj_flag_t` to set.
+     * @param f     R-ed values from `object_flag_t` to set.
      */
-    inline void add_flag(lv_obj_flag_t f)
+    inline void add_flag(object_flag_t f)
     {
       if (object == NULL)
         return;
@@ -104,9 +117,9 @@ namespace lvgl
 
     /**
      * @brief Clear one or more flags
-     * @param flag     OR-ed values from `lv_obj_flag_t` to set.
+     * @param flag     OR-ed values from `object_flag_t` to set.
      */
-    inline void clear_flag(lv_obj_flag_t flag)
+    inline void clear_flag(object_flag_t flag)
     {
       if (object == NULL)
         return;
@@ -120,10 +133,10 @@ namespace lvgl
      *        unchanged. If specified in the styles, transition animation will be started
      *        from the previous state to the current.
      * @param state     the states to add.
-     *                  E.g `LV_STATE_PRESSED |
-     * LV_STATE_FOCUSED`
+     *                  E.g `state::STATE_PRESSED |
+     * state::STATE_FOCUSED`
      */
-    inline void add_state(lv_state_t state)
+    inline void add_state(state_t state)
     {
       if (object == NULL)
         return;
@@ -137,9 +150,9 @@ namespace lvgl
      *        unchanged. If specified in the styles, transition animation will be started
      *        from the previous state to the current.
      * @param state     the states to add.
-     *                  E.g `LV_STATE_PRESSED | LV_STATE_FOCUSED`
+     *                  E.g `state::STATE_PRESSED | state::STATE_FOCUSED`
      */
-    inline void clear_state(lv_state_t state)
+    inline void clear_state(state_t state)
     {
       if (object == NULL)
         return;
@@ -165,7 +178,7 @@ namespace lvgl
      * @param flag  the flag(s) to check (OR-ed values can be used)
      * @return      true: all flags are set; false: not all flags are set
      */
-    inline bool has_flag(lv_obj_flag_t flag)
+    inline bool has_flag(object_flag_t flag)
     {
       if (object == NULL)
         return false;
@@ -181,7 +194,7 @@ namespace lvgl
      * @return      true: at lest one flag flag is set;
      *              false: none of the flags are set
      */
-    inline bool has_flag_any(lv_obj_flag_t flag)
+    inline bool has_flag_any(object_flag_t flag)
     {
       if (object == NULL)
         return false;
@@ -193,11 +206,11 @@ namespace lvgl
 
     /**
      * @brief Get the state of an object
-     * @return      the state (OR-ed values from `lv_state_t`)
+     * @return      the state (OR-ed values from `state_t`)
      */
-    inline lv_state_t get_state()
+    inline state_t get_state()
     {
-      lv_state_t ret = 0;
+      state_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -212,7 +225,7 @@ namespace lvgl
      * @return          true: `obj` is in `state`;
      *                  false: `obj` is not in `state`
      */
-    inline bool has_state(lv_state_t state)
+    inline bool has_state(state_t state)
     {
       if (object == NULL)
         return false;
@@ -239,11 +252,11 @@ namespace lvgl
      * @param x         new x coordinate
      * @param y         new y coordinate
      * @note            With default alignment it's the distance from the top left corner
-     * @note            E.g. LV_ALIGN_CENTER alignment it's the offset from the center of the parent
+     * @note            E.g. lvgl::alignment::CENTER alignment it's the offset from the center of the parent
      * @note            The position is interpreted on the content area of the parent
      * @note            The values can be set in pixel or in percentage of parent size with `lv_pct(v)`
      */
-    inline void set_pos(lv_coord_t x, lv_coord_t y)
+    inline void set_pos(coordinates_t x, coordinates_t y)
     {
       if (object == NULL)
         return;
@@ -256,11 +269,11 @@ namespace lvgl
      * @brief Set the x coordinate of an object
      * @param x         new x coordinate
      * @note            With default alignment it's the distance from the top left corner
-     * @note            E.g. LV_ALIGN_CENTER alignment it's the offset from the center of the parent
+     * @note            E.g. lvgl::alignment::CENTER alignment it's the offset from the center of the parent
      * @note            The position is interpreted on the content area of the parent
      * @note            The values can be set in pixel or in percentage of parent size with `lv_pct(v)`
      */
-    inline void set_x(lv_coord_t x)
+    inline void set_x(coordinates_t x)
     {
       if (object == NULL)
         return;
@@ -273,11 +286,11 @@ namespace lvgl
      * @brief Set the y coordinate of an object
      * @param y         new y coordinate
      * @note            With default alignment it's the distance from the top left corner
-     * @note            E.g. LV_ALIGN_CENTER alignment it's the offset from the center of the parent
+     * @note            E.g. lvgl::alignment::CENTER alignment it's the offset from the center of the parent
      * @note            The position is interpreted on the content area of the parent
      * @note            The values can be set in pixel or in percentage of parent size with `lv_pct(v)`
      */
-    inline void set_y(lv_coord_t y)
+    inline void set_y(coordinates_t y)
     {
       if (object == NULL)
         return;
@@ -296,7 +309,7 @@ namespace lvgl
      *                  LV_SIZE_PCT(x)     to set size in percentage of the parent's content area size
      *                                     (the size without paddings) x should be in [0..1000]% range
      */
-    inline void set_size(lv_coord_t w, lv_coord_t h)
+    inline void set_size(coordinates_t w, coordinates_t h)
     {
       if (object == NULL)
         return;
@@ -328,7 +341,7 @@ namespace lvgl
      *                  lv_pct(x)           to set size in percentage of the parent's content area size
      *                                      (the size without paddings). x should be in [0..1000]% range
      */
-    inline void set_width(lv_coord_t w)
+    inline void set_width(coordinates_t w)
     {
       if (object == NULL)
         return;
@@ -346,7 +359,7 @@ namespace lvgl
      *                  lv_pct(x)           to set size in percentage of the parent's content area size
      *                                      (the size without paddings). x should be in [0..1000]% range
      */
-    inline void set_height(lv_coord_t h)
+    inline void set_height(coordinates_t h)
     {
       if (object == NULL)
         return;
@@ -359,7 +372,7 @@ namespace lvgl
      * @brief Set the width reduced by the left and right padding and the border width.
      * @param w         the width without paddings in pixels
      */
-    inline void set_content_width(lv_coord_t w)
+    inline void set_content_width(coordinates_t w)
     {
       if (object == NULL)
         return;
@@ -372,7 +385,7 @@ namespace lvgl
      * @brief Set the height reduced by the top and bottom padding and the border width.
      * @param h         the height without paddings in pixels
      */
-    inline void set_content_height(lv_coord_t h)
+    inline void set_content_height(coordinates_t h)
     {
       if (object == NULL)
         return;
@@ -434,9 +447,9 @@ namespace lvgl
 
     /**
      * @brief Change the alignment of an object.
-     * @param align     type of alignment (see 'lv_align_t' enum) `LV_ALIGN_OUT_...` can't be used.
+     * @param align     type of alignment (see 'lvgl::alignment_t' enum) `lvgl::alignment::OUT_...` can't be used.
      */
-    inline void set_align(lv_align_t align)
+    inline void set_align(alignment::alignment_t align)
     {
       if (object == NULL)
         return;
@@ -450,11 +463,11 @@ namespace lvgl
      *        Equivalent to:
      *          lv_obj_set_align(obj, align);
      *          lv_obj_set_pos(obj, x_ofs, y_ofs);
-     * @param align     type of alignment (see 'lv_align_t' enum) `LV_ALIGN_OUT_...` can't be used.
+     * @param align     type of alignment (see 'alignment_t' enum) `lvgl::alignment::OUT_...` can't be used.
      * @param x_ofs     x coordinate offset after alignment
      * @param y_ofs     y coordinate offset after alignment
      */
-    inline void align(lv_align_t align, lv_coord_t x_ofs, lv_coord_t y_ofs)
+    inline void align(alignment::alignment_t align, coordinates_t x_ofs, coordinates_t y_ofs)
     {
       if (object == NULL)
         return;
@@ -466,12 +479,12 @@ namespace lvgl
     /**
      * @brief Align an object to an other object.
      * @param base      pointer to an other object (if NULL `obj`s parent is used). 'obj' will be aligned to it.
-     * @param align     type of alignment (see 'lv_align_t' enum)
+     * @param align     type of alignment (see 'alignment_t' enum)
      * @param x_ofs     x coordinate offset after alignment
      * @param y_ofs     y coordinate offset after alignment
      * @note            if the position or size of `base` changes `obj` needs to be aligned manually again
      */
-    inline void align_to(Object &base, lv_align_t align, lv_coord_t x_ofs, lv_coord_t y_ofs)
+    inline void align_to(Object &base, alignment::alignment_t align, coordinates_t x_ofs, coordinates_t y_ofs)
     {
       if (object == NULL)
         return;
@@ -489,7 +502,7 @@ namespace lvgl
       if (object == NULL)
         return;
       port::mutex_take();
-      lv_obj_align(object, LV_ALIGN_CENTER, 0, 0);
+      lv_obj_align(object, lvgl::alignment::CENTER, 0, 0);
       port::mutex_give();
     }
 
@@ -501,8 +514,8 @@ namespace lvgl
       if (object == NULL)
         return;
       port::mutex_take();
-      if (!lv_obj_has_flag(object, LV_OBJ_FLAG_HIDDEN))
-        lv_obj_add_flag(object, LV_OBJ_FLAG_HIDDEN);
+      if (!lv_obj_has_flag(object, object::FLAG_HIDDEN))
+        lv_obj_add_flag(object, object::FLAG_HIDDEN);
       port::mutex_give();
     }
 
@@ -515,7 +528,7 @@ namespace lvgl
       if (object == NULL)
         return false;
       port::mutex_take();
-      bool ret = lv_obj_has_flag(object, LV_OBJ_FLAG_HIDDEN);
+      bool ret = lv_obj_has_flag(object, object::FLAG_HIDDEN);
       port::mutex_give();
       return ret;
     }
@@ -528,9 +541,9 @@ namespace lvgl
       if (object == NULL)
         return;
       port::mutex_take();
-      if (lv_obj_has_flag(object, LV_OBJ_FLAG_HIDDEN))
+      if (lv_obj_has_flag(object, object::FLAG_HIDDEN))
       {
-        lv_obj_clear_flag(object, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(object, object::FLAG_HIDDEN);
         move_foreground();
       }
       port::mutex_give();
@@ -545,7 +558,7 @@ namespace lvgl
      * @brief Copy the coordinates of an object to an area
      * @param coords    pointer to an area to store the coordinates
      */
-    inline void get_coords(lv_area_t *coords)
+    inline void get_coords(area_t *coords)
     {
       if (object == NULL)
         return;
@@ -564,9 +577,9 @@ namespace lvgl
      * @note            Scrolling of the parent doesn't change the returned value.
      * @note            The returned value is always the distance from the parent even if `obj` is positioned by a layout.
      */
-    inline lv_coord_t get_x()
+    inline coordinates_t get_x()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -585,9 +598,9 @@ namespace lvgl
      * @note            Scrolling of the parent doesn't change the returned value.
      * @note            The returned value is always the distance from the parent even if `obj` is positioned by a layout.
      */
-    inline lv_coord_t get_x2()
+    inline coordinates_t get_x2()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -606,9 +619,9 @@ namespace lvgl
      * @note            Scrolling of the parent doesn't change the returned value.
      * @note            The returned value is always the distance from the parent even if `obj` is positioned by a layout.
      */
-    inline lv_coord_t get_y()
+    inline coordinates_t get_y()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -627,9 +640,9 @@ namespace lvgl
      * @note            Scrolling of the parent doesn't change the returned value.
      * @note            The returned value is always the distance from the parent even if `obj` is positioned by a layout.
      */
-    inline lv_coord_t get_y2()
+    inline coordinates_t get_y2()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -643,9 +656,9 @@ namespace lvgl
      *        i.e. the offset form the set alignment
      * @return          the set x coordinate
      */
-    inline lv_coord_t get_x_aligned()
+    inline coordinates_t get_x_aligned()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -658,9 +671,9 @@ namespace lvgl
      * @brief Get the actually set y coordinate of object, i.e. the offset form the set alignment
      * @return          the set y coordinate
      */
-    inline lv_coord_t get_y_aligned()
+    inline coordinates_t get_y_aligned()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -675,9 +688,9 @@ namespace lvgl
      *                  To force coordinate recalculation call `lv_obj_update_layout(obj)`.
      * @return          the width in pixels
      */
-    inline lv_coord_t get_width()
+    inline coordinates_t get_width()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -692,9 +705,9 @@ namespace lvgl
      *                  To force coordinate recalculation call `lv_obj_update_layout(obj)`.
      * @return          the height in pixels
      */
-    inline lv_coord_t get_height()
+    inline coordinates_t get_height()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -710,9 +723,9 @@ namespace lvgl
      * @return          the width which still fits into its parent without causing overflow
      *                  (making the parent scrollable)
      */
-    inline lv_coord_t get_content_width()
+    inline coordinates_t get_content_width()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -728,9 +741,9 @@ namespace lvgl
      * @return          the height which still fits into the parent without causing overflow
      *                  (making the parent scrollable)
      */
-    inline lv_coord_t get_content_height()
+    inline coordinates_t get_content_height()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -746,7 +759,7 @@ namespace lvgl
      * @param area      the area which still fits into the parent without causing overflow
      *                  (making the parent scrollable)
      */
-    inline void get_content_coords(lv_area_t *area)
+    inline void get_content_coords(area_t *area)
     {
       if (object == NULL)
         return;
@@ -761,7 +774,7 @@ namespace lvgl
      * @note            This size independent from the real size of the widget.
      *                  It just tells how large the internal ("virtual") content is.
      */
-    inline lv_coord_t get_self_width() { return lv_obj_get_self_width(object); }
+    inline coordinates_t get_self_width() { return lv_obj_get_self_width(object); }
 
     /**
      * @brief Get the height occupied by the "parts" of the widget.
@@ -770,9 +783,9 @@ namespace lvgl
      * @note            This size independent from the real size of the widget.
      *                  It just tells how large the internal ("virtual") content is.
      */
-    inline lv_coord_t get_self_height()
+    inline coordinates_t get_self_height()
     {
-      lv_coord_t ret = 0;
+      coordinates_t ret = 0;
       if (object == NULL)
         return ret;
       port::mutex_take();
@@ -813,7 +826,7 @@ namespace lvgl
      * @param x             X-position
      * @param y             Y-position
      */
-    inline void move_to(lv_coord_t x, lv_coord_t y)
+    inline void move_to(coordinates_t x, coordinates_t y)
     {
       if (object == NULL)
         return;
@@ -827,7 +840,7 @@ namespace lvgl
      * @param x             X-position relative
      * @param y             Y-position relative
      */
-    inline void move_children_by(lv_coord_t x_diff, lv_coord_t y_diff, bool ignore_floating)
+    inline void move_children_by(coordinates_t x_diff, coordinates_t y_diff, bool ignore_floating)
     {
       if (object == NULL)
         return;
@@ -842,7 +855,7 @@ namespace lvgl
      * @param recursive     consider the transformation properties of the parents too
      * @param inv           do the inverse of the transformation (-angle and 1/zoom)
      */
-    inline void transform_point(lv_point_t *p, bool recursive, bool inv)
+    inline void transform_point(point_t *p, bool recursive, bool inv)
     {
       if (object == NULL)
         return;
@@ -871,7 +884,7 @@ namespace lvgl
      *        The area will be truncated to the object's area and marked for redraw.
      * @param area          the area to redraw
      */
-    inline void invalidate_area(const lv_area_t *area)
+    inline void invalidate_area(const area_t *area)
     {
       if (object == NULL)
         return;
@@ -899,7 +912,7 @@ namespace lvgl
      * @return true     visible; false not visible (hidden, out of parent, on
      * other screen, etc)
      */
-    inline bool area_is_visible(lv_area_t *area)
+    inline bool area_is_visible(area_t *area)
     {
       if (object == NULL)
         return false;
@@ -928,7 +941,7 @@ namespace lvgl
      * Set the size of an extended clickable area
      * @param size      extended clickable area in all 4 directions [px]
      */
-    inline void set_ext_click_area(lv_coord_t size)
+    inline void set_ext_click_area(coordinates_t size)
     {
       if (object == NULL)
         return;
@@ -942,7 +955,7 @@ namespace lvgl
      * It's the object's normal area plus the extended click area.
      * @param area      store the result area here
      */
-    inline void get_click_area(lv_area_t *area)
+    inline void get_click_area(area_t *area)
     {
       if (object == NULL)
         return;
@@ -956,7 +969,7 @@ namespace lvgl
      * @param point     screen-space point (absolute coordinate)
      * @return          true: if the object is considered under the point
      */
-    inline bool hit_test(const lv_point_t *point)
+    inline bool hit_test(const point_t *point)
     {
       if (object == NULL)
         return false;
@@ -976,7 +989,7 @@ namespace lvgl
      * @example         lv_obj_add_style(btn, &btn_red, LV_STATE_PRESSED);
      * //Overwrite only some colors to red when pressed
      */
-    void add_style(lv_style_t *style, lv_style_selector_t selector)
+    void add_style(lv_style_t *style, style_selector_t selector)
     {
       if (object == NULL)
         return;
@@ -995,7 +1008,7 @@ namespace lvgl
      * @example         lv_obj_add_style(btn, &btn_red, LV_STATE_PRESSED);
      * //Overwrite only some colors to red when pressed
      */
-    void add_style(Style &style, lv_style_selector_t selector)
+    void add_style(Style &style, style_selector_t selector)
     {
       if (object == NULL)
         return;
@@ -1009,15 +1022,15 @@ namespace lvgl
      * @param style     pointer to a style to remove. Can be NULL to check only
      * the selector
      * @param selector  OR-ed values of states and a part to remove only styles
-     * with matching selectors. LV_STATE_ANY and LV_PART_ANY can be used
-     * @example lv_obj_remove_style(obj, &style, LV_PART_ANY | LV_STATE_ANY);
+     * with matching selectors. LV_STATE_ANY and lvgl::part::ANY can be used
+     * @example lv_obj_remove_style(obj, &style, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove a specific style
-     * @example lv_obj_remove_style(obj, NULL, LV_PART_MAIN | LV_STATE_ANY);
+     * @example lv_obj_remove_style(obj, NULL, lvgl::part::MAIN | LV_STATE_ANY);
      * //Remove all styles from the main part
-     * @example lv_obj_remove_style(obj, NULL, LV_PART_ANY | LV_STATE_ANY);
+     * @example lv_obj_remove_style(obj, NULL, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove all styles
      */
-    void remove_style(lv_style_t *style, lv_style_selector_t selector)
+    void remove_style(lv_style_t *style, style_selector_t selector)
     {
       if (object == NULL)
         return;
@@ -1031,15 +1044,15 @@ namespace lvgl
      * @param style     pointer to a style to remove. Can be NULL to check only
      * the selector
      * @param selector  OR-ed values of states and a part to remove only styles
-     * with matching selectors. LV_STATE_ANY and LV_PART_ANY can be used
-     * @example lv_obj_remove_style(obj, &style, LV_PART_ANY | LV_STATE_ANY);
+     * with matching selectors. LV_STATE_ANY and lvgl::part::ANY can be used
+     * @example lv_obj_remove_style(&style, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove a specific style
-     * @example lv_obj_remove_style(obj, NULL, LV_PART_MAIN | LV_STATE_ANY);
+     * @example lv_obj_remove_style(NULL, lvgl::part::MAIN | LV_STATE_ANY);
      * //Remove all styles from the main part
-     * @example lv_obj_remove_style(obj, NULL, LV_PART_ANY | LV_STATE_ANY);
+     * @example lv_obj_remove_style(NULL, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove all styles
      */
-    void remove_style(Style &style, lv_style_selector_t selector)
+    void remove_style(Style &style, style_selector_t selector)
     {
       if (object == NULL)
         return;
@@ -1057,7 +1070,7 @@ namespace lvgl
         return;
       port::mutex_take();
       lv_obj_remove_style(object, NULL,
-                          (lv_style_selector_t)LV_PART_ANY |
+                          (lv_style_selector_t)lvgl::part::ANY |
                               (lv_style_selector_t)LV_STATE_ANY);
       port::mutex_give();
     }
@@ -1067,7 +1080,7 @@ namespace lvgl
      * @param style     pointer to a style. Only the objects with this style will
      * be notified (NULL to notify all objects)
      */
-    void report_style_change(lv_style_t *style)
+    void report_style_change(style_t *style)
     {
       if (object == NULL)
         return;
@@ -1116,12 +1129,12 @@ namespace lvgl
      * @param user_data custom data data will be available in `event_cb`
      */
     template <typename type>
-    void add_event_cb(lv_event_cb_t callback, lv_event_code_t filter, type user_data)
+    void add_event_cb(lvgl::event::callback_t callback, lvgl::event::code_t filter, type user_data)
     {
       if (object == NULL)
         return;
       port::mutex_take();
-      lv_obj_add_event_cb(object, callback, filter, (void *)user_data);
+      lv_obj_add_event_cb(object, callback, (lv_event_code_t)filter, (void *)user_data);
       port::mutex_give();
     }
 
@@ -1130,7 +1143,7 @@ namespace lvgl
      * @param callback  the event function to remove
      * @return          true if any event handlers were removed
      */
-    bool remove_event_cb(lv_event_cb_t callback)
+    bool remove_event_cb(lvgl::event::callback_t callback)
     {
       if (object == NULL)
         return false;
@@ -1147,7 +1160,7 @@ namespace lvgl
      * @param user_data the user_data specified in ::lv_obj_add_event_cb
      * @return          true if any event handlers were removed
      */
-    bool remove_event_cb_with_user_data(lv_event_cb_t callback,
+    bool remove_event_cb_with_user_data(lvgl::event::callback_t callback,
                                         const void *user_data)
     {
       if (object == NULL)
@@ -1166,7 +1179,7 @@ namespace lvgl
      * @return          the user_data
      */
     template <typename type>
-    type user_data(lv_event_cb_t callback)
+    type user_data(lvgl::event::callback_t callback)
     {
       if (object == NULL)
         return;
@@ -1177,7 +1190,7 @@ namespace lvgl
     }
 
   protected:
-    lv_obj_t *object = NULL;
+    object_t *object = NULL;
   };
 
 } // namespace lvgl

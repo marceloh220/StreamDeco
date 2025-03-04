@@ -24,7 +24,7 @@
 
 namespace lvgl
 {
-  void Button::create(lv_obj_t *parent)
+  void Button::create(object_t *parent)
   {
     if (object != NULL)
     {
@@ -36,7 +36,7 @@ namespace lvgl
     object = lv_btn_create(parent);
     _init();
     port::mutex_give();
-  } // Button::create(lv_obj_t *parent)
+  } // Button::create(object_t *parent)
 
   void Button::create(Object &parent)
   {
@@ -50,41 +50,41 @@ namespace lvgl
 
   void Button::_init()
   {
-    lv_color_t color = lv_color_make(41, 45, 50);
-    buttonFixed.set_bg_color(color);
-    buttonFixed.set_outline_color(color);
-    buttonFixed.set_border_color(lv_color_black());
-    button.set_radius(6);
-    button.set_bg_opa(LV_OPA_100);
-    button.set_bg_color(LV_PALETTE_PURPLE);
-    button.set_border_opa(LV_OPA_40);
-    button.set_border_width(2);
-    button.set_border_color(lv_palette_main(LV_PALETTE_GREY));
-    button.set_shadow_width(0);
-    button.set_shadow_color(lv_palette_main(LV_PALETTE_GREY));
-    button.set_shadow_ofs_y(0);
-    button.set_outline_opa(LV_OPA_COVER);
-    button.set_outline_color(lv_palette_main(LV_PALETTE_PURPLE));
-    button.set_text_color(lv_color_white());
-    button.set_pad_all(10);
-    buttonPressed.set_outline_width(30);
-    buttonPressed.set_outline_opa(LV_OPA_TRANSP);
-    buttonPressed.set_translate_y(5);
-    buttonPressed.set_shadow_ofs_y(3);
-    buttonPressed.set_bg_color(lv_palette_darken(LV_PALETTE_PURPLE, 2));
+    lvgl::color_t color = color::make(41, 45, 50);
+    style_buttonPinned.set_bg_color(color);
+    style_buttonPinned.set_outline_color(color);
+    style_buttonPinned.set_border_color(color::black());
+    style_button.set_radius(6);
+    style_button.set_bg_opa(lvgl::opacity::OPA_100);
+    style_button.set_bg_color(lvgl::palette::PURPLE);
+    style_button.set_border_opa(lvgl::opacity::OPA_40);
+    style_button.set_border_width(2);
+    style_button.set_border_color(lvgl::palette::main(lvgl::palette::GREY));
+    style_button.set_shadow_width(0);
+    style_button.set_shadow_color(lvgl::palette::main(lvgl::palette::GREY));
+    style_button.set_shadow_ofs_y(0);
+    style_button.set_outline_opa(lvgl::opacity::OPA_COVER);
+    style_button.set_outline_color(lvgl::palette::main(lvgl::palette::PURPLE));
+    style_button.set_text_color(lvgl::color::black());
+    style_button.set_pad_all(10);
+    style_buttonPressed.set_outline_width(30);
+    style_buttonPressed.set_outline_opa(lvgl::opacity::OPA_TRANSP);
+    style_buttonPressed.set_translate_y(5);
+    style_buttonPressed.set_shadow_ofs_y(3);
+    style_buttonPressed.set_bg_color(lvgl::palette::darken(lvgl::palette::PURPLE, 2));
     remove_style_all();
-    add_style(button, LV_STATE_DEFAULT);
-    add_style(buttonPressed, LV_STATE_PRESSED);
+    add_style(style_button, lvgl::state::STATE_DEFAULT);
+    add_style(style_buttonPressed, lvgl::state::STATE_PRESSED);
     set_size(128, 128);
     if (_icon1_scr != NULL)
     {
       _icon.create(*this);
       _icon.center();
       _icon.set_src(_icon1_scr);
-      icon.set_img_recolor(lv_color_white());
-      icon.set_img_recolor_opa(100);
+      style_icon.set_img_recolor(lvgl::color::white());
+      style_icon.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
     }
-    else
+    else if (_text_scr != NULL)
     {
       _label.create(*this);
       _label.set_text(_text_scr);
@@ -92,43 +92,96 @@ namespace lvgl
     }
   } // Button::init
 
+  #if ALFA_AVALIABLE
   void Button::text(const char *text)
   {
     if (object == NULL)
       return;
     port::mutex_take();
-    _label.set_text(text);
+    if (_label.get_object() == NULL)
+    {
+      _label.create(*this);
+      _label.set_text(text);
+      _label.center();
+    } 
+    else 
+    {
+      _label.set_text(text);
+    }
     port::mutex_give();
   } // Button::text
 
-  void Button::buttonColor(lv_palette_t color)
+  void Button::icon1(icon_t icon)
   {
     if (object == NULL)
       return;
     port::mutex_take();
-    button.set_bg_color(lv_palette_main(color));
-    button.set_outline_color(lv_palette_main(color));
-    buttonPressed.set_bg_color(lv_palette_darken(color, 2));
+    _icon1_scr = icon;
+    if (_icon.get_object() == NULL)
+    {
+      _icon.create(*this);
+      _icon.center();
+      _icon.set_src(icon);
+      style_icon.set_img_recolor(lvgl::color::white());
+      style_icon.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
+    }
+    port::mutex_give();
+  } // Button::icon1
+
+  void Button::icon2(icon_t icon)
+  {
+    if (object == NULL)
+      return;
+    port::mutex_take();
+    _icon2_scr = icon;
+    if (_icon.get_object() == NULL)
+    {
+      _icon.create(*this);
+      _icon.center();
+      _icon.set_src(icon);
+      style_icon.set_img_recolor(lvgl::color::white());
+      style_icon.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
+    }
+    port::mutex_give();
+  } // Button::icon1
+  #endif
+
+  void Button::buttonColor(lvgl::palette::palette_t color)
+  {
+    if (object == NULL)
+      return;
+    port::mutex_take();
+    style_button.set_bg_color(lv_palette_main((lv_palette_t)color));
+    style_button.set_outline_color(lv_palette_main((lv_palette_t)color));
+    style_buttonPressed.set_bg_color(lv_palette_darken((lv_palette_t)color, 2));
     port::mutex_give();
   } // Button::color
 
-  void Button::iconColor(lv_palette_t color)
+  void Button::iconColor(lvgl::palette::palette_t color)
   {
     if (object == NULL)
       return;
     port::mutex_take();
-    icon.set_img_recolor(color);
+    style_icon.set_img_recolor(color);
     port::mutex_give();
   } // Button::iconColor
 
-  void Button::swapIcon()
+  void Button::callback(lvgl::event::callback_t callback, lvgl::event::code_t code, int user_data)
+  {
+    if (object == NULL) return;
+    lvgl::port::mutex_take();
+    add_event_cb(callback, code, (void *)user_data);
+    lvgl::port::mutex_give();
+  } // Button::callback
+
+  void Button::iconSwap()
   {
     if (object == NULL)
       return;
     if (_icon1_scr == NULL || _icon2_scr == NULL)
       return;
-    _icon_now ^= true;
-    if(_icon_now == true)
+    _state.icon_now ^= true;
+    if(_state.icon_now == true)
     {
       port::mutex_take();
       _icon.set_src(_icon1_scr);
@@ -140,24 +193,24 @@ namespace lvgl
       _icon.set_src(_icon2_scr);
       port::mutex_give();
     }
-  } // Button::swapIcon
+  } // Button::iconSwap
 
   void Button::pin()
   {
-    add_style(buttonFixed, LV_STATE_DEFAULT);
-    add_style(buttonFixed, LV_STATE_PRESSED);
-    _icon.add_style(icon, LV_PART_MAIN);
-    _pinnedState = true;
+    add_style(style_buttonPinned, lvgl::state::STATE_DEFAULT);
+    add_style(style_buttonPinned, lvgl::state::STATE_PRESSED);
+    _icon.add_style(style_icon, lvgl::part::MAIN);
+    _state.pinnedState = true;
   } // Button::pin
 
   void Button::unpin()
   {
-    remove_style(buttonFixed, LV_STATE_DEFAULT);
-    remove_style(buttonFixed, LV_STATE_PRESSED);
-    _icon.remove_style(icon, LV_PART_MAIN);
-    _pinnedState = false;
+    remove_style(style_buttonPinned, lvgl::state::STATE_DEFAULT);
+    remove_style(style_buttonPinned, lvgl::state::STATE_PRESSED);
+    _icon.remove_style(style_icon, lvgl::part::MAIN);
+    _state.pinnedState = false;
   } // Button::unpin
 
-  bool Button::pinned() { return _pinnedState; }
+  bool Button::pinned() { return _state.pinnedState; }
 
 } // namespace lvgl

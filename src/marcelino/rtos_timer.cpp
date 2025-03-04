@@ -23,8 +23,8 @@
 
 namespace rtos {
 
-  Timer::Timer(const char *name, milliseconds changePeriode)
-  : _name(name), _periode(changePeriode)
+  Timer::Timer(const char *name, milliseconds periode)
+  : _name(name), _periode(periode)
   {
 
   }
@@ -84,7 +84,7 @@ namespace rtos {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 
-  void Timer::changePeriode(milliseconds periode) {
+  void Timer::periode(milliseconds periode) {
     if(_handler == NULL)
       return;
     _periode = periode;

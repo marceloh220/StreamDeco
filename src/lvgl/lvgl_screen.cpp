@@ -26,33 +26,33 @@ namespace lvgl {
 
 namespace screen {
 
-    void set_rotation(lv_disp_rot_t rotation) {
-        port::set_screen_rotation(rotation);
+    void set_rotation(screen::rotation_t rotation) {
+        port::set_screen_rotation((lv_disp_rot_t)rotation);
     }
 
-    lv_disp_rot_t get_rotation() {
-        return port::get_screen_rotation();
+    screen::rotation_t get_rotation() {
+        return (screen::rotation_t)port::get_screen_rotation();
     }
 
-    void set_bg_color(lv_color_t color) {
+    void set_bg_color(color_t color) {
         port::mutex_take();
-        lv_obj_t *object = lv_scr_act();
-        lv_obj_set_style_bg_color(object, color, LV_PART_MAIN);
+        object_t *object = lv_scr_act();
+        lv_obj_set_style_bg_color(object, color, lvgl::part::MAIN);
         lv_obj_invalidate(object);
         port::mutex_give();
     }
 
-    void set_bg_color(lv_palette_t color) {
+    void set_bg_color(palette::palette_t color) {
         port::mutex_take();
-        lv_obj_t *object = lv_scr_act();
-        lv_obj_set_style_bg_color(object, lv_palette_main(color), LV_PART_MAIN);
+        object_t *object = lv_scr_act();
+        lv_obj_set_style_bg_color(object, palette::main(color), lvgl::part::MAIN);
         lv_obj_invalidate(object);
         port::mutex_give();
     }
 
     void center() {
         port::mutex_take();
-        lv_obj_t *object = lv_scr_act();
+        object_t *object = lv_scr_act();
         lv_obj_center(object);
         lv_obj_invalidate(object);
         port::mutex_give();
@@ -60,7 +60,7 @@ namespace screen {
 
     void refresh() {
         port::mutex_take();
-        lv_obj_t *object = lv_scr_act();
+        object_t *object = lv_scr_act();
         lv_obj_invalidate(object);
         port::mutex_give();
     }

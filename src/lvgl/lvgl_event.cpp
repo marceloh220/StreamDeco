@@ -28,52 +28,52 @@ namespace lvgl
   namespace event
   {
 
-    lv_res_t send(lv_obj_t *object, lv_event_code_t code, void *param)
+    lv_res_t send(object_t *object, code_t code, void *param)
     {
       lv_res_t ret = 0;
       port::mutex_take();
-      ret = lv_event_send(object, code, param);
+      ret = lv_event_send(object, (lv_event_code_t)code, param);
       port::mutex_give();
       return ret;
     }
 
-    lv_res_t send(Object &object, lv_event_code_t code, void *param)
+    lv_res_t send(Object &object, code_t code, void *param)
     {
       lv_res_t ret = 0;
       port::mutex_take();
-      ret = lv_event_send(object.get_object(), code, param);
+      ret = lv_event_send(object.get_object(), (lv_event_code_t)code, param);
       port::mutex_give();
       return ret;
     }
 
-    lv_obj_t *get_object(lv_event_t *e)
+    object_t *get_object(event_t e)
     {
-      lv_obj_t *ret = NULL;
+      object_t *ret = NULL;
       port::mutex_take();
-      ret = lv_event_get_current_target(e);
+      ret = lv_event_get_current_target((lv_event_t*)e);
       port::mutex_give();
       return ret;
     }
 
-    lv_event_code_t get_code(lv_event_t *e)
+    code_t get_code(event_t e)
     {
       port::mutex_take();
-      lv_event_code_t ret = lv_event_get_code(e);
+      code_t ret = (code_t)lv_event_get_code((lv_event_t*)e);
       port::mutex_give();
       return ret;
     }
 
-    void stop_bubbling(lv_event_t *e)
+    void stop_bubbling(event_t e)
     {
       port::mutex_take();
-      lv_event_stop_bubbling(e);
+      lv_event_stop_bubbling((lv_event_t*)e);
       port::mutex_give();
     }
 
-    void stop_processing(lv_event_t *e)
+    void stop_processing(event_t e)
     {
       port::mutex_take();
-      lv_event_stop_processing(e);
+      lv_event_stop_processing((lv_event_t*)e);
       port::mutex_give();
     }
 

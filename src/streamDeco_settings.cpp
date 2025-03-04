@@ -27,7 +27,7 @@ namespace streamDeco
     namespace settings
     {
 
-        const lv_color_t colors_background[] = {
+        const lvgl::color_t colors_background[] = {
             LV_COLOR_MAKE(0x00, 0x00, 0x00), LV_COLOR_MAKE(0xFF, 0xFF, 0xFF), LV_COLOR_MAKE(0xF4, 0x43, 0x36), LV_COLOR_MAKE(0xE9, 0x1E, 0x63), 
             LV_COLOR_MAKE(0x9C, 0x27, 0xB0), LV_COLOR_MAKE(0x67, 0x3A, 0xB7), LV_COLOR_MAKE(0x3F, 0x51, 0xB5), LV_COLOR_MAKE(0x21, 0x96, 0xF3), 
             LV_COLOR_MAKE(0x03, 0xA9, 0xF4), LV_COLOR_MAKE(0x00, 0xBC, 0xD4), LV_COLOR_MAKE(0x00, 0x96, 0x88), LV_COLOR_MAKE(0x4C, 0xAF, 0x50), 
@@ -35,31 +35,30 @@ namespace streamDeco
             LV_COLOR_MAKE(0xFF, 0x98, 0x00), LV_COLOR_MAKE(0xFF, 0x57, 0x22), LV_COLOR_MAKE(0x79, 0x55, 0x48), LV_COLOR_MAKE(0x60, 0x7D, 0x8B), 
             LV_COLOR_MAKE(0x9E, 0x9E, 0x9E)};
 
-        const lv_palette_t palette_button[] = {
-            LV_PALETTE_RED,
-            LV_PALETTE_PINK,
-            LV_PALETTE_PURPLE,
-            LV_PALETTE_DEEP_PURPLE,
-            LV_PALETTE_INDIGO,
-            LV_PALETTE_BLUE,
-            LV_PALETTE_LIGHT_BLUE,
-            LV_PALETTE_CYAN,
-            LV_PALETTE_TEAL,
-            LV_PALETTE_GREEN,
-            LV_PALETTE_LIGHT_GREEN,
-            LV_PALETTE_LIME,
-            LV_PALETTE_YELLOW,
-            LV_PALETTE_AMBER,
-            LV_PALETTE_ORANGE,
-            LV_PALETTE_DEEP_ORANGE,
-            LV_PALETTE_BROWN,
-            LV_PALETTE_BLUE_GREY,
-            LV_PALETTE_GREY,
-
-            _LV_PALETTE_LAST,
+        const lvgl::palette::palette_t palette_button[] = {
+            lvgl::palette::RED,
+            lvgl::palette::PINK,
+            lvgl::palette::PURPLE,
+            lvgl::palette::DEEP_PURPLE,
+            lvgl::palette::INDIGO,
+            lvgl::palette::BLUE,
+            lvgl::palette::LIGHT_BLUE,
+            lvgl::palette::CYAN,
+            lvgl::palette::TEAL,
+            lvgl::palette::GREEN,
+            lvgl::palette::LIGHT_GREEN,
+            lvgl::palette::LIME,
+            lvgl::palette::YELLOW,
+            lvgl::palette::AMBER,
+            lvgl::palette::ORANGE,
+            lvgl::palette::DEEP_ORANGE,
+            lvgl::palette::BROWN,
+            lvgl::palette::BLUE_GREY,
+            lvgl::palette::GREY,
+            lvgl::palette::LAST,
         };
 
-        lv_color_t backgroundColor()
+        lvgl::color_t backgroundColor()
         {
             static uint8_t autoColor = 0;
             int last_element = sizeof(colors_background) / sizeof(lv_color_t);
@@ -68,11 +67,11 @@ namespace streamDeco
             return colors_background[autoColor];
         }
 
-        lv_palette_t buttonColor()
+        lvgl::palette::palette_t buttonColor()
         {
             static uint8_t autoColor = 3;
             autoColor++;
-            autoColor = autoColor % (_LV_PALETTE_LAST - 1);
+            autoColor = autoColor % (lvgl::palette::LAST - 1);
             return palette_button[autoColor];
         }
 

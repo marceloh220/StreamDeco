@@ -10,11 +10,14 @@ namespace lvgl
     {
 
     public:
+        
         /**
-         * Create a bar object
-         * @param parent    pointer to an object, it will be the parent of the new bar
+         * @brief  Create a new bar object
+         * @param  parent object parent of the new bar
+         * @note   The new bar will be created into parent
+         * @note   If any parent is passed the slider will be created into main screen
          */
-        inline void create(lv_obj_t *parent = NULL)
+        inline void create(object_t *parent = NULL)
         {
             if (object != NULL)
                 return;
@@ -25,6 +28,11 @@ namespace lvgl
             port::mutex_give();
         }
 
+        /**
+         * @brief  Create a new bar object
+         * @param  parent object parent of the new bar
+         * @note   The new bar will be created into parent
+         */
         inline void create(Object &parent)
         {
             if (object != NULL)
@@ -37,28 +45,28 @@ namespace lvgl
         /**
          * Set a new value on the bar
          * @param value     new value
-         * @param anim      LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+         * @param anim      lvgl::animation::ON: set the value with an animation;  lvgl::animation::OFF: change the value immediately
          */
-        void set_value(int32_t value, lv_anim_enable_t anim)
+        void set_value(int32_t value, lvgl::animation::enable_t anim = animation::OFF)
         {
             if (object == NULL)
                 return;
             port::mutex_take();
-            lv_bar_set_value(object, value, anim);
+            lv_bar_set_value(object, value, (lv_anim_enable_t)anim);
             port::mutex_give();
         }
 
         /**
          * Set a new start value on the bar
          * @param value     new start value
-         * @param anim      LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+         * @param anim      lvgl::animation::ON: set the value with an animation;  lvgl::animation::OFF: change the value immediately
          */
-        void set_start_value(int32_t start_value, lv_anim_enable_t anim)
+        void set_start_value(int32_t start_value, lvgl::animation::enable_t anim = animation::OFF)
         {
             if (object == NULL)
                 return;
             port::mutex_take();
-            lv_bar_set_start_value(object, start_value, anim);
+            lv_bar_set_start_value(object, start_value, (lv_anim_enable_t)anim);
             port::mutex_give();
         }
 

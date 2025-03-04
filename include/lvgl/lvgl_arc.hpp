@@ -10,11 +10,14 @@ namespace lvgl
     {
 
     public:
+
         /**
-         * Create a arc object
-         * @param parent    pointer to an object, it will be the parent of the new arc
+         * @brief  Create a new arc object
+         * @param  parent object parent of the new arc
+         * @note   The new arc will be created into parent
+         * @note   If any parent is passed the slider will be created into main screen
          */
-        inline void create(lv_obj_t *parent)
+        inline void create(object_t *parent  = NULL)
         {
             if (object != NULL)
                 return;
@@ -25,6 +28,11 @@ namespace lvgl
             port::mutex_give();
         }
 
+        /**
+         * @brief  Create a new arc object
+         * @param  parent object parent of the new arc
+         * @note   The new arc will be created into parent
+         */
         inline void create(Object &parent)
         {
             if (object != NULL)
@@ -131,12 +139,12 @@ namespace lvgl
          * Set the type of arc.
          * @param mode  arc's mode
          */
-        void set_mode(lv_arc_mode_t type)
+        void set_mode(arc::mode_t type)
         {
             if (object == NULL)
                 return;
             port::mutex_take();
-            lv_arc_set_mode(object, type);
+            lv_arc_set_mode(object, (lv_arc_mode_t)type);
             port::mutex_give();
         }
 
@@ -290,13 +298,13 @@ namespace lvgl
          * Get whether the arc is type or not.
          * @return          arc's mode
          */
-        lv_arc_mode_t get_mode()
+        arc::mode_t get_mode()
         {
-            lv_arc_mode_t ret = LV_ARC_MODE_NORMAL;
+            arc::mode_t ret = arc::NORMAL;
             if (object == NULL)
                 return ret;
             port::mutex_take();
-            return lv_arc_get_mode(object);
+            return (arc::mode_t)lv_arc_get_mode(object);
             port::mutex_give();
             return ret;
         }
@@ -310,7 +318,7 @@ namespace lvgl
          * @param obj_to_align  pointer to an object to align
          * @param r_offset      consider the radius larger with this value (< 0: for smaller radius)
          */
-        void align_obj_to_angle(lv_obj_t *obj_to_align, lv_coord_t r_offset)
+        void align_obj_to_angle(object_t *obj_to_align, coordinates_t r_offset)
         {
             if (object == NULL)
                 return;
@@ -324,7 +332,7 @@ namespace lvgl
          * @param obj_to_align  pointer to an object to align
          * @param r_offset      consider the radius larger with this value (< 0: for smaller radius)
          */
-        void align_obj_to_angle(Object &obj_to_align, lv_coord_t r_offset)
+        void align_obj_to_angle(Object &obj_to_align, coordinates_t r_offset)
         {
             if (object == NULL)
                 return;
@@ -338,7 +346,7 @@ namespace lvgl
          * @param obj_to_align  pointer to an object to rotate
          * @param r_offset      consider the radius larger with this value (< 0: for smaller radius)
          */
-        void rotate_obj_to_angle(lv_obj_t *obj_to_rotate, lv_coord_t r_offset)
+        void rotate_obj_to_angle(object_t *obj_to_rotate, coordinates_t r_offset)
         {
             if (object == NULL)
                 return;
@@ -352,7 +360,7 @@ namespace lvgl
          * @param obj_to_align  pointer to an object to rotate
          * @param r_offset      consider the radius larger with this value (< 0: for smaller radius)
          */
-        void rotate_obj_to_angle(Object &obj_to_rotate, lv_coord_t r_offset)
+        void rotate_obj_to_angle(Object &obj_to_rotate, coordinates_t r_offset)
         {
             if (object == NULL)
                 return;

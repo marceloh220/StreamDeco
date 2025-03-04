@@ -29,7 +29,14 @@ namespace lvgl {
 class Slider : public Object {
 
 public:
-  inline void create(lv_obj_t *parent = NULL) {
+
+  /**
+   * @brief  Create a new slider
+   * @param  parent object parent of the new slider
+   * @note   The new slider will be created into parent
+   * @note   If any parent is passed the slider will be created into main screen
+   */
+  inline void create(object_t *parent = NULL) {
     if (object != NULL)
       return;
     port::mutex_take();
@@ -39,6 +46,11 @@ public:
     port::mutex_give();
   }
 
+  /**
+   * @brief  Create a new slider
+   * @param  parent object parent of the new slider
+   * @note   The new slider will be created into parent
+   */
   inline void create(Object &parent) {
     if (object != NULL)
       return;
@@ -53,11 +65,11 @@ public:
    * @param anim      LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF:
    * change the value immediately
    */
-  inline void set_value(int32_t value, lv_anim_enable_t anim = LV_ANIM_OFF) {
+  inline void set_value(int32_t value, animation::enable_t anim = animation::OFF) {
     if (object == NULL)
       return;
     port::mutex_take();
-    lv_bar_set_value(object, value, anim);
+    lv_bar_set_value(object, value, (lv_anim_enable_t)anim);
     port::mutex_give();
   }
 
@@ -67,11 +79,11 @@ public:
    * @param anim      LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF:
    * change the value immediately
    */
-  inline void set_left_value(int32_t value, lv_anim_enable_t anim) {
+  inline void set_left_value(int32_t value, animation::enable_t anim = animation::OFF) {
     if (object == NULL)
       return;
     port::mutex_take();
-    lv_bar_set_start_value(object, value, anim);
+    lv_bar_set_start_value(object, value, (lv_anim_enable_t)anim);
     port::mutex_give();
   }
 
@@ -92,7 +104,7 @@ public:
    * Set the mode of slider.
    * @param mode      the mode of the slider. See ::lv_slider_mode_t
    */
-  inline void set_mode(lv_slider_mode_t mode) {
+  inline void set_mode(slider::mode_t mode) {
     if (object == NULL)
       return;
     port::mutex_take();
@@ -169,18 +181,18 @@ public:
    * Get the mode of the slider.
    * @return          see ::lv_slider_mode_t
    */
-  inline lv_slider_mode_t get_mode() {
+  inline slider::mode_t get_mode() {
     if (object == NULL)
       return false;
     port::mutex_take();
     lv_bar_mode_t mode = lv_bar_get_mode(object);
     port::mutex_give();
     if (mode == LV_BAR_MODE_SYMMETRICAL)
-      return LV_SLIDER_MODE_SYMMETRICAL;
+      return slider::MODE_SYMMETRICAL;
     else if (mode == LV_BAR_MODE_RANGE)
-      return LV_SLIDER_MODE_RANGE;
+      return slider::MODE_RANGE;
     else
-      return LV_SLIDER_MODE_NORMAL;
+      return slider::MODE_NORMAL;
   }
 
 }; // class Slider

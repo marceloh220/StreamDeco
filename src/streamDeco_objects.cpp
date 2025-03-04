@@ -215,55 +215,55 @@ namespace streamDeco
      * @param  color  New button color
      * @note   Called in color_button event
      **/
-    void change_color_buttons(lv_palette_t color)
+    void change_color_buttons(lvgl::palette::palette_t color)
     {
-        button.terminal.colorButton(color);
-        button.files.colorButton(color);
-        button.web.colorButton(color);
-        button.search.colorButton(color);
-        button.applications_canvas.colorButton(color);
+        button.terminal.buttonColor(color);
+        button.files.buttonColor(color);
+        button.web.buttonColor(color);
+        button.search.buttonColor(color);
+        button.applications_canvas.buttonColor(color);
 
-        button.multimedia_prev.colorButton(color);
-        button.multimedia_play.colorButton(color);
-        button.multimedia_next.colorButton(color);
-        button.multimedia_mic.colorButton(color);
-        button.multimedia_canvas.colorButton(color);
+        button.multimedia_prev.buttonColor(color);
+        button.multimedia_play.buttonColor(color);
+        button.multimedia_next.buttonColor(color);
+        button.multimedia_mic.buttonColor(color);
+        button.multimedia_canvas.buttonColor(color);
 
-        button.left_workspace.colorButton(color);
-        button.right_workspace.colorButton(color);
-        button.pin.colorButton(color);
-        button.desktop_mode.colorButton(color);
-        button.configurations_canvas.colorButton(color);
+        button.left_workspace.buttonColor(color);
+        button.right_workspace.buttonColor(color);
+        button.pin.buttonColor(color);
+        button.desktop_mode.buttonColor(color);
+        button.configurations_canvas.buttonColor(color);
 
-        button.app1.colorButton(color);
-        button.app2.colorButton(color);
-        button.app3.colorButton(color);
-        button.app4.colorButton(color);
-        button.app5.colorButton(color);
-        button.app6.colorButton(color);
-        button.app7.colorButton(color);
-        button.app8.colorButton(color);
-        button.app9.colorButton(color);
+        button.app1.buttonColor(color);
+        button.app2.buttonColor(color);
+        button.app3.buttonColor(color);
+        button.app4.buttonColor(color);
+        button.app5.buttonColor(color);
+        button.app6.buttonColor(color);
+        button.app7.buttonColor(color);
+        button.app8.buttonColor(color);
+        button.app9.buttonColor(color);
 
-        button.mult1.colorButton(color);
-        button.mult2.colorButton(color);
-        button.mult3.colorButton(color);
-        button.mult4.colorButton(color);
-        button.mult5.colorButton(color);
-        button.mult6.colorButton(color);
-        button.mult7.colorButton(color);
-        button.mult8.colorButton(color);
-        button.mult9.colorButton(color);
+        button.mult1.buttonColor(color);
+        button.mult2.buttonColor(color);
+        button.mult3.buttonColor(color);
+        button.mult4.buttonColor(color);
+        button.mult5.buttonColor(color);
+        button.mult6.buttonColor(color);
+        button.mult7.buttonColor(color);
+        button.mult8.buttonColor(color);
+        button.mult9.buttonColor(color);
 
-        button.volmut.colorButton(color);
-        button.voldown.colorButton(color);
-        button.volup.colorButton(color);
-        button.color_background.colorButton(color);
-        button.color_button.colorButton(color);
-        button.rotation.colorButton(color);
-        button.sysmonitor.colorButton(color);
-        button.sysconfig.colorButton(color);
-        button.reboot.colorButton(color);
+        button.volmut.buttonColor(color);
+        button.voldown.buttonColor(color);
+        button.volup.buttonColor(color);
+        button.color_background.buttonColor(color);
+        button.color_button.buttonColor(color);
+        button.rotation.buttonColor(color);
+        button.sysmonitor.buttonColor(color);
+        button.sysconfig.buttonColor(color);
+        button.reboot.buttonColor(color);
 
         monitor.cpu.color(color);
         monitor.gpu.color(color);

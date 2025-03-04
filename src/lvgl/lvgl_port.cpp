@@ -40,14 +40,14 @@ namespace lvgl {
 
 namespace port {
 
-Arduino_ESP32RGBPanel bus(GPIO_LCD_CS, GPIO_LCD_SCK, GPIO_LCD_SDA, GPIO_LCD_DE,
+static Arduino_ESP32RGBPanel bus(GPIO_LCD_CS, GPIO_LCD_SCK, GPIO_LCD_SDA, GPIO_LCD_DE,
                           GPIO_LCD_VSYNC, GPIO_LCD_HSYNC, GPIO_LCD_PCLK,
                           GPIO_LCD_R0, GPIO_LCD_R1, GPIO_LCD_R2, GPIO_LCD_R3,
                           GPIO_LCD_R4, GPIO_LCD_G0, GPIO_LCD_G1, GPIO_LCD_G2,
                           GPIO_LCD_G3, GPIO_LCD_G4, GPIO_LCD_G5, GPIO_LCD_B0,
                           GPIO_LCD_B1, GPIO_LCD_B2, GPIO_LCD_B3, GPIO_LCD_B4);
 
-Arduino_RPi_DPI_RGBPanel gfx(&bus, LCD_WIDTH, LCD_HSYNC_POLARITY,
+static Arduino_RPi_DPI_RGBPanel gfx(&bus, LCD_WIDTH, LCD_HSYNC_POLARITY,
                              LCD_HSYNC_FRONT_PORCH, LCD_HSYNC_PULSE_WIDTH,
                              LCD_HSYNC_BACK_PORCH, LCD_HEIGHT,
                              LCD_VSYNC_POLARITY, LCD_VSYNC_FRONT_PORCH,
@@ -55,7 +55,7 @@ Arduino_RPi_DPI_RGBPanel gfx(&bus, LCD_WIDTH, LCD_HSYNC_POLARITY,
                              LCD_PCLK_ACTIVE_NEG, LCD_PREFER_SPEED,
                              LCD_AUTO_FLUSH);
 
-TAMC_GT911 touchscreen(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT,
+static TAMC_GT911 touchscreen(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT,
                        TOUCH_GT911_RST, max(TOUCH_MAP_X1, TOUCH_MAP_X2),
                        max(TOUCH_MAP_Y1, TOUCH_MAP_Y2));
 
@@ -68,19 +68,19 @@ static lv_disp_t *display;
 
 static lv_indev_drv_t indev_driver;
 
-rtos::MutexRecursiveStatic mutex;
+static rtos::MutexRecursiveStatic mutex;
 
-rtos::TaskStatic<LVGL_STACK_SIZE> task("Port task LVGL", 5);
+static rtos::TaskStatic<LVGL_STACK_SIZE> task("Port task LVGL", 5);
 
 /* Display flushing */
-void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
+static void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
   uint32_t w = (area->x2 - area->x1 + 1);
   uint32_t h = (area->y2 - area->y1 + 1);
   gfx.draw16bitRGBBitmap(area->x1, area->y1, (uint16_t *)&color_p->full, w, h);
   lv_disp_flush_ready(disp);
 }
 
-void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
+static void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
   touchscreen.read();
   if (touchscreen.isTouched) {
     data->state = LV_INDEV_STATE_PR;
@@ -91,7 +91,7 @@ void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
   }
 }
 
-void handle(void *arg) {
+static void handle(void *arg) {
   while (1) {
     mutex.take();
     uint32_t time_till_next_run = lv_timer_handler();
@@ -100,7 +100,7 @@ void handle(void *arg) {
   }
 }
 
-void backlight_init(void) {
+static void backlight_init(void) {
   ledc_timer_config_t ledc_timer =
   {
     .speed_mode = (ledc_mode_t)BACKLIGHT_SPEED_MODE,
@@ -147,6 +147,7 @@ void mutex_take() { mutex.take(); }
 void mutex_give() { mutex.give(); }
 
 void init() {
+  mutex_take();
   gfx.begin();
   Wire.begin(TOUCH_GT911_SDA, TOUCH_GT911_SCL);
   touchscreen.begin();
@@ -184,6 +185,7 @@ void init() {
   indev_driver.read_cb = touchpad_read;
   lv_indev_drv_register(&indev_driver);
   task.attach(handle);
+  mutex_give();
 }
 
 void set_screen_rotation(lv_disp_rot_t rotation) {

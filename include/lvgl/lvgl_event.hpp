@@ -28,24 +28,16 @@ namespace lvgl {
 
 namespace event {
 
-typedef lv_event_t *event_t;
-
-/**
- * @brief Event callback.
- * Events are used to notify user of some action being taken on the object.
- */
-typedef void callback_t(event_t);
-
 /**
  * Send an event to the object
  * @param object      pointer to an object
- * @param code        the type of the event from `lv_event_t`
+ * @param code        the type of the event from `event_t`
  * @param param       arbitrary data depending on the widget type and the event.
  * (Usually `NULL`)
  * @return LV_RES_OK: `obj` was not deleted in the event; LV_RES_INV: `obj` was
  * deleted in the event_code
  */
-lv_res_t send(lv_obj_t *object, lv_event_code_t code, void *param);
+lv_res_t send(object_t *object, code_t code, void *param);
 
 /**
  * Get the current target of the event. It's the object which event handler
@@ -53,7 +45,7 @@ lv_res_t send(lv_obj_t *object, lv_event_code_t code, void *param);
  * @param e     pointer to the event descriptor
  * @return      pointer to the current target of the event_code
  */
-lv_obj_t *get_object(lv_event_t *e);
+object_t *get_object(event_t e);
 
 /**
  * Get the event code of an event
@@ -61,15 +53,15 @@ lv_obj_t *get_object(lv_event_t *e);
  * @return      the event code. (E.g. `LV_EVENT_CLICKED`, `LV_EVENT_FOCUSED`,
  * etc)
  */
-lv_event_code_t get_code(lv_event_t *e);
+code_t get_code(event_t e);
 
 /**
  * Get the parameter passed when the event was sent
  * @param e     pointer to the event descriptor
  * @return      pointer to the parameter
  */
-template <typename type> type get_param(lv_event_t *e) {
-  return (type)lv_event_get_param(e);
+template <typename type> type get_param(event_t e) {
+  return (type)lv_event_get_param((lv_event_t*)e);
 }
 
 /**
@@ -77,8 +69,8 @@ template <typename type> type get_param(lv_event_t *e) {
  * @param e     pointer to the event descriptor
  * @return      pointer to the user_data
  */
-template <typename type> type get_user_data(lv_event_t *e) {
-  return (type)lv_event_get_user_data(e);
+template <typename type> type get_user_data(event_t e) {
+  return (type)lv_event_get_user_data((lv_event_t*)e);
 }
 
 /**
@@ -86,14 +78,14 @@ template <typename type> type get_user_data(lv_event_t *e) {
  * This is only valid when called in the middle of an event processing chain.
  * @param e     pointer to the event descriptor
  */
-void stop_bubbling(lv_event_t *e);
+void stop_bubbling(event_t e);
 
 /**
  * Stop processing this event.
  * This is only valid when called in the middle of an event processing chain.
  * @param e     pointer to the event descriptor
  */
-void stop_processing(lv_event_t *e);
+void stop_processing(event_t e);
 
 } // namespace event
 

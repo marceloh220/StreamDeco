@@ -22,7 +22,9 @@
 #ifndef _LVGL_LABEL_HPP_
 #define _LVGL_LABEL_HPP_
 
+#include "lvgl_types.hpp"
 #include "lvgl_object.hpp"
+#include "lvgl_color.hpp"
 #include "esp_heap_caps.h"
 #include "stdio.h"
 
@@ -39,7 +41,13 @@ public:
     port::mutex_give();
   }
 
-  inline void create(lv_obj_t *parent = NULL) {
+  /**
+   * @brief  Create a new label
+   * @param  parent object parent of the new label
+   * @note   The new label will be created into parent
+   * @note   If any parent is passed the slider will be created into main screen
+   */
+  inline void create(object_t *parent = NULL) {
     if (object != NULL)
       return;
     port::mutex_take();
@@ -49,6 +57,11 @@ public:
     port::mutex_give();
   }
 
+  /**
+   * @brief  Create a new label
+   * @param  parent object parent of the new label
+   * @note   The new label will be created into parent
+   */
   inline void create(Object &parent) {
     if (object != NULL)
       return;
@@ -114,11 +127,11 @@ public:
    *                      In LV_LONG_WRAP/DOT/SCROLL/SCROLL_CIRC the size of the
    * label should be set AFTER this function
    */
-  void set_long_mode(lv_label_long_mode_t long_mode) {
+  void set_long_mode(text::long_mode_t long_mode) {
     if (object == NULL)
       return;
     port::mutex_take();
-    lv_label_set_long_mode(object, long_mode);
+    lv_label_set_long_mode(object, (text::long_mode_t)long_mode);
     port::mutex_give();
   }
 
@@ -178,14 +191,14 @@ public:
    * Get the long mode of a label
    * @return          the current long mode
    */
-  lv_label_long_mode_t get_long_mode() {
+  text::long_mode_t get_long_mode() {
     lv_label_long_mode_t ret = 0;
     if (object == NULL)
-      return ret;
+      return (text::long_mode_t)ret;
     port::mutex_take();
     ret = lv_label_get_long_mode(object);
     port::mutex_give();
-    return ret;
+    return (text::long_mode_t)ret;
   }
 
   /**
@@ -210,8 +223,8 @@ public:
    * @param pos       store the result here (E.g. index = 0 gives 0;0
    * coordinates if the text if aligned to the left)
    */
-  void get_letter_pos(uint32_t char_id, lv_point_t *pos) {
-    lv_label_get_letter_pos(object, char_id, pos);
+  void get_letter_pos(uint32_t char_id, point_t *pos) {
+    lv_label_get_letter_pos(object, char_id, (lv_point_t*)pos);
   }
 
   /**
@@ -221,12 +234,12 @@ public:
    * is the 0. letter if aligned to the left) Expressed in character index and
    * not byte index (different in UTF-8)
    */
-  uint32_t get_letter_on(const lv_obj_t *object, lv_point_t *pos_in) {
+  uint32_t get_letter_on(const object_t *object, point_t *pos_in) {
     uint32_t ret = 0;
     if (object == NULL)
       return ret;
     port::mutex_take();
-    ret = lv_label_get_letter_on(object, pos_in);
+    ret = lv_label_get_letter_on(object, (lv_point_t*)pos_in);
     port::mutex_give();
     return ret;
   }
@@ -236,12 +249,12 @@ public:
    * @param pos       Point to check for character under
    * @return          whether a character is drawn under the point
    */
-  bool is_char_under_pos(lv_point_t *pos) {
+  bool is_char_under_pos(point_t *pos) {
     bool ret = false;
     if (object == NULL)
       return ret;
     port::mutex_take();
-    ret =  lv_label_is_char_under_pos(object, pos);
+    ret =  lv_label_is_char_under_pos(object, (lv_point_t*)pos);
     port::mutex_give();
     return ret;
   }
@@ -289,49 +302,49 @@ public:
     port::mutex_give();
   }
 
-  void set_style_text_color(lv_color_t value) {
+  void set_style_text_color(lvgl::color_t value) {
     port::mutex_take();
     lv_style_value_t v = {.color = value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_COLOR, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_opa(lv_opa_t value) {
+  void set_style_text_opa(opacity::opacity_t value) {
     port::mutex_take();
     lv_style_value_t v = {.num = (int32_t)value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_OPA, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_font(const lv_font_t *value) {
+  void set_style_text_font(font_t value) {
     port::mutex_take();
     lv_style_value_t v = {.ptr = value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_FONT, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_letter_space(lv_coord_t value) {
+  void set_style_text_letter_space(coordinates_t value) {
     port::mutex_take();
     lv_style_value_t v = {.num = (int32_t)value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_LETTER_SPACE, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_line_space(lv_coord_t value) {
+  void set_style_text_line_space(coordinates_t value) {
     port::mutex_take();
     lv_style_value_t v = {.num = (int32_t)value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_LINE_SPACE, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_decor(lv_text_decor_t value) {
+  void set_style_text_decor(text::decor_t value) {
     port::mutex_take();
     lv_style_value_t v = {.num = (int32_t)value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_DECOR, v, 0);
     port::mutex_give();
   }
 
-  void set_style_text_align(lv_text_align_t value) {
+  void set_style_text_align(text::align_t value) {
     port::mutex_take();
     lv_style_value_t v = {.num = (int32_t)value};
     lv_obj_set_local_style_prop(object, LV_STYLE_TEXT_ALIGN, v, 0);

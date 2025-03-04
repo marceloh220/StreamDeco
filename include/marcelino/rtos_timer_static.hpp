@@ -80,7 +80,7 @@ namespace rtos {
 class TimerStatic {
 public:
 
-  TimerStatic(const char *name, milliseconds changePeriode);
+  TimerStatic(const char *name, milliseconds periode);
 
   /**
    * @brief    Attach the handler callback on timer
@@ -96,7 +96,7 @@ public:
    *           void timer_callback(TimerHandler_t arg)
    *           {
    * 
-   *             printf("Timer changePeriode expire =)\n");
+   *             printf("Timer periode expire =)\n");
    * 
    *           }
    */
@@ -159,7 +159,7 @@ public:
    * @note   rtos::Timer::period() can be called to change the period of an active or
    * dormant state timer.
    */
-  void changePeriode(milliseconds periode);
+  void periode(milliseconds periode);
 
   /**
    * @sa     rtos::Timer::changePeriod()
