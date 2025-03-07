@@ -51,5 +51,6 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "idf.pythonInstallPath": "/usr/bin/python"
 }
