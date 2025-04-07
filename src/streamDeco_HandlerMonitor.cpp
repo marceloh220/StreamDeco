@@ -18,9 +18,9 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
  * @file     streamDeco_HandlerMonitor.cpp
- * @brief    Handler of task monitor
+ * @brief    Handler of streamDecoTasks StreamDecoMonitor
  */
 
 #include "streamDeco_objects.hpp"
@@ -28,8 +28,8 @@
 namespace streamDeco
 {
 
-  /* Handle the monitor task,
-   * show computer metrics on configure pinned canvas */
+  /* Handle the StreamDecoMonitor streamDecoTasks,
+   * show computer metrics on configure pinned streamDecoCanvas */
   void handleMonitor(taskArg_t task_arg)
   {
 
@@ -59,19 +59,19 @@ namespace streamDeco
         String month = Serial.readStringUntil(',');
         String year = Serial.readStringUntil('/');
 
-        monitor.cpu.arc_set_value(cpu_load.toInt());
-        monitor.cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");
-        monitor.cpu.bar2_set_value(cpu_freq.toInt(), "", " MHz");
+        streamDecoMonitor::cpu.arc_set_value(cpu_load.toInt());
+        streamDecoMonitor::cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");
+        streamDecoMonitor::cpu.bar2_set_value(cpu_freq.toInt(), "", " MHz");
 
-        monitor.gpu.arc_set_value(gpu_load.toInt());
-        monitor.gpu.bar1_set_value(gpu_temp.toInt(), "", " °C");
-        monitor.gpu.bar2_set_value(gpu_freq.toInt(), "", " MHz");
+        streamDecoMonitor::gpu.arc_set_value(gpu_load.toInt());
+        streamDecoMonitor::gpu.bar1_set_value(gpu_temp.toInt(), "", " °C");
+        streamDecoMonitor::gpu.bar2_set_value(gpu_freq.toInt(), "", " MHz");
 
-        monitor.system.bar1_set_range(0, mem_max.toInt());
-        monitor.system.bar2_set_range(0, disk_max.toInt());
+        streamDecoMonitor::system.bar1_set_range(0, mem_max.toInt());
+        streamDecoMonitor::system.bar2_set_range(0, disk_max.toInt());
 
-        monitor.system.bar1_set_value(mem_used.toInt(), "RAM: ", " MB");
-        monitor.system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C: ", " GB");
+        streamDecoMonitor::system.bar1_set_value(mem_used.toInt(), "RAM: ", " MB");
+        streamDecoMonitor::system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C: ", " GB");
       }
       mutex_serial.give();
 

@@ -36,28 +36,18 @@ namespace streamDeco
   void handleButtons(taskArg_t task_arg)
   {
 
-    /**
-     * @var      settings_t settings
-     * @brief    Wallpaper color, buttons theme and screen bright
-     * @details  lv_color_t color_background
-     *           lv_palette_t color_buttons
-     *           int lcd_bright
-     * @note     This arg reside on heap and is passed in attach method during StreamDeco::init
-     **/
-    settings_t *settings = static_cast<settings_t*>(task_arg);
-
     while (1)
     {
 
       /* wait for a notification
-       * this notification is sent by LVGL button with a event code */
-      uint32_t button_event = task.buttons.takeNotify();
+       * this notification is sent by LVGL streamDecoButtons with a event code */
+      uint32_t button_event = streamDecoTasks::buttons.takeNotify();
 
       /* BleKeyboard uses serial interface to make verbose things */
       streamDeco::mutex_serial.take();
 
       /* function in streamDeco_shortcuts.cpp */
-      process_event(button_event, settings);
+      process_event(button_event);
 
       streamDeco::mutex_serial.give();
 
@@ -65,9 +55,9 @@ namespace streamDeco
        * if some event is received the UI is not inactive
        * backlight bright change to setpoint value
        * and timers are manting reseted */
-      lvgl::port::backlight_setRaw(settings->lcd_bright);
-      timer_ui.backlight.reset();
-      timer_ui.uiReset.reset();
+      lvgl::port::backlight_setRaw(settings::cache.lcd_bright);
+      timer_ui::backlight.reset();
+      timer_ui::uiReset.reset();
 
       rtos::sleep(100ms);
 

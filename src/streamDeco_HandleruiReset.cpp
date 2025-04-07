@@ -18,7 +18,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
  * @file    streamDeco_HandleruiReset.cpp
  * @brief   Hidden canvas
  * @details This handler hidden canvas or put backlight brigrht to minimum
@@ -30,36 +30,39 @@
 namespace streamDeco
 {
 
-  /* Handler of UI reset task, 
+  /* Handler of UI reset task,
    * hidden canvas if they are not pinned or
    * put backlight on rest mode reducing the bright to minimum. */
   void handleUiReset(taskArg_t task_arg)
   {
     while (1)
     {
-      uint32_t e = task.uiReset.takeNotify();
+      uint32_t e = streamDecoTasks::uiReset.takeNotify();
       switch (e)
       {
-        case hidden_canvas_event:
-          if (!button.applications_canvas.pinned())
-          {
-            canvas.applications.hidden();
-          }
-          if (!button.multimedia_canvas.pinned())
-          {
-            canvas.multimedia.hidden();
-          }
-          /* Aways hidden Configurations canvas
-          * and never hidden Monitor canvas */
-          canvas.configurations.hidden();
+      case hidden_canvas_event:
+        if (!streamDecoButtons::applications_canvas.pinned())
+        {
+          streamDecoCanvas::applications.hidden();
+        }
+        if (!streamDecoButtons::multimedia_canvas.pinned())
+        {
+          streamDecoCanvas::multimedia.hidden();
+        }
+        /* Aways hidden Configurations canvas
+         * and never hidden Monitor canvas */
+        streamDecoCanvas::configurations.hidden();
+        break;
+      case rest_backlight_event:
+        // only change backlight bright if are no pinned canvas
+        if (streamDecoButtons::applications_canvas.pinned())
           break;
-        case rest_backlight_event:
-          // only change backlight bright if are no pinned canvas
-          if (button.applications_canvas.pinned()) break;
-          if (button.multimedia_canvas.pinned()) break;
-          if (button.configurations_canvas.pinned()) break;
-          lvgl::port::backlight_set(.1);
+        if (streamDecoButtons::multimedia_canvas.pinned())
           break;
+        if (streamDecoButtons::configurations_canvas.pinned())
+          break;
+        lvgl::port::backlight_set(.1);
+        break;
       }
     }
   }

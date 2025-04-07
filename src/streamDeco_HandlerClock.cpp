@@ -18,9 +18,9 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
  * @file  streamDeco_HandlerClock.cpp
- * @brief Clock task handler
+ * @brief Clock streamDecoTasks handler
  */
 
 #include "streamDeco_objects.hpp"
@@ -31,15 +31,15 @@ namespace streamDeco
 
   /**
    * @brief    Synchronizes ESP32-RTC with Computer clock
-   * @details  Wait for StreamDeco monitor application response to synchronizes ESP32 RTC clock
+   * @details  Wait for StreamDeco StreamDecoMonitor application response to synchronizes ESP32 RTC clock
    * @param    tryes - number oa ttemps to try sinchron clock with computer
    */
   void synchro_clock(int tryes)
   {
-    
+
     int attempts = 0;
     struct tm tm_date = {0};
-    
+
     mutex_serial.take();
 
     while (1)
@@ -83,24 +83,24 @@ namespace streamDeco
         time_epoch.tv_sec = time_local;
         time_epoch.tv_usec = 0;
         settimeofday(&time_epoch, NULL);
-        monitor.clock.set_time(tm_date);
+        streamDecoMonitor::clock.set_time(tm_date);
 
         break;
-      
+
       } // Serial.avaliable
-      
+
       attempts++;
-      if(attempts > tryes) break;
+      if (attempts > tryes)
+        break;
       rtos::sleep(1s);
-    
+
     } // loop check time
-    
+
     mutex_serial.give();
-  
   }
 
-  /* Handle the clock task,
-   * update clock time on Monitor canvas */
+  /* Handle the clock streamDecoTasks,
+   * update clock time on Monitor streamDecoCanvas */
   void handleClock(taskArg_t task_arg)
   {
 
@@ -112,13 +112,14 @@ namespace streamDeco
 
       count++;
 
-      if(count == (10*60)) {
+      if (count == (10 * 60))
+      {
         count = 0;
         synchro_clock(40);
       }
 
       getLocalTime(&tm_date);
-      monitor.clock.set_time(tm_date);
+      streamDecoMonitor::clock.set_time(tm_date);
 
       rtos::sleep(500ms);
     }

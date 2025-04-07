@@ -28,18 +28,23 @@
 namespace streamDeco
 {
 
-  /**
-   * @brief   Callback registred in buttons
-   * @details Send a notifications with event code to task buttons handler
-   * @param   lvglEvent  Event received by the callback
-   * @note    This callback is registred on buttons and slider objects
-   * @note    Each button and slider send a different event
-   **/
-  void buttons_callback(lvgl::event::event_t lvglEvent)
+  namespace streamDecoButtons
   {
-    // userdata passed are int type
-    int event = lvgl::event::get_user_data<int>(lvglEvent);
-    task.buttons.sendNotify(event);
-  }
 
-}  // namespace streamDeco
+    /**
+     * @brief   Callback registred in buttons
+     * @details Send a notifications with event code to task buttons handler
+     * @param   lvglEvent  Event received by the callback
+     * @note    This callback is registred on buttons and streamDecoBrightSlider objects
+     * @note    Each streamDecoButtons and streamDecoBrightSlider send a different event
+     **/
+    void buttons_callback(lvgl::event::event_t lvglEvent)
+    {
+      // userdata passed are int type
+      int event = lvgl::event::get_user_data<int>(lvglEvent);
+      streamDecoTasks::buttons.sendNotify(event);
+    }
+
+  } // namespace streamDecoButtons
+
+} // namespace streamDeco
