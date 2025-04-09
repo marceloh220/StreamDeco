@@ -484,7 +484,7 @@ namespace streamDeco
       sysmonitor.buttonColor(color);
       sysconfig.buttonColor(color);
       reboot.buttonColor(color);
-    }
+    } // function color
 
     /**
      * @brief  Sort buttons in portrait order
@@ -515,7 +515,7 @@ namespace streamDeco
       sysmonitor.position(6);
       sysconfig.position(7);
       reboot.position(8);
-    }
+    } // function portrait
 
     /**
      * @brief  Sort buttons in landscape order
@@ -546,9 +546,9 @@ namespace streamDeco
       sysmonitor.position(6);
       sysconfig.position(7);
       reboot.position(8);
-    }
+    } // function landscape
 
-  };
+  } // namespace streamDecoButtons
 
   /**
    * @namespace  streamDecoBrightSlider

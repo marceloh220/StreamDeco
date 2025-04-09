@@ -388,10 +388,10 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app3_event:
-#if 0
+#if 1
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('8');
+            bleKeyboard.press('o');
 #else
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press(KEY_LEFT_ALT);
@@ -542,7 +542,7 @@ namespace streamDeco
         case multimedia_canvas_mult6_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('k');
+            bleKeyboard.press('y');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -554,7 +554,7 @@ namespace streamDeco
         case multimedia_canvas_mult7_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('i');
+            bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -566,7 +566,7 @@ namespace streamDeco
         case multimedia_canvas_mult8_event:
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press('o');
+            bleKeyboard.press('1');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
