@@ -52,5 +52,6 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp"
     },
-    "idf.pythonInstallPath": "/usr/bin/python"
+    "idf.pythonInstallPath": "/usr/bin/python",
+    "cmake.sourceDirectory": "/home/marcelo/git/StreamDeco/lib/lvgl"
 }

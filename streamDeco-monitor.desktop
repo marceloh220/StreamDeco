@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/usr/bin/streamdeco-monitor
+Name=StreamDeco monitor
+Comment=StreamDeco monitor application
+Icon=/usr/share/icons/streamdeco-monitor/streamDeco.ico

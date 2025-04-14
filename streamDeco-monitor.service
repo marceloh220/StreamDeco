@@ -1,0 +1,10 @@
+[Unit]
+Description=StreamDeco monitor application
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python /usr/bin/streamdeco-monitor
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

@@ -50,10 +50,10 @@
 # From Linux:
 #
 # Install the following Python modules:
-#     pip.exe install pyserial psutil pyamdgpuinfo pstray pillow
+#     pip.exe install pyserial psutil pyamdgpuinfo pystray pillow
 #
 # Or using package manager (Arch linux)
-#     yay -S python-{pyserial,psutil,pyamdgpuinfo,pstray,pillow}
+#     yay -S python-{pyserial,psutil,pyamdgpuinfo,pystray,pillow}
 #
 #
 # The USB device is searched until find ESP32 USB chip
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     import PIL.Image
     
     task = Task(monitor)
-    iconTray = PIL.Image.open('streamDeco.ico')
+    iconTray = PIL.Image.open('/usr/share/icons/streamdeco-monitor/streamDeco.ico')
     tray = pystray.Icon(name = 'StreamDeco', title = 'StreamDeco', icon = iconTray, 
                         menu = pystray.Menu(pystray.MenuItem('Sair', task.close))
                        )
