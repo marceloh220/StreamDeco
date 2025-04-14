@@ -126,6 +126,7 @@ class MetricDate:
         self.sec:str = ''
         self.min:str = ''
         self.hour:str = ''
+        self.week:str = ''
         self.day:str = ''
         self.month:str = ''
         self.year:str = ''
@@ -135,13 +136,15 @@ class MetricDate:
         self.sec = str(now.second)
         self.min = str(now.minute)
         self.hour = str(now.hour)
+        wday = now.weekday()
+        self.week = str( 0 if wday == 6 else wday + 1 )
         self.day = str(now.day)
         self.month = str(now.month)
         self.year = str(now.year)
 
     def decode(self, last = False) -> str:
         _data = f'{self.sec}, {self.min}, {self.hour},'
-        _data = _data + f'{self.day}, {self.month}, {self.year}'
+        _data = _data + f' {self.week}, {self.day}, {self.month}, {self.year}'
         if last == True:
             _data = _data + '/'
         else:

@@ -28,11 +28,29 @@ namespace streamDeco
     namespace metric
     {
 
+        const char* week_name[] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+
+        static void config_monitor_style(lvgl::Style &monitor_style, lvgl::palette::palette_t color) {
+            monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
+            monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
+            monitor_style.set_border_width(1);
+            monitor_style.set_border_color(lvgl::palette::darken(color,0));
+            monitor_style.set_pad_all(5);
+        }
+
+        void Complete::create(lvgl::palette::palette_t color)
+        {
+            if (object != NULL) return;
+            lvgl::port::mutex_take();
+            object = lv_obj_create(lv_scr_act());
+            init_conf(color);
+            lvgl::port::mutex_give();
+        } // void Complete::create
+
         void Complete::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
             if (object != NULL) return;
             lvgl::port::mutex_take();
-            if (parent == NULL) parent = lv_scr_act();
             object = lv_obj_create(parent);
             init_conf(color);
             lvgl::port::mutex_give();
@@ -110,10 +128,13 @@ namespace streamDeco
 
         void Complete::init_conf(lvgl::palette::palette_t color)
         {
+
             monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
             monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
+            monitor_style.set_border_color(lvgl::palette::main(color));
             monitor_style.set_pad_all(5);
 
+            config_monitor_style(monitor_style, color);
             metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
             metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
 
@@ -274,8 +295,10 @@ namespace streamDeco
         {
             monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
             monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
+            monitor_style.set_border_color(lvgl::palette::main(color));
             monitor_style.set_pad_all(5);
 
+            config_monitor_style(monitor_style, color);
             metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
             metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
 
@@ -386,6 +409,7 @@ namespace streamDeco
             metric_style.set_img_recolor(color);
             metric_style.set_text_color(color);
             metric_style.set_arc_color(color);
+            week_style.set_text_color(color);
             invalidate();
             lvgl::port::mutex_give();
         } // Clock::color
@@ -397,17 +421,32 @@ namespace streamDeco
 
             strftime(buffer, 12, "%d/%m/%Y", &value);
             date.set_text_fmt("%s", buffer);
+            //Serial.printf("Hour - %s\n", buffer);
 
             strftime(buffer, 12, "%H:%M:%S", &value);
             hour.set_text_fmt("%s", buffer);
+            //Serial.printf("Date - %s ", buffer);
+
+            //Serial.printf("%d %d %s\n", wday, value.tm_wday, week_name[value.tm_wday]);
+
+            if(wday != value.tm_wday) {
+                week[wday].remove_style(weekActual_style, lvgl::part::MAIN);
+                week[wday].add_style(week_style, lvgl::part::MAIN);
+                wday = value.tm_wday;
+                week[wday].remove_style(week_style, lvgl::part::MAIN);
+                week[wday].add_style(weekActual_style, lvgl::part::MAIN);
+            }
+
         } // Clock::set_time
 
         void Clock::init_conf(lvgl::palette::palette_t color)
         {
             monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
             monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
+            monitor_style.set_border_color(lvgl::palette::main(color));
             monitor_style.set_pad_all(5);
 
+            config_monitor_style(monitor_style, color);
             metric_style.set_bg_color(color);
             metric_style.set_img_recolor(color);
             metric_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
@@ -430,16 +469,34 @@ namespace streamDeco
             }
 
             hour.create(*this);
-            hour.align(lvgl::alignment::CENTER, 0, -22);
+            hour.align(lvgl::alignment::CENTER, 22, -22);
             hour.set_style_text_font(lvgl::font::montserrat_40);
             hour.add_style(metric_style, lvgl::part::MAIN);
             hour.set_text("NO SYNC");
 
             date.create(*this);
-            date.align(lvgl::alignment::CENTER, 0, 22 + (44 - 22));
+            date.align(lvgl::alignment::CENTER, 22, 22 + (44 - 22));
             date.set_style_text_font(lvgl::font::montserrat_22);
             date.add_style(metric_style, lvgl::part::MAIN);
             date.set_text("NO SYNC");
+
+            week_style.set_text_color(lvgl::palette::darken(color, 0));
+            week_style.set_text_font(lvgl::font::montserrat_12);
+
+            weekActual_style.set_text_color(color);
+            weekActual_style.set_text_font(lvgl::font::montserrat_16);
+
+            int index = 0;
+            for(auto &_week : this->week) {
+                _week.create(*this);
+                _week.align(lvgl::alignment::LEFT_MID, 5, -48 + 18*index);
+                _week.set_text(week_name[index]);
+                _week.add_style(week_style, lvgl::part::MAIN);
+                index++;
+            }
+
+            week[0].remove_style(week_style, lvgl::part::MAIN);
+            week[0].add_style(weekActual_style, lvgl::part::MAIN);
 
             add_style(monitor_style, lvgl::part::MAIN);
         } // Clock::init_conf

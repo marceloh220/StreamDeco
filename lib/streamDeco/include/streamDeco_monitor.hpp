@@ -37,6 +37,7 @@ namespace streamDeco
         {
         public:
             Complete(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            void create(lvgl::palette::palette_t color);
             void create(lvgl::object_t *parent, lvgl::palette::palette_t color);
             void create(Object &parent, lvgl::palette::palette_t color);
             void set_bg_color(lv_color_t color);
@@ -106,14 +107,18 @@ namespace streamDeco
             void set_time(struct tm &value);
         private:
             void init_conf(lvgl::palette::palette_t color);
-            const char *text_scr;
-            lvgl::icon_t icon_scr;
+            const char *text_scr = NULL;
+            int wday = 0;
+            lvgl::icon_t icon_scr = NULL;
             lvgl::Label monitor_label;
             lvgl::Image monitor_icon;
             lvgl::Label date;
             lvgl::Label hour;
+            lvgl::Label week[7];
             lvgl::Style monitor_style;
             lvgl::Style metric_style;
+            lvgl::Style week_style;
+            lvgl::Style weekActual_style;
         }; // class Clock
 
     } // namespace StreamDecoMonitor

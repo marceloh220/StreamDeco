@@ -62,6 +62,7 @@ namespace streamDeco
         String sec = Serial.readStringUntil(',');
         String min = Serial.readStringUntil(',');
         String hour = Serial.readStringUntil(',');
+        String week = Serial.readStringUntil(','); 
         String day = Serial.readStringUntil(',');
         String month = Serial.readStringUntil(',');
         String year = Serial.readStringUntil('/');
@@ -69,6 +70,7 @@ namespace streamDeco
         tm_date.tm_sec = sec.toInt();
         tm_date.tm_min = min.toInt();
         tm_date.tm_hour = hour.toInt();
+        tm_date.tm_wday = week.toInt();
         tm_date.tm_mday = day.toInt();
         tm_date.tm_mon = month.toInt() - 1;
         tm_date.tm_year = year.toInt() - 1900;
@@ -83,7 +85,6 @@ namespace streamDeco
         time_epoch.tv_sec = time_local;
         time_epoch.tv_usec = 0;
         settimeofday(&time_epoch, NULL);
-        streamDecoMonitor::clock.set_time(tm_date);
 
         break;
 
