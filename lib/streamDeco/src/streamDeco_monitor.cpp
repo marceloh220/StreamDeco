@@ -167,7 +167,7 @@ namespace streamDeco
             }
 
             arc.create(*this);
-            arc.align_to(monitor_label, lvgl::alignment::OUT_BOTTOM_RIGHT, 45, 10);
+            arc.align_to(monitor_label, lvgl::alignment::OUT_BOTTOM_RIGHT, 50, 10);
             arc.set_rotation(180);
             arc.set_bg_angles(0, 360);
             arc.set_range(0, 100);
@@ -469,13 +469,13 @@ namespace streamDeco
             }
 
             hour.create(*this);
-            hour.align(lvgl::alignment::CENTER, 22, -22);
+            hour.align(lvgl::alignment::CENTER, -22, -18);
             hour.set_style_text_font(lvgl::font::montserrat_40);
             hour.add_style(metric_style, lvgl::part::MAIN);
             hour.set_text("NO SYNC");
 
             date.create(*this);
-            date.align(lvgl::alignment::CENTER, 22, 22 + (44 - 22));
+            date.align(lvgl::alignment::CENTER, -22, 90 - 22 - 18 - 18 );
             date.set_style_text_font(lvgl::font::montserrat_22);
             date.add_style(metric_style, lvgl::part::MAIN);
             date.set_text("NO SYNC");
@@ -489,7 +489,7 @@ namespace streamDeco
             int index = 0;
             for(auto &_week : this->week) {
                 _week.create(*this);
-                _week.align(lvgl::alignment::LEFT_MID, 5, -48 + 18*index);
+                _week.align(lvgl::alignment::RIGHT_MID, -5, -54 + 18*index);
                 _week.set_text(week_name[index]);
                 _week.add_style(week_style, lvgl::part::MAIN);
                 index++;
