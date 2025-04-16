@@ -28,7 +28,10 @@ namespace streamDeco
     namespace metric
     {
 
-        const char* week_name[] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+        const char* week_name_en[] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+        const char* week_name_pt[] = {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"};
+
+        #define WEEK_NAME week_name_pt
 
         static void config_monitor_style(lvgl::Style &monitor_style, lvgl::palette::palette_t color) {
             monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
@@ -414,25 +417,21 @@ namespace streamDeco
             lvgl::port::mutex_give();
         } // Clock::color
 
-        void Clock::set_time(struct tm &value)
+        void Clock::set_time(struct tm &rtc_time)
         {
 
             char buffer[15];
 
-            strftime(buffer, 12, "%d/%m/%Y", &value);
-            date.set_text_fmt("%s", buffer);
-            //Serial.printf("Hour - %s\n", buffer);
+            strftime(buffer, 12, "%d/%m/%Y", &rtc_time);
+            date.set_text(buffer);
 
-            strftime(buffer, 12, "%H:%M:%S", &value);
-            hour.set_text_fmt("%s", buffer);
-            //Serial.printf("Date - %s ", buffer);
+            strftime(buffer, 12, "%H:%M:%S", &rtc_time);
+            hour.set_text(buffer);
 
-            //Serial.printf("%d %d %s\n", wday, value.tm_wday, week_name[value.tm_wday]);
-
-            if(wday != value.tm_wday) {
+            if(wday != rtc_time.tm_wday) {
                 week[wday].remove_style(weekActual_style, lvgl::part::MAIN);
                 week[wday].add_style(week_style, lvgl::part::MAIN);
-                wday = value.tm_wday;
+                wday = rtc_time.tm_wday;
                 week[wday].remove_style(week_style, lvgl::part::MAIN);
                 week[wday].add_style(weekActual_style, lvgl::part::MAIN);
             }
@@ -490,7 +489,7 @@ namespace streamDeco
             for(auto &_week : this->week) {
                 _week.create(*this);
                 _week.align(lvgl::alignment::RIGHT_MID, -5, -54 + 18*index);
-                _week.set_text(week_name[index]);
+                _week.set_text(WEEK_NAME[index]);
                 _week.add_style(week_style, lvgl::part::MAIN);
                 index++;
             }

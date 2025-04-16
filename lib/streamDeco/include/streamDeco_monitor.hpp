@@ -104,7 +104,7 @@ namespace streamDeco
             void set_bg_color(lv_color_t color);
             void set_bg_color(lvgl::palette::palette_t color);
             void color(lvgl::palette::palette_t color);
-            void set_time(struct tm &value);
+            void set_time(struct tm &rtc_time);
         private:
             void init_conf(lvgl::palette::palette_t color);
             const char *text_scr = NULL;
