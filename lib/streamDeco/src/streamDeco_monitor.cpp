@@ -412,7 +412,7 @@ namespace streamDeco
             metric_style.set_img_recolor(color);
             metric_style.set_text_color(color);
             metric_style.set_arc_color(color);
-            week_style.set_text_color(color);
+            weekActual_style.set_text_color(color);
             invalidate();
             lvgl::port::mutex_give();
         } // Clock::color

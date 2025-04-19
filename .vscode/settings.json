@@ -53,5 +53,5 @@
         "typeinfo": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python",
-    "cmake.sourceDirectory": "/home/marcelo/git/StreamDeco/lib/lvgl"
+    "cmake.sourceDirectory": "D:/OneDrive/Documentos/PlatformIO/Projects/StreamDeco/lib/lvgl"
 }
