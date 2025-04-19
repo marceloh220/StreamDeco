@@ -31,21 +31,21 @@ namespace rtos
 
   void TimerStatic::attach(TimerCallbackFunction_t callback, UBaseType_t autoreload)
   {
-    if (_handler != NULL)
+    if (_handler != nullptr)
       return;
     _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), autoreload, &_handler, callback);
   }
 
   void TimerStatic::start()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerStart(_handler, portMAX_DELAY);
   }
 
   void TimerStatic::startFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerStartFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -54,14 +54,14 @@ namespace rtos
 
   void TimerStatic::stop()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerStop(_handler, portMAX_DELAY);
   }
 
   void TimerStatic::stopFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerStopFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -70,14 +70,14 @@ namespace rtos
 
   void TimerStatic::reset()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerReset(_handler, portMAX_DELAY);
   }
 
   void TimerStatic::resetFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerResetFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -86,7 +86,7 @@ namespace rtos
 
   void TimerStatic::periode(milliseconds periode)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     _periode = periode;
     xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
@@ -94,7 +94,7 @@ namespace rtos
 
   void TimerStatic::changePeriodeFromISR(milliseconds periode)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     _periode = periode;
@@ -114,7 +114,7 @@ namespace rtos
 
   bool TimerStatic::verifyID(TimerHandle_t timer)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return false;
     return pvTimerGetTimerID(timer) == &_handler ? true : false;
   }

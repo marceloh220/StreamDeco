@@ -135,9 +135,9 @@ namespace rtos
      *
      *           }
      */
-    void attach(TaskFunction_t callback, taskStaticArg_t args = NULL)
+    void attach(TaskFunction_t callback, taskStaticArg_t args = nullptr)
     {
-      if (_handle != NULL)
+      if (_handle != nullptr)
         return;
       _handle = xTaskCreateStatic(callback, _name, _stackSize, args, _priority, _stackBuffer, &_stack);
     }
@@ -163,7 +163,7 @@ namespace rtos
      */
     void sendNotify(uint32_t notification)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       xTaskNotify(_handle, notification, eSetBits);
     }
@@ -178,7 +178,7 @@ namespace rtos
      */
     void sendNotifyFromISR(uint32_t notification)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
       xTaskNotifyFromISR(_handle, notification, eSetBits, &xHigherPriorityTaskWoken);
@@ -195,7 +195,7 @@ namespace rtos
      */
     uint32_t takeNotify()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return ulTaskNotifyTake(true, portMAX_DELAY);
     }
@@ -211,7 +211,7 @@ namespace rtos
      */
     uint32_t takeNotify(milliseconds time)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return ulTaskNotifyTake(true, CHRONO_TO_TICK(time));
     }
@@ -227,7 +227,7 @@ namespace rtos
      */
     void sleepUntil(milliseconds time)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       vTaskDelayUntil(&_previousTime, CHRONO_TO_TICK(time));
     }
@@ -239,7 +239,7 @@ namespace rtos
      */
     BaseType_t wakeup()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return xTaskAbortDelay(_handle);
     }
@@ -255,7 +255,7 @@ namespace rtos
      */
     void suspend()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       vTaskSuspend(_handle);
     }
@@ -268,7 +268,7 @@ namespace rtos
      */
     void resume()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       vTaskResume(_handle);
     }
@@ -281,7 +281,7 @@ namespace rtos
      */
     void resumeFromISR()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       xTaskResumeFromISR(_handle);
     }
@@ -301,7 +301,7 @@ namespace rtos
      */
     void priority(UBaseType_t priority)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       _priority = priority;
       vTaskPrioritySet(_handle, priority);
@@ -342,7 +342,7 @@ namespace rtos
      */
     uint32_t memUsage()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return _stackSize - uxTaskGetStackHighWaterMark(_handle);
     }
@@ -354,7 +354,7 @@ namespace rtos
      */
     uint32_t memFree()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return uxTaskGetStackHighWaterMark(_handle);
     }
@@ -389,7 +389,7 @@ namespace rtos
      * @brief    Keep task handle into object to easy access
      * @details
      */
-    TaskHandle_t _handle = NULL;
+    TaskHandle_t _handle = nullptr;
 
     /**
      * @var    _stack

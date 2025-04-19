@@ -53,6 +53,14 @@ namespace streamDeco
    */
   void handleClock(taskArg_t arg);
 
+  /* Handle the clock synchro streamDecoTasks,
+   * synchro clock time with streamDeco monitor application */
+  void handleClockSynchro(taskArg_t task_arg);
+
+  /* Handle the update cache streamDecoTasks,
+   * update and save the settings cache with flash */
+  void handleUpdateCache(taskArg_t task_arg);
+
 } // nasmespasce streamDeco
 
 #endif

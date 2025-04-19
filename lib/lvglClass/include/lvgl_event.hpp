@@ -35,7 +35,7 @@ namespace lvgl
      * @param object      pointer to an object
      * @param code        the type of the event from `event_t`
      * @param param       arbitrary data depending on the widget type and the event.
-     * (Usually `NULL`)
+     * (Usually `nullptr`)
      * @return LV_RES_OK: `obj` was not deleted in the event; LV_RES_INV: `obj` was
      * deleted in the event_code
      */

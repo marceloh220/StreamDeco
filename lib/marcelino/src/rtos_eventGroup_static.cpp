@@ -36,7 +36,7 @@ namespace rtos
 
   bool EventGroupStatic::set(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupSetBits(_handle, flags);
     return (bits & flags) == flags ? true : false;
@@ -44,15 +44,15 @@ namespace rtos
 
   bool EventGroupStatic::setFromISR(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
-    EventBits_t bits = xEventGroupSetBitsFromISR(_handle, flags, NULL);
+    EventBits_t bits = xEventGroupSetBitsFromISR(_handle, flags, nullptr);
     return (bits & flags) == flags ? true : false;
   }
 
   bool EventGroupStatic::clear(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupClearBits(_handle, flags);
     return (bits & flags) == flags ? false : true;
@@ -60,7 +60,7 @@ namespace rtos
 
   bool EventGroupStatic::clearFromISR(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupClearBitsFromISR(_handle, flags);
     return (bits & flags) == flags ? false : true;
@@ -68,35 +68,35 @@ namespace rtos
 
   EventBits_t EventGroupStatic::get()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return xEventGroupGetBits(_handle);
   }
 
   EventBits_t EventGroupStatic::getFromISR()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return xEventGroupGetBitsFromISR(_handle);
   }
 
   EventBits_t EventGroupStatic::wait()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return xEventGroupWaitBits(_handle, 0xFFFFFF, false, false, portMAX_DELAY);
   }
 
   EventBits_t EventGroupStatic::wait(milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return xEventGroupWaitBits(_handle, 0xFFFFFF, false, false, CHRONO_TO_TICK(timeout));
   }
 
   bool EventGroupStatic::waitAllFlags(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, true, portMAX_DELAY);
     return (bits & flags) == flags ? true : false;
@@ -104,7 +104,7 @@ namespace rtos
 
   bool EventGroupStatic::waitAllFlags(const EventBits_t flags, milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, true, CHRONO_TO_TICK(timeout));
     return (bits & flags) == flags ? true : false;
@@ -112,7 +112,7 @@ namespace rtos
 
   bool EventGroupStatic::waitAnyFlags(const EventBits_t flags)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, false, portMAX_DELAY);
     return (bits & flags) ? true : false;
@@ -120,7 +120,7 @@ namespace rtos
 
   bool EventGroupStatic::waitAnyFlags(const EventBits_t flags, milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, false, CHRONO_TO_TICK(timeout));
     return (bits & flags) ? true : false;

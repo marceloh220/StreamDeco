@@ -617,9 +617,8 @@ namespace streamDeco
          *            You can add colors in this vector
          **/
         case configuration_canvas_colorbackground_event:
-            settings::cache.color_background = settings::nextBackgroundColor();
+            settings::cache.color_background = settings::nextBackgroundColor(settings::cache.color_background_index);
             lvgl::screen::set_bg_color(settings::cache.color_background);
-            settings::flash = settings::cache;
             break;
 
         /** @brief    Colorbutton button is pressed
@@ -628,11 +627,10 @@ namespace streamDeco
          *            You can add colors in this vector
          **/
         case configuration_canvas_colorbutton_event:
-            settings::cache.color_buttons = settings::nextButtonColor();
+            settings::cache.color_buttons = settings::nextButtonColor(settings::cache.color_buttons_index);
             streamDecoButtons::color(settings::cache.color_buttons);
             streamDecoBrightSlider::color(settings::cache.color_buttons);
             streamDecoMonitor::color(settings::cache.color_buttons);
-            settings::flash = settings::cache;
             lvgl::screen::refresh();
             break;
 
@@ -658,7 +656,6 @@ namespace streamDeco
                 streamDecoBrightSlider::landscape();
                 streamDecoButtons::landscape();
             }
-            settings::flash = settings::cache;
             break;
 
         /** @brief    Sysmon button is pressed
@@ -698,7 +695,7 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_reboot_event:
-            esp::system::reset();
+            streamDecoTasks::updateCache.sendNotify(update_settings_cache_with_reset_event);
             break;
 
         /** @brief    Shuntdown button is pressed
@@ -718,7 +715,6 @@ namespace streamDeco
          **/
         case slider_backlight_bright_value_change_event:
             settings::cache.lcd_bright = streamDecoBrightSlider::read();
-            settings::flash = settings::cache;
             break;
 
         } // end switch case

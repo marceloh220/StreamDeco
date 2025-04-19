@@ -38,12 +38,12 @@ namespace lvgl
      * @note   The new canvas will be created into parent
      * @note   If any parent is passed the canvas will be created into main screen
      */
-    inline void create(object_t *parent = NULL)
+    inline void create(object_t *parent = nullptr)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
-      if (parent == NULL)
+      if (parent == nullptr)
         parent = lv_scr_act();
       object = lv_obj_create(parent);
       port::mutex_give();
@@ -56,7 +56,7 @@ namespace lvgl
      */
     inline void create(Object &parent)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
       object = lv_obj_create(parent.get_object());
@@ -69,7 +69,7 @@ namespace lvgl
      */
     void set_bg_color(lvgl::color_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_style_bg_color(object, color, lvgl::part::MAIN);
@@ -83,7 +83,7 @@ namespace lvgl
      */
     void set_bg_color(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_style_bg_color(object, lv_palette_main((lv_palette_t)color), lvgl::part::MAIN);

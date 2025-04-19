@@ -64,7 +64,7 @@ namespace marcelino
      */
     void erase()
     {
-      if (_name == NULL)
+      if (_name == nullptr)
         return;
       init();
       hardware::flash::ll::eraseKey(_name);
@@ -76,7 +76,7 @@ namespace marcelino
      */
     [[nodiscard]] T read()
     {
-      if (_name == NULL)
+      if (_name == nullptr)
         return _data = {0};
       init();
       hardware::flash::ll::open(hardware::flash::ll::READONLY);
@@ -147,7 +147,7 @@ namespace marcelino
      */
     void write(T data)
     {
-      if (_name == NULL)
+      if (_name == nullptr)
         return;
       init();
       _data = data;

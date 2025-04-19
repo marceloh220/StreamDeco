@@ -88,17 +88,17 @@ namespace rtos
   public:
     QueueStatic()
     {
-      if (_handle != NULL)
+      if (_handle != nullptr)
         return;
       _handle = xQueueCreateStatic(SIZE, sizeof(type), _stakBuffer, &_stack);
     }
 
     ~QueueStatic()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       vQueueDelete(_handle);
-      _handle = NULL;
+      _handle = nullptr;
     }
 
     /**
@@ -113,7 +113,7 @@ namespace rtos
      */
     bool send(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueSend(_handle, (void *)&data, portMAX_DELAY);
     }
@@ -134,7 +134,7 @@ namespace rtos
      */
     bool send(type &data, milliseconds timeout)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueSend(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
     }
@@ -151,7 +151,7 @@ namespace rtos
      */
     bool sendToBack(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueSendToBack(_handle, (void *)&data, portMAX_DELAY);
     }
@@ -172,7 +172,7 @@ namespace rtos
      */
     bool sendToBack(type &data, milliseconds timeout)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueSendToBack(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
     }
@@ -189,7 +189,7 @@ namespace rtos
      */
     bool sendToFront(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         false;
       return xQueueSendToFront(_handle, (void *)&data, portMAX_DELAY);
     }
@@ -210,7 +210,7 @@ namespace rtos
      */
     bool sendToFront(type &data, milliseconds timeout)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueSendToFront(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
     }
@@ -225,9 +225,9 @@ namespace rtos
      */
     bool sendFromISR(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
-      return xQueueSendFromISR(_handle, (void *)&data, NULL);
+      return xQueueSendFromISR(_handle, (void *)&data, nullptr);
     }
 
     /**
@@ -240,9 +240,9 @@ namespace rtos
      */
     bool sendToBackFromISR(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
-      return xQueueSendToBackFromISR(_handle, (void *)&data, NULL);
+      return xQueueSendToBackFromISR(_handle, (void *)&data, nullptr);
     }
 
     /**
@@ -255,9 +255,9 @@ namespace rtos
      */
     bool sendToFrontFromISR(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         false;
-      return xQueueSendToFrontFromISR(_handle, (void *)&data, NULL);
+      return xQueueSendToFrontFromISR(_handle, (void *)&data, nullptr);
     }
 
     /**
@@ -271,7 +271,7 @@ namespace rtos
      */
     bool receive(type &data)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueReceive(_handle, (void *)&data, portMAX_DELAY);
     }
@@ -291,7 +291,7 @@ namespace rtos
      */
     bool receive(type &data, milliseconds timeout)
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return false;
       return xQueueReceive(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
     }
@@ -303,7 +303,7 @@ namespace rtos
      */
     UBaseType_t messagesWaiting()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return uxQueueMessagesWaiting(_handle);
     }
@@ -316,7 +316,7 @@ namespace rtos
      */
     UBaseType_t messagesWaitingFromISR()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return uxQueueMessagesWaitingFromISR(_handle);
     }
@@ -328,7 +328,7 @@ namespace rtos
      */
     UBaseType_t spacesAvaliable()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return uxQueueSpacesAvailable(_handle);
     }
@@ -338,7 +338,7 @@ namespace rtos
      */
     void reset()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return;
       xQueueReset(_handle);
     }
@@ -349,13 +349,13 @@ namespace rtos
      */
     int size()
     {
-      if (_handle == NULL)
+      if (_handle == nullptr)
         return 0;
       return _size;
     }
 
   private:
-    QueueHandle_t _handle = NULL;
+    QueueHandle_t _handle = nullptr;
     StaticQueue_t _stack;
     uint8_t _stakBuffer[sizeof(type) * SIZE];
     const int _size = SIZE;

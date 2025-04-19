@@ -36,21 +36,21 @@ namespace rtos
 
   void Task::attach(TaskFunction_t callback, taskArg_t args)
   {
-    if (_handle != NULL)
+    if (_handle != nullptr)
       return;
     xTaskCreatePinnedToCore(callback, _name, _stackSize, args, _priority, &_handle, _core);
   }
 
   void Task::sendNotify(uint32_t notification)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     xTaskNotify(_handle, notification, eSetBits);
   }
 
   void Task::sendNotifyFromISR(uint32_t notification)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTaskNotifyFromISR(_handle, notification, eSetBits, &xHigherPriorityTaskWoken);
@@ -59,63 +59,63 @@ namespace rtos
 
   uint32_t Task::takeNotify()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return ulTaskNotifyTake(true, portMAX_DELAY);
   }
 
   uint32_t Task::takeNotify(milliseconds time)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return ulTaskNotifyTake(true, CHRONO_TO_TICK(time));
   }
 
   void Task::sleepUntil(milliseconds time)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vTaskDelayUntil(&_previousTime, CHRONO_TO_TICK(time));
   }
 
   BaseType_t Task::wakeup()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return xTaskAbortDelay(_handle);
   }
 
   void Task::suspend()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vTaskSuspend(_handle);
   }
 
   void Task::resume()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vTaskResume(_handle);
   }
   void Task::resumeFromISR()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     xTaskResumeFromISR(_handle);
   }
 
   void Task::taskDelete()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vTaskDelete(_handle);
-    _handle = NULL;
+    _handle = nullptr;
   }
 
   void Task::priority(UBaseType_t priority)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     _priority = priority;
     vTaskPrioritySet(_handle, priority);
@@ -123,14 +123,14 @@ namespace rtos
 
   uint32_t Task::memUsage()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return _stackSize - uxTaskGetStackHighWaterMark(_handle);
   }
 
   uint32_t Task::memFree()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return 0;
     return uxTaskGetStackHighWaterMark(_handle);
   }

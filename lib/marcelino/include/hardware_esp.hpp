@@ -190,7 +190,7 @@ namespace esp
 		 * @note    Base MAC must be a unicast MAC (least significant bit of first byte must be zero).
 		 * If not using a valid OUI, set the "locally administered" bit (bit value 0x02 in the first byte) to avoid collisions.
 		 * @param   mac -- base MAC address, length: 6 bytes. length: 6 bytes for MAC-48
-		 * @return  ESP_OK on success ESP_ERR_INVALID_ARG If mac is NULL or is not a unicast MAC
+		 * @return  ESP_OK on success ESP_ERR_INVALID_ARG If mac is nullptr or is not a unicast MAC
 		 */
 		esp_err_t base_mac_addr_set(const uint8_t *mac);
 
@@ -199,7 +199,7 @@ namespace esp
 		 * @note    If no custom Base MAC has been set, this returns the pre-programmed Espressif base MAC address.
 		 * @param   mac -- base MAC address, length: 6 bytes. length: 6 bytes for MAC-48
 		 * @return  ESP_OK               on success
-		 *          ESP_ERR_INVALID_ARG  mac is NULL
+		 *          ESP_ERR_INVALID_ARG  mac is nullptr
 		 *          ESP_ERR_INVALID_MAC  base MAC address has not been set
 		 */
 		esp_err_t base_mac_addr_get(uint8_t *mac);
@@ -209,7 +209,7 @@ namespace esp
 		 * @param   mac -- base MAC address, length: 6 bytes/8 bytes.
 		 *          length: 6 bytes for MAC-48 8 bytes for EUI-64(used for IEEE 802.15.4, if CONFIG_SOC_IEEE802154_SUPPORTED=y)
 		 * @return  ESP_OK on success
-		 *          ESP_ERR_INVALID_ARG mac is NULL
+		 *          ESP_ERR_INVALID_ARG mac is nullptr
 		 */
 		esp_err_t efuse_mac_get_default(uint8_t *mac);
 

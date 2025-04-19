@@ -48,7 +48,7 @@ namespace lvgl
 
     object_t *get_object(event_t e)
     {
-      object_t *ret = NULL;
+      object_t *ret = nullptr;
       port::mutex_take();
       ret = lv_event_get_current_target((lv_event_t *)e);
       port::mutex_give();

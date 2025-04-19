@@ -20,6 +20,7 @@
  */
 
 #include "streamDeco_settings.hpp"
+#include "streamDeco_objects.hpp"
 
 namespace streamDeco
 {
@@ -58,23 +59,69 @@ namespace streamDeco
             lvgl::palette::LAST,
         };
 
-        lvgl::color_t nextBackgroundColor()
+        lvgl::color_t nextBackgroundColor(uint8_t &autoColor)
         {
-            static uint8_t autoColor = 0;
             int last_element = sizeof(colors_background) / sizeof(lv_color_t);
             autoColor++;
             autoColor = autoColor % last_element;
             return colors_background[autoColor];
         }
 
-        lvgl::palette::palette_t nextButtonColor()
+        lvgl::palette::palette_t nextButtonColor(uint8_t &autoColor)
         {
-            static uint8_t autoColor = 3;
             autoColor++;
             autoColor = autoColor % (lvgl::palette::LAST - 1);
             return palette_button[autoColor];
         }
 
+        void initCache()
+        {
+            cache = flash;
+
+            if (cache.initied == false)
+            {
+                cache.initied = true;
+                cache.rotation = lvgl::screen::LANDSCAPE;
+                cache.color_background = lvgl::palette::main(lvgl::palette::DEEP_ORANGE);
+                cache.color_buttons = lvgl::palette::PURPLE;
+                cache.color_background_index = 0;
+                cache.color_buttons_index = 3;
+                cache.lcd_bright = static_cast<int>(4095.0f * 0.5f);
+                flash = cache;
+            }
+        }
+
+        void saveCache()
+        {
+            settings_t check = flash.read();
+            uint8_t needUpdate = cache.rotation == check.rotation ? 0 : 1;
+            needUpdate += cache.color_background.full == check.color_background.full ? 0 : 1;
+            needUpdate += cache.color_buttons == check.color_buttons ? 0 : 1;
+            needUpdate += cache.color_background_index == check.color_background_index ? 0 : 1;
+            needUpdate += cache.color_buttons_index == check.color_buttons_index ? 0 : 1;
+            needUpdate += cache.lcd_bright == check.lcd_bright ? 0 : 1;
+            if (needUpdate)
+                flash = cache;
+        }
+
     } // namespace settings
 
-} // namespace lvgl
+    /* Handle the update cache streamDecoTasks,
+     * update and save the settings cache with flash */
+    void handleUpdateCache(taskArg_t task_arg)
+    {
+
+        while (1)
+        {
+
+            /* wait for event or for timeout */
+            uint32_t event = streamDecoTasks::updateCache.takeNotify(10min);
+            settings::saveCache();
+            if (event == update_settings_cache_with_reset_event)
+            {
+                esp::system::reset();
+            }
+        }
+    }
+
+} // namespace streamDeco

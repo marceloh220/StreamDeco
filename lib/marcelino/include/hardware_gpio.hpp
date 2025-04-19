@@ -226,7 +226,7 @@ namespace hardware
      *
      * }
      */
-    void interruptAttach(void function(void *), interrupt_t mode, void *arg = NULL);
+    void interruptAttach(void function(void *), interrupt_t mode, void *arg = nullptr);
 
     /**
      * @brief   Detach the interrupt from GPIO pin

@@ -61,6 +61,8 @@ namespace streamDeco
     rtos::TaskStatic<streamDecoTask_uiReset_stackSize> uiReset("Task reset canvas", 3);
     rtos::TaskStatic<streamDecoTask_monitor_stackSize> monitor("Task Monitor", 5);
     rtos::TaskStatic<streamDecoTask_clock_stackSize> clock("Task Clock", 5);
+    rtos::TaskStatic<streamDecoTask_clockSynchro_stackSize> clockSynchro("Task synchro clock", 3);
+    rtos::TaskStatic<streamDecoTask_updateCache_stackSize> updateCache("Task update cache", 5);
   } // namespace streamDecoTask
 
   /**
@@ -192,7 +194,7 @@ namespace streamDeco
    * streamDeco::MainButton(
    *          "Terminal",     // name, show name if icon not used
    *          &terminal_simp, // first icon
-   *          NULL            // second icon, if used the icons can be swaped using swap_icon
+   *          nullptr            // second icon, if used the icons can be swaped using swap_icon
    * ),
    **/
   namespace streamDecoButtons
@@ -210,76 +212,76 @@ namespace streamDeco
     /* ---   Main screen buttons   --- */
 
     /* Applications line, first line of buttons */
-    streamDeco::MainButton terminal("Terminal", &terminal_simp, NULL);
-    streamDeco::MainButton files("Files", &files_simp, NULL);
-    streamDeco::MainButton web("Web", &web_simp, NULL);
-    streamDeco::MainButton search("Search", &search_simp, NULL);
-    streamDeco::MainButton applications_canvas("Application", &applications_simp, NULL);
+    streamDeco::MainButton terminal("Terminal", &terminal_simp, nullptr);
+    streamDeco::MainButton files("Files", &files_simp, nullptr);
+    streamDeco::MainButton web("Web", &web_simp, nullptr);
+    streamDeco::MainButton search("Search", &search_simp, nullptr);
+    streamDeco::MainButton applications_canvas("Application", &applications_simp, nullptr);
 
     /* Multimedia line, second line of buttons */
-    streamDeco::MainButton multimedia_prev("Prev", &backward_simp, NULL);
+    streamDeco::MainButton multimedia_prev("Prev", &backward_simp, nullptr);
     streamDeco::MainButton multimedia_play("Play/Pause", &play_simp, &pause_simp);
-    streamDeco::MainButton multimedia_next("Next", &forward_simp, NULL);
+    streamDeco::MainButton multimedia_next("Next", &forward_simp, nullptr);
     streamDeco::MainButton multimedia_mic("Mic", &mic_on_simp, &mic_off_simp);
-    streamDeco::MainButton multimedia_canvas("Multimedia", &multimedia_simp, NULL);
+    streamDeco::MainButton multimedia_canvas("Multimedia", &multimedia_simp, nullptr);
 
     /* Configurations line, third line of buttons */
-    streamDeco::MainButton left_workspace("Left Workspace", &previous_workspace_simp, NULL);
-    streamDeco::MainButton right_workspace("Right Workspace", &next_workspace_simp, NULL);
+    streamDeco::MainButton left_workspace("Left Workspace", &previous_workspace_simp, nullptr);
+    streamDeco::MainButton right_workspace("Right Workspace", &next_workspace_simp, nullptr);
     streamDeco::MainButton pin("Pin", &pin_simp, &unpin_simp);
     streamDeco::MainButton desktop_mode("Desktop Mode", &mult_window_simp, &single_window_simp);
-    streamDeco::MainButton configurations_canvas("Config", &config_simp, NULL);
+    streamDeco::MainButton configurations_canvas("Config", &config_simp, nullptr);
 
     /* ---   Applications canvas buttons   --- */
 
     /* First line */
-    CanvasButton app1("app1", &gogcom_simp, NULL);
-    CanvasButton app2("app2", &discord_simp, NULL);
-    CanvasButton app3("app3", &fps_simp, NULL);
+    CanvasButton app1("app1", &gogcom_simp, nullptr);
+    CanvasButton app2("app2", &discord_simp, nullptr);
+    CanvasButton app3("app3", &fps_simp, nullptr);
 
     /* Second line */
-    CanvasButton app4("app4", &code_simp, NULL);
-    CanvasButton app5("app5", &texcompiler_simp, NULL);
-    CanvasButton app6("app6", &calculator_simp, NULL);
+    CanvasButton app4("app4", &code_simp, nullptr);
+    CanvasButton app5("app5", &texcompiler_simp, nullptr);
+    CanvasButton app6("app6", &calculator_simp, nullptr);
 
     /* Third line */
-    CanvasButton app7("app7", &build_simp, NULL);
-    CanvasButton app8("app8", &download_simp, NULL);
-    CanvasButton app9("app9", &serialport_simp, NULL);
+    CanvasButton app7("app7", &build_simp, nullptr);
+    CanvasButton app8("app8", &download_simp, nullptr);
+    CanvasButton app9("app9", &serialport_simp, nullptr);
 
     /* ---   Multimedia canvas buttons   --- */
 
     /* First line */
     CanvasButton mult1("mult 1", &video_stop_capt_simp, &video_start_capt_simp);
     CanvasButton mult2("mult 2", &mic_off_simp, &mic_on_simp);
-    CanvasButton mult3("mult 3", &screen_capt_simp, NULL);
+    CanvasButton mult3("mult 3", &screen_capt_simp, nullptr);
 
     /* Second line */
-    CanvasButton mult4("mult 4", &add_clip_simp, NULL);
-    CanvasButton mult5("mult 5", &ripple_simp, NULL);
-    CanvasButton mult6("mult 6", &rolling_simp, NULL);
+    CanvasButton mult4("mult 4", &add_clip_simp, nullptr);
+    CanvasButton mult5("mult 5", &ripple_simp, nullptr);
+    CanvasButton mult6("mult 6", &rolling_simp, nullptr);
 
     /* Third line */
-    CanvasButton mult7("mult 7", &seek_backward_simp, NULL);
-    CanvasButton mult8("mult 8", &play_simp, NULL);
-    CanvasButton mult9("mult 9", &seek_forward_simp, NULL);
+    CanvasButton mult7("mult 7", &seek_backward_simp, nullptr);
+    CanvasButton mult8("mult 8", &play_simp, nullptr);
+    CanvasButton mult9("mult 9", &seek_forward_simp, nullptr);
 
     /* ---   Configurations canvas buttons   --- */
 
     /* First line */
-    ConfigButton volmut("Vol Mute", &volume_mute_simp, NULL);
-    ConfigButton voldown("Vol Down", &volume_low_simp, NULL);
-    ConfigButton volup("Vol Up", &volume_high_simp, NULL);
+    ConfigButton volmut("Vol Mute", &volume_mute_simp, nullptr);
+    ConfigButton voldown("Vol Down", &volume_low_simp, nullptr);
+    ConfigButton volup("Vol Up", &volume_high_simp, nullptr);
 
     /* Second line */
-    ConfigButton color_background("Color BG", &bgtheme_simp, NULL);
-    ConfigButton color_button("Color Buttons", &btntheme_simp, NULL);
-    ConfigButton rotation("Rotation", &rotation_simp, NULL);
+    ConfigButton color_background("Color BG", &bgtheme_simp, nullptr);
+    ConfigButton color_button("Color Buttons", &btntheme_simp, nullptr);
+    ConfigButton rotation("Rotation", &rotation_simp, nullptr);
 
     /* Third line */
-    ConfigButton sysmonitor("System Monitor", &sysmon_simp, NULL);
-    ConfigButton sysconfig("System Config", &config_simp, NULL);
-    ConfigButton reboot("Reboot", &reboot_simp, NULL);
+    ConfigButton sysmonitor("System Monitor", &sysmon_simp, nullptr);
+    ConfigButton sysconfig("System Config", &config_simp, nullptr);
+    ConfigButton reboot("Reboot", &reboot_simp, nullptr);
 
     /**
      * @brief  Create the main canva buttons

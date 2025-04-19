@@ -36,7 +36,7 @@ void setup()
 
 void loop()
 {
-#if 0
+#if 1
   static int test_count = 0;
 
   streamDeco::mutex_serial.take();

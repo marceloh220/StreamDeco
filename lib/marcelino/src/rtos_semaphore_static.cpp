@@ -26,7 +26,7 @@ namespace rtos
 
   SemaphoreStatic::SemaphoreStatic(int count, int initialValue)
   {
-    if (_handle != NULL)
+    if (_handle != nullptr)
       return;
     if (count > 1)
       _handle = xSemaphoreCreateCountingStatic(count, initialValue, &_stack);
@@ -36,22 +36,22 @@ namespace rtos
 
   SemaphoreStatic::~SemaphoreStatic()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vSemaphoreDelete(_handle);
-    _handle = NULL;
+    _handle = nullptr;
   }
 
   bool SemaphoreStatic::give()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreGive(_handle);
   }
 
   BaseType_t SemaphoreStatic::giveFromISR()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
@@ -61,14 +61,14 @@ namespace rtos
 
   bool SemaphoreStatic::take()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, portMAX_DELAY);
   }
 
   bool SemaphoreStatic::take(milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
   }

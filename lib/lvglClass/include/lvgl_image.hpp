@@ -39,12 +39,12 @@ namespace lvgl
      * @note   The new image will be created into parent
      * @note   If any parent is passed the image will be created into main screen
      */
-    inline void create(object_t *parent = NULL)
+    inline void create(object_t *parent = nullptr)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
-      if (parent == NULL)
+      if (parent == nullptr)
         parent = lv_scr_act();
       object = lv_img_create(parent);
       port::mutex_give();
@@ -57,7 +57,7 @@ namespace lvgl
      */
     inline void create(Object &parent)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
       object = lv_img_create(parent.get_object());
@@ -72,7 +72,7 @@ namespace lvgl
      */
     void set_src(icon_t src)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_src(object, src);
@@ -86,7 +86,7 @@ namespace lvgl
      */
     void set_offset_x(coordinates_t x)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_offset_x(object, x);
@@ -100,7 +100,7 @@ namespace lvgl
      */
     void set_offset_y(coordinates_t y)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_offset_y(object, y);
@@ -116,7 +116,7 @@ namespace lvgl
      */
     void set_angle(int16_t angle)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_angle(object, angle);
@@ -131,7 +131,7 @@ namespace lvgl
      */
     void set_pivot(coordinates_t x, coordinates_t y)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_pivot(object, x, y);
@@ -150,7 +150,7 @@ namespace lvgl
      */
     void set_scale(float scale)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       if (scale < 0.0f)
         scale = 0.0f;
@@ -167,7 +167,7 @@ namespace lvgl
      */
     void set_antialias(bool antialias)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_antialias(object, antialias);
@@ -181,7 +181,7 @@ namespace lvgl
      */
     void set_size_mode(lvgl::image::size_mode_t mode)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_img_set_size_mode(object, (lv_img_size_mode_t)mode);
@@ -195,8 +195,8 @@ namespace lvgl
      */
     const void *get_src()
     {
-      if (object == NULL)
-        return NULL;
+      if (object == nullptr)
+        return nullptr;
       port::mutex_take();
       const void *ret = lv_img_get_src(object);
       port::mutex_give();
@@ -210,7 +210,7 @@ namespace lvgl
     coordinates_t get_offset_x()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_img_get_offset_x(object);
@@ -225,7 +225,7 @@ namespace lvgl
     coordinates_t get_offset_y()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_img_get_offset_y(object);
@@ -240,7 +240,7 @@ namespace lvgl
     uint16_t get_angle()
     {
       uint16_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_img_get_angle(object);
@@ -261,7 +261,7 @@ namespace lvgl
     float get_scale()
     {
       uint16_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return 0.0;
       port::mutex_take();
       ret = lv_img_get_zoom(object);
@@ -276,7 +276,7 @@ namespace lvgl
     bool get_antialias()
     {
       bool ret = false;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_img_get_antialias(object);
@@ -291,7 +291,7 @@ namespace lvgl
     image::size_mode_t get_size_mode()
     {
       image::size_mode_t ret = image::SIZE_MODE_VIRTUAL;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = (image::size_mode_t)lv_img_get_size_mode(object);

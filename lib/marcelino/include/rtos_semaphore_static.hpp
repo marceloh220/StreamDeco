@@ -120,7 +120,7 @@ namespace rtos
     bool take(milliseconds timeout);
 
   private:
-    SemaphoreHandle_t _handle = NULL;
+    SemaphoreHandle_t _handle = nullptr;
     StaticSemaphore_t _stack;
   };
 

@@ -126,7 +126,7 @@ namespace rtos
     bool give();
 
   private:
-    SemaphoreHandle_t _handle = NULL;
+    SemaphoreHandle_t _handle = nullptr;
     StaticSemaphore_t _stack;
   };
 
@@ -242,7 +242,7 @@ namespace rtos
     bool give();
 
   private:
-    SemaphoreHandle_t _handle = NULL;
+    SemaphoreHandle_t _handle = nullptr;
     StaticSemaphore_t _stack;
   };
 

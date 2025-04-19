@@ -26,7 +26,7 @@ namespace rtos
 
   Semaphore::Semaphore(int count, int initialValue)
   {
-    if (_handle != NULL)
+    if (_handle != nullptr)
       return;
     if (count > 1)
       _handle = xSemaphoreCreateCounting(count, initialValue);
@@ -36,30 +36,30 @@ namespace rtos
 
   Semaphore::~Semaphore()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vSemaphoreDelete(_handle);
-    _handle = NULL;
+    _handle = nullptr;
   }
 
   void Semaphore::semaphoreDelete()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return;
     vSemaphoreDelete(_handle);
-    _handle = NULL;
+    _handle = nullptr;
   }
 
   bool Semaphore::give()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreGive(_handle);
   }
 
   BaseType_t Semaphore::giveFromISR()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     BaseType_t ret = xSemaphoreGiveFromISR(_handle, &xHigherPriorityTaskWoken);
@@ -69,14 +69,14 @@ namespace rtos
 
   bool Semaphore::take()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, portMAX_DELAY);
   }
 
   bool Semaphore::take(milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
   }

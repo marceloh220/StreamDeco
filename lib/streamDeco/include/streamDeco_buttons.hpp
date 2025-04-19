@@ -41,10 +41,10 @@ namespace streamDeco
      * @param   text Text to be showed on streamDecoButtons object
      * @param   icon1 First icon to be showed on streamDecoButtons object
      * @param   icon2 Second icon to be showed on streamDecoButtons object
-     * @note    If no icons are passsed, or passed as NULL, only text will be showed on streamDecoButtons.
+     * @note    If no icons are passsed, or passed as nullptr, only text will be showed on streamDecoButtons.
      *          If two icons are passed they can be switched using Button:iconSwap() method
      */
-    MainButton(const char *text, lvgl::icon_t icon1 = NULL, lvgl::icon_t icon2 = NULL)
+    MainButton(const char *text, lvgl::icon_t icon1 = nullptr, lvgl::icon_t icon2 = nullptr)
     : text_scr(text), icon1_scr(icon1), icon2_scr(icon2) {
     }
 
@@ -214,7 +214,7 @@ namespace streamDeco
   class CanvasButton : public MainButton
   {
   public:
-    CanvasButton(const char *text, lvgl::icon_t icon1 = NULL, lvgl::icon_t icon2 = NULL)
+    CanvasButton(const char *text, lvgl::icon_t icon1 = nullptr, lvgl::icon_t icon2 = nullptr)
         : MainButton(text, icon1, icon2) {}
     void position(uint8_t pos);
   private:
@@ -227,7 +227,7 @@ namespace streamDeco
   class ConfigButton : public MainButton
   {
   public:
-    ConfigButton(const char *text, lvgl::icon_t icon1 = NULL, lvgl::icon_t icon2 = NULL)
+    ConfigButton(const char *text, lvgl::icon_t icon1 = nullptr, lvgl::icon_t icon2 = nullptr)
         : MainButton(text, icon1, icon2) {}
     void position(uint8_t pos);
   private:

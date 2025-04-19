@@ -357,7 +357,7 @@ namespace rtos
     bool waitAnyFlags(const EventBits_t flags, milliseconds timeout);
 
   private:
-    EventGroupHandle_t _handle = NULL;
+    EventGroupHandle_t _handle = nullptr;
     StaticEventGroup_t _stack;
 
   }; // namespace EventGroup

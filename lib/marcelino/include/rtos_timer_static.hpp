@@ -218,7 +218,7 @@ namespace rtos
      * @var    _handle
      * @brief  Keep timer handle into object to easy access
      */
-    TimerHandle_t _handler = NULL;
+    TimerHandle_t _handler = nullptr;
 
     /**
      * @var    _stack

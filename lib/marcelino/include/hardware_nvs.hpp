@@ -112,7 +112,7 @@ namespace hardware
        *
        * @return
        *             - ESP_OK if the changes have been written successfully
-       *             - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is NULL
+       *             - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is nullptr
        *             - other error codes from the underlying storage driver
        */
       esp_err_t commit();
@@ -131,7 +131,7 @@ namespace hardware
        *              - ESP_OK if erase operation was successful
        *              - ESP_FAIL if there is an internal error; most likely due to corrupted
        *                NVS partition (only if NVS assertion checks are disabled)
-       *              - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is NULL
+       *              - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is nullptr
        *              - ESP_ERR_NVS_READ_ONLY if handle was opened as read only
        *              - ESP_ERR_NVS_NOT_FOUND if the requested key doesn't exist
        *              - other error codes from the underlying storage driver
@@ -150,7 +150,7 @@ namespace hardware
        *              - ESP_OK if erase operation was successful
        *              - ESP_FAIL if there is an internal error; most likely due to corrupted
        *                NVS partition (only if NVS assertion checks are disabled)
-       *              - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is NULL
+       *              - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is nullptr
        *              - ESP_ERR_NVS_READ_ONLY if handle was opened as read only
        *              - other error codes from the underlying storage driver
        */
@@ -182,7 +182,7 @@ namespace hardware
        *             - ESP_OK if value was set successfully
        *             - ESP_FAIL if there is an internal error; most likely due to corrupted
        *               NVS partition (only if NVS assertion checks are disabled)
-       *             - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is NULL
+       *             - ESP_ERR_NVS_INVALID_HANDLE if handle has been closed or is nullptr
        *             - ESP_ERR_NVS_READ_ONLY if storage handle was opened as read only
        *             - ESP_ERR_NVS_INVALID_NAME if key name doesn't satisfy constraints
        *             - ESP_ERR_NVS_NOT_ENOUGH_SPACE if there is not enough space in the

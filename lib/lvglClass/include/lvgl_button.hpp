@@ -45,13 +45,13 @@ namespace lvgl
  * @param   text Text to be showed on button object
  * @param   icon1 First icon to be showed on button object
  * @param   icon2 Second icon to be showed on button object
- * @note    If no icons are passsed, or passed as NULL, only text will be showed on button.
+ * @note    If no icons are passsed, or passed as nullptr, only text will be showed on button.
  *          If two icons are passed they can be switched using Button:iconSwap() method
  */
 #if ALFA_AVALIABLE
-    Button(const char *text = NULL, icon_t icon1 = NULL, icon_t icon2 = NULL)
+    Button(const char *text = nullptr, icon_t icon1 = nullptr, icon_t icon2 = nullptr)
 #else
-    Button(const char *text, icon_t icon1 = NULL, icon_t icon2 = NULL)
+    Button(const char *text, icon_t icon1 = nullptr, icon_t icon2 = nullptr)
 #endif
         : _text_scr(text), _icon1_scr(icon1), _icon2_scr(icon2) {};
 
@@ -61,12 +61,12 @@ namespace lvgl
      * @note   The new button will be created into parent
      * @note   If any parent is passed the button will be created into main screen
      */
-    void create(object_t *parent = NULL)
+    void create(object_t *parent = nullptr)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
-      if (parent == NULL)
+      if (parent == nullptr)
         parent = lv_scr_act();
       object = lv_btn_create(parent);
       _init();
@@ -80,7 +80,7 @@ namespace lvgl
      */
     void create(Object &parent)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
       object = lv_btn_create(parent.get_object());
@@ -90,7 +90,7 @@ namespace lvgl
 
     void buttonRound(lvgl::coordinates_t radius)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_button.set_radius(radius);
@@ -99,7 +99,7 @@ namespace lvgl
 
     void buttonOpacity(lvgl::opacity::opacity_t opacity)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_button.set_bg_opa(opacity);
@@ -132,7 +132,7 @@ namespace lvgl
      */
     void buttonColor(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_button.set_bg_color(lvgl::palette::main(color));
@@ -146,7 +146,7 @@ namespace lvgl
      */
     void pinnedButtonColor(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_buttonPinned.set_bg_color(lvgl::palette::main(color));
@@ -159,7 +159,7 @@ namespace lvgl
      */
     void iconColor(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_icon.set_img_recolor(color);
@@ -172,7 +172,7 @@ namespace lvgl
      */
     void pinnedIconColor(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_pinnedIcon.set_img_recolor(color);
@@ -185,7 +185,7 @@ namespace lvgl
      */
     void textColor(lvgl::palette::palette_t color)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       _style_button.set_text_color(color);
@@ -202,7 +202,7 @@ namespace lvgl
     template <typename T>
     void callback(lvgl::event::callback_t callback, lvgl::event::code_t code, T user_data)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       lvgl::port::mutex_take();
       add_event_cb(callback, code, (void *)user_data);
@@ -214,9 +214,9 @@ namespace lvgl
      */
     void iconSwap()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
-      if (_icon1_scr == NULL || _icon2_scr == NULL)
+      if (_icon1_scr == nullptr || _icon2_scr == nullptr)
         return;
       _state.icon_now ^= true;
       if (_state.icon_now == true)
@@ -301,7 +301,7 @@ namespace lvgl
       add_style(_style_buttonPressed, lvgl::state::STATE_PRESSED);
       set_size(128, 128);
 
-      if (_icon1_scr != NULL)
+      if (_icon1_scr != nullptr)
       {
         _icon.create(*this);
         _icon.center();
@@ -311,7 +311,7 @@ namespace lvgl
         _style_pinnedIcon.set_img_recolor(lvgl::color::white());
         _style_pinnedIcon.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
       }
-      else if (_icon2_scr != NULL)
+      else if (_icon2_scr != nullptr)
       {
         _icon.create(*this);
         _icon.center();

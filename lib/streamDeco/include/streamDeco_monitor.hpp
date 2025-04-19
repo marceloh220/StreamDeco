@@ -36,7 +36,7 @@ namespace streamDeco
         class Complete : public lvgl::Object
         {
         public:
-            Complete(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            Complete(const char *text, lvgl::icon_t icon = nullptr) : text_scr(text), icon_scr(icon) {}
             void create(lvgl::palette::palette_t color);
             void create(lvgl::object_t *parent, lvgl::palette::palette_t color);
             void create(Object &parent, lvgl::palette::palette_t color);
@@ -69,7 +69,7 @@ namespace streamDeco
         class Basic : public lvgl::Object
         {
         public:
-            Basic(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            Basic(const char *text, lvgl::icon_t icon = nullptr) : text_scr(text), icon_scr(icon) {}
             void create(lvgl::object_t *parent, lvgl::palette::palette_t color);
             void create(Object &parent, lvgl::palette::palette_t color);
             void set_bg_color(lv_color_t color);
@@ -98,7 +98,7 @@ namespace streamDeco
         class Clock : public lvgl::Object
         {
         public:
-            Clock(const char *text, lvgl::icon_t icon = NULL) : text_scr(text), icon_scr(icon) {}
+            Clock(const char *text, lvgl::icon_t icon = nullptr) : text_scr(text), icon_scr(icon) {}
             void create(lvgl::object_t *parent, lvgl::palette::palette_t color);
             void create(Object &parent, lvgl::palette::palette_t color);
             void set_bg_color(lv_color_t color);
@@ -107,9 +107,9 @@ namespace streamDeco
             void set_time(struct tm &rtc_time);
         private:
             void init_conf(lvgl::palette::palette_t color);
-            const char *text_scr = NULL;
+            const char *text_scr = nullptr;
             int wday = 0;
-            lvgl::icon_t icon_scr = NULL;
+            lvgl::icon_t icon_scr = nullptr;
             lvgl::Label monitor_label;
             lvgl::Image monitor_icon;
             lvgl::Label date;

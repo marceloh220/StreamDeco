@@ -43,7 +43,7 @@ namespace streamDeco
 
         void Complete::create(lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
             object = lv_obj_create(lv_scr_act());
             init_conf(color);
@@ -52,7 +52,7 @@ namespace streamDeco
 
         void Complete::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
             object = lv_obj_create(parent);
             init_conf(color);
@@ -61,7 +61,7 @@ namespace streamDeco
 
         void Complete::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
             object = lv_obj_create(parent.get_object());
             init_conf(color);
@@ -70,7 +70,7 @@ namespace streamDeco
 
         void Complete::set_bg_color(lvgl::color_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -79,7 +79,7 @@ namespace streamDeco
 
         void Complete::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -88,7 +88,7 @@ namespace streamDeco
 
         void Complete::color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
             metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
@@ -160,7 +160,7 @@ namespace streamDeco
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
 
-            if (icon_scr != NULL)
+            if (icon_scr != nullptr)
             {
                 monitor_icon.create(*this);
                 monitor_icon.set_pos(0, 0);
@@ -177,7 +177,7 @@ namespace streamDeco
             arc.set_size(96, 96);
             arc.add_style(metric_style, lvgl::part::MAIN);
             arc.add_style(metric_indicator_style, lvgl::part::INDICATOR);
-            arc.remove_style(NULL, lvgl::part::KNOB);
+            arc.remove_style(nullptr, lvgl::part::KNOB);
             arc.clear_flag(LV_OBJ_FLAG_CLICKABLE);
 
             arc_label.create(arc);
@@ -222,9 +222,9 @@ namespace streamDeco
 
         void Basic::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
-            if (parent == NULL) parent = lv_scr_act();
+            if (parent == nullptr) parent = lv_scr_act();
             object = lv_obj_create(parent);
             init_conf(color);
             lvgl::port::mutex_give();
@@ -232,7 +232,7 @@ namespace streamDeco
 
         void Basic::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
             object = lv_obj_create(parent.get_object());
             init_conf(color);
@@ -241,7 +241,7 @@ namespace streamDeco
 
         void Basic::set_bg_color(lvgl::color_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -250,7 +250,7 @@ namespace streamDeco
 
         void Basic::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -259,7 +259,7 @@ namespace streamDeco
 
         void Basic::color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
             metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
@@ -324,7 +324,7 @@ namespace streamDeco
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
 
-            if (icon_scr != NULL)
+            if (icon_scr != nullptr)
             {
                 monitor_icon.create(*this);
                 monitor_icon.set_pos(0, 0);
@@ -369,9 +369,9 @@ namespace streamDeco
 
         void Clock::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
-            if (parent == NULL) parent = lv_scr_act();
+            if (parent == nullptr) parent = lv_scr_act();
             object = lv_obj_create(parent);
             init_conf(color);
             lvgl::port::mutex_give();
@@ -379,7 +379,7 @@ namespace streamDeco
 
         void Clock::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != NULL) return;
+            if (object != nullptr) return;
             lvgl::port::mutex_take();
             object = lv_obj_create(parent.get_object());
             init_conf(color);
@@ -388,7 +388,7 @@ namespace streamDeco
 
         void Clock::set_bg_color(lvgl::color_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -397,7 +397,7 @@ namespace streamDeco
 
         void Clock::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             monitor_style.set_bg_color(color);
             invalidate();
@@ -406,7 +406,7 @@ namespace streamDeco
 
         void Clock::color(lvgl::palette::palette_t color)
         {
-            if (object == NULL) return;
+            if (object == nullptr) return;
             lvgl::port::mutex_take();
             metric_style.set_bg_color(color);
             metric_style.set_img_recolor(color);
@@ -458,7 +458,7 @@ namespace streamDeco
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
 
-            if (icon_scr != NULL)
+            if (icon_scr != nullptr)
             {
                 monitor_icon.create(*this);
                 monitor_icon.set_pos(0, 0);
@@ -494,8 +494,8 @@ namespace streamDeco
                 index++;
             }
 
-            week[0].remove_style(week_style, lvgl::part::MAIN);
-            week[0].add_style(weekActual_style, lvgl::part::MAIN);
+            //week[0].remove_style(week_style, lvgl::part::MAIN);
+            //week[0].add_style(weekActual_style, lvgl::part::MAIN);
 
             add_style(monitor_style, lvgl::part::MAIN);
         } // Clock::init_conf

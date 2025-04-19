@@ -84,7 +84,7 @@ namespace streamDeco
         }
         time_epoch.tv_sec = time_local;
         time_epoch.tv_usec = 0;
-        settimeofday(&time_epoch, NULL);
+        settimeofday(&time_epoch, nullptr);
 
         break;
 
@@ -106,24 +106,28 @@ namespace streamDeco
   {
 
     struct tm tm_date = {0};
-    int count = 0;
 
     while (1)
     {
-
-      count++;
-
-      if (count == (10 * 60))
-      {
-        count = 0;
-        synchro_clock(40);
-      }
 
       getLocalTime(&tm_date);
       streamDecoMonitor::clock.set_time(tm_date);
 
       rtos::sleep(500ms);
     }
+  }
+
+  /* Handle the clock synchro streamDecoTasks,
+   * synchro clock time with streamDeco monitor application */
+  void handleClockSynchro(taskArg_t task_arg) {
+
+    while(1) {
+  
+      synchro_clock(40);
+      rtos::sleep(5min);
+  
+    }
+  
   }
 
 } // namespace streamDeco

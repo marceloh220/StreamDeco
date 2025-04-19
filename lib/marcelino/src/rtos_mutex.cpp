@@ -36,21 +36,21 @@ namespace rtos
 
   bool Mutex::take()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, portMAX_DELAY);
   }
 
   bool Mutex::take(milliseconds timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
   }
 
   bool Mutex::give()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreGive(_handle);
   }
@@ -67,21 +67,21 @@ namespace rtos
 
   bool MutexRecursive::take()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTakeRecursive(_handle, portMAX_DELAY);
   }
 
   bool MutexRecursive::take(int timeout)
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreTakeRecursive(_handle, pdMS_TO_TICKS(timeout));
   }
 
   bool MutexRecursive::give()
   {
-    if (_handle == NULL)
+    if (_handle == nullptr)
       return false;
     return xSemaphoreGiveRecursive(_handle);
   }

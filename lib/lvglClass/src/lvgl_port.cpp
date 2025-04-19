@@ -187,7 +187,7 @@ namespace lvgl
           Serial.println("LVGL disp_draw_buf allocate failed!");
           return;
         }
-        lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, NULL, buffer_size);
+        lv_disp_draw_buf_init(&draw_buf, display_draw_buf1, nullptr, buffer_size);
       }
       lv_disp_drv_init(&display_driver);
       display_driver.hor_res = screenWidth;

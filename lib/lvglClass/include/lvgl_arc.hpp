@@ -16,12 +16,12 @@ namespace lvgl
          * @note   The new arc will be created into parent
          * @note   If any parent is passed the slider will be created into main screen
          */
-        inline void create(object_t *parent = NULL)
+        inline void create(object_t *parent = nullptr)
         {
-            if (object != NULL)
+            if (object != nullptr)
                 return;
             lvgl::port::mutex_take();
-            if (parent == NULL)
+            if (parent == nullptr)
                 parent = lv_scr_act();
             object = lv_arc_create(parent);
             port::mutex_give();
@@ -34,7 +34,7 @@ namespace lvgl
          */
         inline void create(Object &parent)
         {
-            if (object != NULL)
+            if (object != nullptr)
                 return;
             lvgl::port::mutex_take();
             object = lv_arc_create(parent.get_object());
@@ -47,7 +47,7 @@ namespace lvgl
          */
         void set_start_angle(uint16_t start)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_start_angle(object, start);
@@ -60,7 +60,7 @@ namespace lvgl
          */
         void set_end_angle(uint16_t end)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_end_angle(object, end);
@@ -74,7 +74,7 @@ namespace lvgl
          */
         void set_angles(uint16_t start, uint16_t end)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_angles(object, start, end);
@@ -87,7 +87,7 @@ namespace lvgl
          */
         void set_bg_start_angle(uint16_t start)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_bg_start_angle(object, start);
@@ -100,7 +100,7 @@ namespace lvgl
          */
         void set_bg_end_angle(uint16_t end)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_bg_end_angle(object, end);
@@ -114,7 +114,7 @@ namespace lvgl
          */
         void set_bg_angles(uint16_t start, uint16_t end)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_bg_angles(object, start, end);
@@ -127,7 +127,7 @@ namespace lvgl
          */
         void set_rotation(uint16_t rotation)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_rotation(object, rotation);
@@ -140,7 +140,7 @@ namespace lvgl
          */
         void set_mode(arc::mode_t type)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_mode(object, (lv_arc_mode_t)type);
@@ -153,7 +153,7 @@ namespace lvgl
          */
         void set_value(int16_t value)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_value(object, value);
@@ -167,7 +167,7 @@ namespace lvgl
          */
         void set_range(int16_t min, int16_t max)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_range(object, min, max);
@@ -180,7 +180,7 @@ namespace lvgl
          */
         void set_change_rate(uint16_t rate)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_set_change_rate(object, rate);
@@ -194,7 +194,7 @@ namespace lvgl
         uint16_t get_angle_start()
         {
             uint16_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_arc_get_angle_start(object);
@@ -209,7 +209,7 @@ namespace lvgl
         uint16_t get_angle_end()
         {
             uint16_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_arc_get_angle_end(object);
@@ -225,7 +225,7 @@ namespace lvgl
         uint16_t get_bg_angle_start()
         {
             uint16_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_arc_get_bg_angle_start(object);
@@ -240,7 +240,7 @@ namespace lvgl
         uint16_t get_bg_angle_end()
         {
             uint16_t ret;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_arc_get_bg_angle_end(object);
@@ -255,7 +255,7 @@ namespace lvgl
         int16_t get_value()
         {
             int16_t ret;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_arc_get_value(object);
@@ -270,7 +270,7 @@ namespace lvgl
         int16_t get_min_value()
         {
             int16_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             return lv_arc_get_min_value(object);
@@ -285,7 +285,7 @@ namespace lvgl
         int16_t get_max_value()
         {
             int16_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             return lv_arc_get_max_value(object);
@@ -300,7 +300,7 @@ namespace lvgl
         arc::mode_t get_mode()
         {
             arc::mode_t ret = arc::NORMAL;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             return (arc::mode_t)lv_arc_get_mode(object);
@@ -319,7 +319,7 @@ namespace lvgl
          */
         void align_obj_to_angle(object_t *obj_to_align, coordinates_t r_offset)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_align_obj_to_angle(object, obj_to_align, r_offset);
@@ -333,7 +333,7 @@ namespace lvgl
          */
         void align_obj_to_angle(Object &obj_to_align, coordinates_t r_offset)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_align_obj_to_angle(object, obj_to_align.get_object(), r_offset);
@@ -347,7 +347,7 @@ namespace lvgl
          */
         void rotate_obj_to_angle(object_t *obj_to_rotate, coordinates_t r_offset)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_rotate_obj_to_angle(object, obj_to_rotate, r_offset);
@@ -361,7 +361,7 @@ namespace lvgl
          */
         void rotate_obj_to_angle(Object &obj_to_rotate, coordinates_t r_offset)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_arc_rotate_obj_to_angle(object, obj_to_rotate.get_object(), r_offset);

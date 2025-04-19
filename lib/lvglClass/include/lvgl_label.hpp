@@ -51,12 +51,12 @@ namespace lvgl
      * @note   The new label will be created into parent
      * @note   If any parent is passed the slider will be created into main screen
      */
-    inline void create(object_t *parent = NULL)
+    inline void create(object_t *parent = nullptr)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
-      if (parent == NULL)
+      if (parent == nullptr)
         parent = lv_scr_act();
       object = lv_label_create(parent);
       port::mutex_give();
@@ -69,7 +69,7 @@ namespace lvgl
      */
     inline void create(Object &parent)
     {
-      if (object != NULL)
+      if (object != nullptr)
         return;
       port::mutex_take();
       object = lv_label_create(parent.get_object());
@@ -79,12 +79,12 @@ namespace lvgl
     /**
      * Set a new text for a label. Memory will be allocated to store the text by
      * the label.
-     * @param text          '\0' terminated character string. NULL to refresh with
+     * @param text          '\0' terminated character string. nullptr to refresh with
      * the current text.
      */
     void set_text(const char *text)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_text(object, text);
@@ -99,11 +99,11 @@ namespace lvgl
      */
     void set_text_fmt(const char *fmt, ...)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       va_list args;
       va_start(args, fmt);
-      int size = vsnprintf(NULL, 0, fmt, args);
+      int size = vsnprintf(nullptr, 0, fmt, args);
       va_end(args);
       char *buffer = (char *)heap_caps_malloc(size + 1, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
       va_start(args, fmt);
@@ -118,12 +118,12 @@ namespace lvgl
     /**
      * Set a static text. It will not be saved by the label so the 'text' variable
      * has to be 'alive' while the label exists.
-     * @param text          pointer to a text. NULL to refresh with the current
+     * @param text          pointer to a text. nullptr to refresh with the current
      * text.
      */
     void set_text_static(const char *text)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_text_static(object, text);
@@ -138,7 +138,7 @@ namespace lvgl
      */
     void set_long_mode(text::long_mode_t long_mode)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_long_mode(object, (text::long_mode_t)long_mode);
@@ -152,7 +152,7 @@ namespace lvgl
      */
     void set_recolor(bool en)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_recolor(object, en);
@@ -166,7 +166,7 @@ namespace lvgl
      */
     void set_text_sel_start(uint32_t index)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_text_sel_start(object, index);
@@ -180,7 +180,7 @@ namespace lvgl
      */
     void set_text_sel_end(uint32_t index)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_label_set_text_sel_end(object, index);
@@ -193,8 +193,8 @@ namespace lvgl
      */
     char *get_text()
     {
-      if (object == NULL)
-        return NULL;
+      if (object == nullptr)
+        return nullptr;
       port::mutex_take();
       char *ret = lv_label_get_text(object);
       port::mutex_give();
@@ -208,7 +208,7 @@ namespace lvgl
     text::long_mode_t get_long_mode()
     {
       lv_label_long_mode_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return (text::long_mode_t)ret;
       port::mutex_take();
       ret = lv_label_get_long_mode(object);
@@ -223,7 +223,7 @@ namespace lvgl
     bool get_recolor()
     {
       bool ret = false;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_label_get_recolor(object);
@@ -254,7 +254,7 @@ namespace lvgl
     uint32_t get_letter_on(const object_t *object, point_t *pos_in)
     {
       uint32_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_label_get_letter_on(object, (lv_point_t *)pos_in);
@@ -270,7 +270,7 @@ namespace lvgl
     bool is_char_under_pos(point_t *pos)
     {
       bool ret = false;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_label_is_char_under_pos(object, (lv_point_t *)pos);

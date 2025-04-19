@@ -136,7 +136,7 @@ namespace rtos
      *
      *           }
      */
-    void attach(TaskFunction_t callback, taskArg_t args = NULL);
+    void attach(TaskFunction_t callback, taskArg_t args = nullptr);
 
     /**
      * @see      rtos::Task::attach(TaskFunction_t callback, taskArg_t args)
@@ -332,7 +332,7 @@ namespace rtos
      * @var    _handle
      * @brief  Keep task handle into object to easy access
      */
-    TaskHandle_t _handle = NULL;
+    TaskHandle_t _handle = nullptr;
 
     /**
      * @var    _previousTime

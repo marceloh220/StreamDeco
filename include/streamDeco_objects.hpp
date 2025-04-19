@@ -39,6 +39,8 @@ namespace streamDeco
   constexpr long streamDecoTask_uiReset_stackSize = 1_kB;
   constexpr long streamDecoTask_monitor_stackSize = 3_kB;
   constexpr long streamDecoTask_clock_stackSize = 3_kB;
+  constexpr long streamDecoTask_clockSynchro_stackSize = 3_kB;
+  constexpr long streamDecoTask_updateCache_stackSize = 3_kB;
 
   /**
    * @enum     event_e
@@ -127,6 +129,9 @@ namespace streamDeco
 
     rest_backlight_event,
 
+    /* --- Update the settings cache --- */
+    update_settings_cache_with_reset_event,
+
   };
 
   namespace settings
@@ -184,6 +189,20 @@ namespace streamDeco
      * @details  Task to update clock
      **/
     extern rtos::TaskStatic<streamDecoTask_clock_stackSize> clock;
+
+    /**
+     * @var      clockSynchro
+     * @brief    Task clockSynchro
+     * @details  Task to synchronize clock with stramDeco monitor application
+     **/
+    extern rtos::TaskStatic<streamDecoTask_clockSynchro_stackSize> clockSynchro;
+
+    /**
+     * @var      updateCache
+     * @brief    Task updateCache
+     * @details  Task to update and save the settings cache with flash
+     **/
+    extern rtos::TaskStatic<streamDecoTask_updateCache_stackSize> updateCache;
   } // namespace streamDecoTasks
 
   /**

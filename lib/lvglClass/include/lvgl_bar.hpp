@@ -16,12 +16,12 @@ namespace lvgl
          * @note   The new bar will be created into parent
          * @note   If any parent is passed the slider will be created into main screen
          */
-        inline void create(object_t *parent = NULL)
+        inline void create(object_t *parent = nullptr)
         {
-            if (object != NULL)
+            if (object != nullptr)
                 return;
             port::mutex_take();
-            if (parent == NULL)
+            if (parent == nullptr)
                 parent = lv_scr_act();
             object = lv_bar_create(parent);
             port::mutex_give();
@@ -34,7 +34,7 @@ namespace lvgl
          */
         inline void create(Object &parent)
         {
-            if (object != NULL)
+            if (object != nullptr)
                 return;
             port::mutex_take();
             object = lv_bar_create(parent.get_object());
@@ -48,7 +48,7 @@ namespace lvgl
          */
         void set_value(int32_t value, lvgl::animation::enable_t anim = animation::OFF)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_bar_set_value(object, value, (lv_anim_enable_t)anim);
@@ -62,7 +62,7 @@ namespace lvgl
          */
         void set_start_value(int32_t start_value, lvgl::animation::enable_t anim = animation::OFF)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_bar_set_start_value(object, start_value, (lv_anim_enable_t)anim);
@@ -76,7 +76,7 @@ namespace lvgl
          */
         void set_range(int32_t min, int32_t max)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_bar_set_range(object, min, max);
@@ -89,7 +89,7 @@ namespace lvgl
          */
         void set_mode(lv_bar_mode_t mode)
         {
-            if (object == NULL)
+            if (object == nullptr)
                 return;
             port::mutex_take();
             lv_bar_set_mode(object, mode);
@@ -103,7 +103,7 @@ namespace lvgl
         int32_t get_value()
         {
             int32_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_value(object);
@@ -118,7 +118,7 @@ namespace lvgl
         int32_t get_start_value()
         {
             int32_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_start_value(object);
@@ -133,7 +133,7 @@ namespace lvgl
         int32_t get_min_value()
         {
             int32_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_min_value(object);
@@ -148,7 +148,7 @@ namespace lvgl
         int32_t get_max_value()
         {
             int32_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_max_value(object);
@@ -164,7 +164,7 @@ namespace lvgl
         lv_bar_mode_t get_mode()
         {
             int32_t ret = 0;
-            if (object == NULL)
+            if (object == nullptr)
                 return ret;
             port::mutex_take();
             ret = lv_bar_get_mode(object);

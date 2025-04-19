@@ -60,7 +60,7 @@ namespace streamDeco
   void MainButton::create(uint8_t pos, lvgl::palette::palette_t color)
   {
     if (assertPosition(pos) == false) return;
-    if (object != NULL) return;
+    if (object != nullptr) return;
     lvgl::port::mutex_take();
     object = lv_btn_create(lv_scr_act());
     init(color);
@@ -71,7 +71,7 @@ namespace streamDeco
   void MainButton::create(Object &parent, uint8_t pos, lvgl::palette::palette_t color)
   {
     if (assertPosition(pos) == false) return;
-    if (object != NULL) return;
+    if (object != nullptr) return;
     lvgl::port::mutex_take();
     object = lv_btn_create(parent.get_object());
     init(color);
@@ -110,7 +110,7 @@ namespace streamDeco
     add_style(style_buttonPressed, lvgl::state::STATE_PRESSED);
     set_size(128, 128);
     
-    if (icon1_scr != NULL)
+    if (icon1_scr != nullptr)
     {
       icon.create(*this);
       icon.center();
@@ -119,7 +119,7 @@ namespace streamDeco
       style_icon.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
       style_iconPinned.set_img_recolor(lvgl::color::white());
       style_iconPinned.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
-    } else if (icon2_scr != NULL) {
+    } else if (icon2_scr != nullptr) {
       icon.create(*this);
       icon.center();
       icon.set_src(icon2_scr);
@@ -142,7 +142,7 @@ namespace streamDeco
      */
   void MainButton::text(const char *text)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     label.set_text(text);
     lvgl::port::mutex_give();
@@ -152,7 +152,7 @@ namespace streamDeco
 
   void MainButton::buttonColor(lvgl::palette::palette_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_button.set_bg_color(lvgl::palette::main(color));
     style_button.set_outline_color(lvgl::palette::main(color));
@@ -162,7 +162,7 @@ namespace streamDeco
 
   void MainButton::buttonPinnedColor(lvgl::palette::palette_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_buttonPinned.set_bg_color(lvgl::palette::main(color));
     style_buttonPinned.set_outline_color(lvgl::palette::main(color));
@@ -171,7 +171,7 @@ namespace streamDeco
 
   void MainButton::iconColor(lvgl::palette::palette_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_icon.set_img_recolor(color);
     lvgl::port::mutex_give();
@@ -179,7 +179,7 @@ namespace streamDeco
 
   void MainButton::iconColor(lvgl::color_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_icon.set_img_recolor(color);
     lvgl::port::mutex_give();
@@ -187,7 +187,7 @@ namespace streamDeco
 
   void MainButton::iconPinnedColor(lvgl::palette::palette_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_iconPinned.set_img_recolor(color);
     lvgl::port::mutex_give();
@@ -195,7 +195,7 @@ namespace streamDeco
 
   void MainButton::iconPinnedColor(lvgl::color_t color)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     style_iconPinned.set_img_recolor(color);
     lvgl::port::mutex_give();
@@ -203,7 +203,7 @@ namespace streamDeco
 
   void MainButton::callback(lvgl::event::callback_t callback, lvgl::event::code_t code, int user_data)
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     add_event_cb(callback, code, (void *)user_data);
     lvgl::port::mutex_give();
@@ -211,9 +211,9 @@ namespace streamDeco
 
   void MainButton::iconSwap()
   {
-    if (object == NULL) return;
-    if (icon1_scr == NULL) return;
-    if (icon2_scr == NULL) return;
+    if (object == nullptr) return;
+    if (icon1_scr == nullptr) return;
+    if (icon2_scr == nullptr) return;
     state.icon_now ^= true;
     lvgl::port::mutex_take();
     state.icon_now ? icon.set_src(icon1_scr) : icon.set_src(icon2_scr);
@@ -222,7 +222,7 @@ namespace streamDeco
 
   void MainButton::pin()
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     add_style(style_buttonPinned, lvgl::state::STATE_DEFAULT);
     add_style(style_buttonPinned, lvgl::state::STATE_PRESSED);
     icon.remove_style(style_icon, lvgl::part::MAIN);
@@ -232,7 +232,7 @@ namespace streamDeco
 
   void MainButton::unpin()
   {
-    if (object == NULL) return;
+    if (object == nullptr) return;
     remove_style(style_buttonPinned, lvgl::state::STATE_DEFAULT);
     remove_style(style_buttonPinned, lvgl::state::STATE_PRESSED);
     icon.remove_style(style_iconPinned, lvgl::part::MAIN);
@@ -245,7 +245,7 @@ namespace streamDeco
   void MainButton::position(uint8_t pos)
   {
     if (assertPosition(pos) == false) return;
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     lvgl::screen::rotation_t rotation = lvgl::screen::get_rotation();
     int x = 0, y = 0;
@@ -269,7 +269,7 @@ namespace streamDeco
   void CanvasButton::position(uint8_t pos)
   {
     if (assertPosition(pos) == false) return; 
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     lvgl::screen::rotation_t rotation = lvgl::screen::get_rotation();
     int x = 0, y = 0;
@@ -293,7 +293,7 @@ namespace streamDeco
   void ConfigButton::position(uint8_t pos)
   {
     if (assertPosition(pos) == false) return;
-    if (object == NULL) return;
+    if (object == nullptr) return;
     lvgl::port::mutex_take();
     lvgl::screen::rotation_t rotation = lvgl::screen::get_rotation();
     int x = 0, y = 0;

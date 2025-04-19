@@ -36,21 +36,21 @@ namespace rtos
 
   void Timer::attach(TimerCallbackFunction_t callback, UBaseType_t autoreload)
   {
-    if (_handler != NULL)
+    if (_handler != nullptr)
       return;
     _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), autoreload, &_handler, callback);
   }
 
   void Timer::start()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerStart(_handler, portMAX_DELAY);
   }
 
   void Timer::startFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerStartFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -59,14 +59,14 @@ namespace rtos
 
   void Timer::stop()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerStop(_handler, portMAX_DELAY);
   }
 
   void Timer::stopFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerStopFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -75,14 +75,14 @@ namespace rtos
 
   void Timer::reset()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerReset(_handler, portMAX_DELAY);
   }
 
   void Timer::resetFromISR()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xTimerResetFromISR(_handler, &xHigherPriorityTaskWoken);
@@ -91,7 +91,7 @@ namespace rtos
 
   void Timer::periode(milliseconds periode)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     _periode = periode;
     xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
@@ -99,7 +99,7 @@ namespace rtos
 
   void Timer::changePeriodeFromISR(milliseconds periode)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     _periode = periode;
@@ -119,17 +119,17 @@ namespace rtos
 
   bool Timer::verifyID(TimerHandle_t timer)
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return false;
     return pvTimerGetTimerID(timer) == &_handler ? true : false;
   }
 
   void Timer::timerDelete()
   {
-    if (_handler == NULL)
+    if (_handler == nullptr)
       return;
     xTimerDelete(_handler, portMAX_DELAY);
-    _handler = NULL;
+    _handler = nullptr;
   }
 
   const char *Timer::name()

@@ -64,11 +64,11 @@ namespace lvgl
      */
     inline void del()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_del(object);
-      object = NULL;
+      object = nullptr;
       port::mutex_give();
     }
 
@@ -79,7 +79,7 @@ namespace lvgl
      */
     inline void move_foreground()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       object_t *parent = lv_obj_get_parent(object);
@@ -94,7 +94,7 @@ namespace lvgl
      */
     inline void move_background()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_move_to_index(object, 0);
@@ -107,7 +107,7 @@ namespace lvgl
      */
     inline void add_flag(object_flag_t f)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_add_flag(object, f);
@@ -120,7 +120,7 @@ namespace lvgl
      */
     inline void clear_flag(object_flag_t flag)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_clear_flag(object, flag);
@@ -137,7 +137,7 @@ namespace lvgl
      */
     inline void add_state(state_t state)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_add_state(object, state);
@@ -153,7 +153,7 @@ namespace lvgl
      */
     inline void clear_state(state_t state)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_clear_state(object, state);
@@ -179,7 +179,7 @@ namespace lvgl
      */
     inline bool has_flag(object_flag_t flag)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_has_flag(object, flag);
@@ -195,7 +195,7 @@ namespace lvgl
      */
     inline bool has_flag_any(object_flag_t flag)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_has_flag_any(object, flag);
@@ -210,7 +210,7 @@ namespace lvgl
     inline state_t get_state()
     {
       state_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_state(object);
@@ -226,7 +226,7 @@ namespace lvgl
      */
     inline bool has_state(state_t state)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_has_state(object, state);
@@ -257,7 +257,7 @@ namespace lvgl
      */
     inline void set_pos(coordinates_t x, coordinates_t y)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_pos(object, x, y);
@@ -274,7 +274,7 @@ namespace lvgl
      */
     inline void set_x(coordinates_t x)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_x(object, x);
@@ -291,7 +291,7 @@ namespace lvgl
      */
     inline void set_y(coordinates_t y)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_y(object, y);
@@ -310,7 +310,7 @@ namespace lvgl
      */
     inline void set_size(coordinates_t w, coordinates_t h)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_size(object, w, h);
@@ -323,7 +323,7 @@ namespace lvgl
      */
     inline bool refr_size()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_refr_size(object);
@@ -342,7 +342,7 @@ namespace lvgl
      */
     inline void set_width(coordinates_t w)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_width(object, w);
@@ -360,7 +360,7 @@ namespace lvgl
      */
     inline void set_height(coordinates_t h)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_height(object, h);
@@ -373,7 +373,7 @@ namespace lvgl
      */
     inline void set_content_width(coordinates_t w)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_content_width(object, w);
@@ -386,7 +386,7 @@ namespace lvgl
      */
     inline void set_content_height(coordinates_t h)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_content_height(object, h);
@@ -399,7 +399,7 @@ namespace lvgl
      */
     inline void set_layout(uint32_t layout)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_layout(object, layout);
@@ -412,7 +412,7 @@ namespace lvgl
      */
     inline bool is_layout_positioned()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_is_layout_positioned(object);
@@ -425,7 +425,7 @@ namespace lvgl
      */
     inline void mark_layout_as_dirty()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_mark_layout_as_dirty(object);
@@ -437,7 +437,7 @@ namespace lvgl
      */
     inline void update_layout()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_update_layout(object);
@@ -450,7 +450,7 @@ namespace lvgl
      */
     inline void set_align(alignment::alignment_t align)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_align(object, align);
@@ -468,7 +468,7 @@ namespace lvgl
      */
     inline void align(alignment::alignment_t align, coordinates_t x_ofs, coordinates_t y_ofs)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_align(object, align, x_ofs, y_ofs);
@@ -477,7 +477,7 @@ namespace lvgl
 
     /**
      * @brief Align an object to an other object.
-     * @param base      pointer to an other object (if NULL `obj`s parent is used). 'obj' will be aligned to it.
+     * @param base      pointer to an other object (if nullptr `obj`s parent is used). 'obj' will be aligned to it.
      * @param align     type of alignment (see 'alignment_t' enum)
      * @param x_ofs     x coordinate offset after alignment
      * @param y_ofs     y coordinate offset after alignment
@@ -485,7 +485,7 @@ namespace lvgl
      */
     inline void align_to(Object &base, alignment::alignment_t align, coordinates_t x_ofs, coordinates_t y_ofs)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_align_to(object, base.get_object(), align, x_ofs, y_ofs);
@@ -498,7 +498,7 @@ namespace lvgl
      */
     inline void center()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_align(object, lvgl::alignment::CENTER, 0, 0);
@@ -510,7 +510,7 @@ namespace lvgl
      */
     inline void hidden()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       if (!lv_obj_has_flag(object, object::FLAG_HIDDEN))
@@ -524,7 +524,7 @@ namespace lvgl
      */
     inline bool is_hidden()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_has_flag(object, object::FLAG_HIDDEN);
@@ -537,7 +537,7 @@ namespace lvgl
      */
     inline void unhidden()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       if (lv_obj_has_flag(object, object::FLAG_HIDDEN))
@@ -559,7 +559,7 @@ namespace lvgl
      */
     inline void get_coords(area_t *coords)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_get_coords(object, coords);
@@ -579,7 +579,7 @@ namespace lvgl
     inline coordinates_t get_x()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_x(object);
@@ -600,7 +600,7 @@ namespace lvgl
     inline coordinates_t get_x2()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_x2(object);
@@ -621,7 +621,7 @@ namespace lvgl
     inline coordinates_t get_y()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_y(object);
@@ -642,7 +642,7 @@ namespace lvgl
     inline coordinates_t get_y2()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_y2(object);
@@ -658,7 +658,7 @@ namespace lvgl
     inline coordinates_t get_x_aligned()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_x_aligned(object);
@@ -673,7 +673,7 @@ namespace lvgl
     inline coordinates_t get_y_aligned()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_y_aligned(object);
@@ -690,7 +690,7 @@ namespace lvgl
     inline coordinates_t get_width()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_width(object);
@@ -707,7 +707,7 @@ namespace lvgl
     inline coordinates_t get_height()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_height(object);
@@ -725,7 +725,7 @@ namespace lvgl
     inline coordinates_t get_content_width()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_content_width(object);
@@ -743,7 +743,7 @@ namespace lvgl
     inline coordinates_t get_content_height()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_content_height(object);
@@ -760,7 +760,7 @@ namespace lvgl
      */
     inline void get_content_coords(area_t *area)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_get_content_coords(object, area);
@@ -785,7 +785,7 @@ namespace lvgl
     inline coordinates_t get_self_height()
     {
       coordinates_t ret = 0;
-      if (object == NULL)
+      if (object == nullptr)
         return ret;
       port::mutex_take();
       ret = lv_obj_get_self_height(object);
@@ -800,7 +800,7 @@ namespace lvgl
      */
     inline bool refresh_self_size()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_refresh_self_size(object);
@@ -813,7 +813,7 @@ namespace lvgl
      */
     inline void refr_pos()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_refr_pos(object);
@@ -827,7 +827,7 @@ namespace lvgl
      */
     inline void move_to(coordinates_t x, coordinates_t y)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_move_to(object, x, y);
@@ -841,7 +841,7 @@ namespace lvgl
      */
     inline void move_children_by(coordinates_t x_diff, coordinates_t y_diff, bool ignore_floating)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_move_children_by(object, x_diff, y_diff, ignore_floating);
@@ -856,7 +856,7 @@ namespace lvgl
      */
     inline void transform_point(point_t *p, bool recursive, bool inv)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_transform_point(object, p, recursive, inv);
@@ -871,7 +871,7 @@ namespace lvgl
      */
     inline void get_transformed_area(lv_area_t *area, bool recursive, bool inv)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_get_transformed_area(object, area, recursive, inv);
@@ -885,7 +885,7 @@ namespace lvgl
      */
     inline void invalidate_area(const area_t *area)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_invalidate_area(object, area);
@@ -897,7 +897,7 @@ namespace lvgl
      */
     inline void invalidate()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_invalidate(object);
@@ -913,7 +913,7 @@ namespace lvgl
      */
     inline bool area_is_visible(area_t *area)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_area_is_visible(object, area);
@@ -928,7 +928,7 @@ namespace lvgl
      */
     inline bool is_visible()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_is_visible(object);
@@ -942,7 +942,7 @@ namespace lvgl
      */
     inline void set_ext_click_area(coordinates_t size)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_set_ext_click_area(object, size);
@@ -956,7 +956,7 @@ namespace lvgl
      */
     inline void get_click_area(area_t *area)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_get_click_area(object, area);
@@ -970,7 +970,7 @@ namespace lvgl
      */
     inline bool hit_test(const point_t *point)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_hit_test(object, point);
@@ -990,7 +990,7 @@ namespace lvgl
      */
     void add_style(lv_style_t *style, style_selector_t selector)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_add_style(object, style, selector);
@@ -1009,7 +1009,7 @@ namespace lvgl
      */
     void add_style(Style &style, style_selector_t selector)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_add_style(object, style.get_style(), selector);
@@ -1018,20 +1018,20 @@ namespace lvgl
 
     /**
      * Add a style to an object.
-     * @param style     pointer to a style to remove. Can be NULL to check only
+     * @param style     pointer to a style to remove. Can be nullptr to check only
      * the selector
      * @param selector  OR-ed values of states and a part to remove only styles
      * with matching selectors. LV_STATE_ANY and lvgl::part::ANY can be used
      * @example lv_obj_remove_style(obj, &style, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove a specific style
-     * @example lv_obj_remove_style(obj, NULL, lvgl::part::MAIN | LV_STATE_ANY);
+     * @example lv_obj_remove_style(obj, nullptr, lvgl::part::MAIN | LV_STATE_ANY);
      * //Remove all styles from the main part
-     * @example lv_obj_remove_style(obj, NULL, lvgl::part::ANY | LV_STATE_ANY);
+     * @example lv_obj_remove_style(obj, nullptr, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove all styles
      */
     void remove_style(lv_style_t *style, style_selector_t selector)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_remove_style(object, style, selector);
@@ -1040,20 +1040,20 @@ namespace lvgl
 
     /**
      * Add a style to an object.
-     * @param style     pointer to a style to remove. Can be NULL to check only
+     * @param style     pointer to a style to remove. Can be nullptr to check only
      * the selector
      * @param selector  OR-ed values of states and a part to remove only styles
      * with matching selectors. LV_STATE_ANY and lvgl::part::ANY can be used
      * @example lv_obj_remove_style(&style, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove a specific style
-     * @example lv_obj_remove_style(NULL, lvgl::part::MAIN | LV_STATE_ANY);
+     * @example lv_obj_remove_style(nullptr, lvgl::part::MAIN | LV_STATE_ANY);
      * //Remove all styles from the main part
-     * @example lv_obj_remove_style(NULL, lvgl::part::ANY | LV_STATE_ANY);
+     * @example lv_obj_remove_style(nullptr, lvgl::part::ANY | LV_STATE_ANY);
      * //Remove all styles
      */
     void remove_style(Style &style, style_selector_t selector)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_remove_style(object, style.get_style(), selector);
@@ -1065,10 +1065,10 @@ namespace lvgl
      */
     inline void remove_style_all()
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
-      lv_obj_remove_style(object, NULL,
+      lv_obj_remove_style(object, nullptr,
                           (lv_style_selector_t)lvgl::part::ANY |
                               (lv_style_selector_t)LV_STATE_ANY);
       port::mutex_give();
@@ -1077,11 +1077,11 @@ namespace lvgl
     /**
      * Notify all object if a style is modified
      * @param style     pointer to a style. Only the objects with this style will
-     * be notified (NULL to notify all objects)
+     * be notified (nullptr to notify all objects)
      */
     void report_style_change(style_t *style)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_report_style_change(style);
@@ -1091,11 +1091,11 @@ namespace lvgl
     /**
      * Notify all object if a style is modified
      * @param style     pointer to a style. Only the objects with this style will
-     * be notified (NULL to notify all objects)
+     * be notified (nullptr to notify all objects)
      */
     void report_style_change(Style &style)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_report_style_change(style.get_style());
@@ -1109,7 +1109,7 @@ namespace lvgl
      */
     void enable_style_refresh(bool en)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_enable_style_refresh(en);
@@ -1130,7 +1130,7 @@ namespace lvgl
     template <typename type>
     void add_event_cb(lvgl::event::callback_t callback, lvgl::event::code_t filter, type user_data)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       lv_obj_add_event_cb(object, callback, (lv_event_code_t)filter, (void *)user_data);
@@ -1144,7 +1144,7 @@ namespace lvgl
      */
     bool remove_event_cb(lvgl::event::callback_t callback)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret = lv_obj_remove_event_cb(object, callback);
@@ -1154,7 +1154,7 @@ namespace lvgl
 
     /**
      * Remove an event handler function with a specific user_data from an object.
-     * @param callback  the event function to remove, or `NULL` only `user_data`
+     * @param callback  the event function to remove, or `nullptr` only `user_data`
      * matters.
      * @param user_data the user_data specified in ::lv_obj_add_event_cb
      * @return          true if any event handlers were removed
@@ -1162,7 +1162,7 @@ namespace lvgl
     bool remove_event_cb_with_user_data(lvgl::event::callback_t callback,
                                         const void *user_data)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return false;
       port::mutex_take();
       bool ret =
@@ -1180,7 +1180,7 @@ namespace lvgl
     template <typename type>
     type user_data(lvgl::event::callback_t callback)
     {
-      if (object == NULL)
+      if (object == nullptr)
         return;
       port::mutex_take();
       type ret = (type)lv_obj_get_event_user_data(object, callback);
@@ -1189,7 +1189,7 @@ namespace lvgl
     }
 
   protected:
-    object_t *object = NULL;
+    object_t *object = nullptr;
   };
 
 } // namespace lvgl

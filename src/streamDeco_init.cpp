@@ -60,18 +60,9 @@ namespace streamDeco
   void init()
   {
 
-    settings::cache = settings::flash;
-
-    if (settings::cache.initied == false)
-    {
-      settings::cache.initied = true;
-      settings::cache.rotation = lvgl::screen::LANDSCAPE;
-      settings::cache.color_background = lvgl::palette::main(lvgl::palette::DEEP_ORANGE);
-      settings::cache.color_buttons = lvgl::palette::PURPLE;
-      settings::cache.lcd_bright = static_cast<int>(4095.0f * 0.5f);
-      settings::flash = settings::cache;
-    }
-
+    /** init settings cache and update with flash */
+    settings::initCache();
+    
     /* set initial screen rotation and color */
     lvgl::screen::set_rotation(settings::cache.rotation);
     lvgl::screen::set_bg_color(settings::cache.color_background);
@@ -192,6 +183,8 @@ namespace streamDeco
     streamDecoTasks::uiReset.attach(handleUiReset);
     streamDecoTasks::monitor.attach(handleMonitor);
     streamDecoTasks::clock.attach(handleClock);
+    streamDecoTasks::clockSynchro.attach(handleClockSynchro);
+    streamDecoTasks::updateCache.attach(handleUpdateCache);
 
   } // function init end
 
@@ -206,6 +199,8 @@ namespace streamDeco
     printf("Task UI Reset mem usage %d kB\n", streamDecoTasks::uiReset.memUsage());
     printf("Task Monitor mem usage %d kB\n", streamDecoTasks::monitor.memUsage());
     printf("Task Ckock mem usage %d kB\n", streamDecoTasks::clock.memUsage());
+    printf("Task Ckock synchro mem usage %d kB\n", streamDecoTasks::clockSynchro.memUsage());
+    printf("Task Cache update mem usage %d kB\n", streamDecoTasks::updateCache.memUsage());
   }
 
 } // namespace streamDeco

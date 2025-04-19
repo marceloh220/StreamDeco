@@ -44,9 +44,18 @@ namespace streamDeco
          **/
         typedef struct settings_s
         {
-
+            /**
+             * @var      initied
+             * @brief    Verify if flash space are iniciated
+             * @details  The system will initiate flash space with standart values
+             */
             bool initied;
 
+            /**
+             * @var      rotation
+             * @brief    StreamDeco screen rotation
+             * @details  Used to change rotation of StreamDeco screen
+             **/
             lvgl::screen::rotation_t rotation;
 
             /**
@@ -62,6 +71,20 @@ namespace streamDeco
              * @details  Used to change color of StreamDeco buttons
              **/
             lvgl::palette::palette_t color_buttons;
+
+            /**
+             * @var      color_background_index
+             * @brief    StreamDeco background color index
+             * @details  Used to select next color of StreamDeco background
+             **/
+            uint8_t color_background_index;
+
+            /**
+             * @var      color_buttons_index
+             * @brief    StreamDeco buttons color index
+             * @details  Used to select next color of StreamDeco buttons
+             **/
+            uint8_t color_buttons_index;
 
             /**
              * @var lcd_bright
@@ -82,14 +105,17 @@ namespace streamDeco
          * @note    This colors pool are defined in streamDeco_settings.cpp file
          *          on colors_background array, new colors can be add to this pool
          */
-        lvgl::color_t nextBackgroundColor();
+        lvgl::color_t nextBackgroundColor(uint8_t &autoColor);
 
         /**
          * @brief   Select one streamDecoButtons color on colors pool
          * @note    This colors pool are defined in streamDeco_settings.cpp file
          *          on palette_buttons array, and I dont have a clue to make dhis like an color =/
          */
-        lvgl::palette::palette_t nextButtonColor();
+        lvgl::palette::palette_t nextButtonColor(uint8_t &autoColor);
+
+        void initCache();
+        void saveCache();
 
     } // namespace settings
 
