@@ -494,8 +494,8 @@ namespace streamDeco
                 index++;
             }
 
-            //week[0].remove_style(week_style, lvgl::part::MAIN);
-            //week[0].add_style(weekActual_style, lvgl::part::MAIN);
+            week[0].remove_style(week_style, lvgl::part::MAIN);
+            week[0].add_style(weekActual_style, lvgl::part::MAIN);
 
             add_style(monitor_style, lvgl::part::MAIN);
         } // Clock::init_conf

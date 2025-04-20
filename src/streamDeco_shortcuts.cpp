@@ -285,12 +285,10 @@ namespace streamDeco
          *  @note     This shortcut may work by default on Windows and Linux
          **/
         case lock_computer_event:
-#if 0
             bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press('l');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
-#endif
             break;
 
         /** @brief    desktop_mode button is pressed

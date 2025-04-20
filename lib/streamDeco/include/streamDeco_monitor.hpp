@@ -108,8 +108,8 @@ namespace streamDeco
         private:
             void init_conf(lvgl::palette::palette_t color);
             const char *text_scr = nullptr;
-            int wday = 0;
             lvgl::icon_t icon_scr = nullptr;
+            int wday = 0;
             lvgl::Label monitor_label;
             lvgl::Image monitor_icon;
             lvgl::Label date;
