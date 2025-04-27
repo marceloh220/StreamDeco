@@ -154,8 +154,10 @@ namespace streamDeco
             warning_style.set_arc_color(lvgl::color::make(160, 0, 0));
             warning_style.set_line_color(lvgl::color::make(160, 0, 0));
 
+            auto font = lvgl::font::montserrat_22;
+
             monitor_label.create(*this);
-            monitor_label.set_style_text_font(lvgl::font::montserrat_22);
+            monitor_label.set_style_text_font(font);
             monitor_label.set_pos(0, 0);
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
@@ -182,7 +184,7 @@ namespace streamDeco
 
             arc_label.create(arc);
             arc_label.center();
-            arc_label.set_style_text_font(lvgl::font::montserrat_22);
+            arc_label.set_style_text_font(font);
             arc_label.add_style(metric_style, lvgl::part::MAIN);
 
             bar1.create(*this);
@@ -194,7 +196,7 @@ namespace streamDeco
 
             bar1_label.create(*this);
             bar1_label.align_to(bar1, lvgl::alignment::BOTTOM_LEFT, 0, 25);
-            bar1_label.set_style_text_font(lvgl::font::montserrat_22);
+            bar1_label.set_style_text_font(font);
             bar1_label.add_style(metric_style, lvgl::part::MAIN);
 
             bar2.create(*this);
@@ -206,7 +208,7 @@ namespace streamDeco
 
             bar2_label.create(*this);
             bar2_label.align_to(bar2, lvgl::alignment::BOTTOM_LEFT, 0, 25);
-            bar2_label.set_style_text_font(lvgl::font::montserrat_22);
+            bar2_label.set_style_text_font(font);
             bar2_label.add_style(metric_style, lvgl::part::MAIN);
 
             arc.set_value(0);
@@ -318,8 +320,10 @@ namespace streamDeco
             warning_style.set_arc_color(lvgl::color::make(160, 0, 0));
             warning_style.set_line_color(lvgl::color::make(160, 0, 0));
 
+            auto font = lvgl::font::montserrat_22;
+
             monitor_label.create(*this);
-            monitor_label.set_style_text_font(lvgl::font::montserrat_22);
+            monitor_label.set_style_text_font(font);
             monitor_label.set_pos(0, 0);
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
@@ -342,7 +346,7 @@ namespace streamDeco
 
             bar1_label.create(*this);
             bar1_label.align_to(bar1, lvgl::alignment::BOTTOM_LEFT, 0, 25);
-            bar1_label.set_style_text_font(lvgl::font::montserrat_22);
+            bar1_label.set_style_text_font(font);
             bar1_label.add_style(metric_style, lvgl::part::MAIN);
 
             bar2.create(*this);
@@ -354,7 +358,7 @@ namespace streamDeco
 
             bar2_label.create(*this);
             bar2_label.align_to(bar2, lvgl::alignment::BOTTOM_LEFT, 0, 25);
-            bar2_label.set_style_text_font(lvgl::font::montserrat_22);
+            bar2_label.set_style_text_font(font);
             bar2_label.add_style(metric_style, lvgl::part::MAIN);
 
             bar1.set_value(0, lvgl::animation::OFF);
@@ -452,8 +456,10 @@ namespace streamDeco
             metric_style.set_text_color(color);
             metric_style.set_arc_color(color);
 
+            auto font = lvgl::font::montserrat_22;
+
             monitor_label.create(*this);
-            monitor_label.set_style_text_font(lvgl::font::montserrat_22);
+            monitor_label.set_style_text_font(font);
             monitor_label.set_pos(0, 0);
             monitor_label.add_style(metric_style, lvgl::part::MAIN);
             monitor_label.set_text(text_scr);
@@ -475,20 +481,22 @@ namespace streamDeco
 
             date.create(*this);
             date.align(lvgl::alignment::CENTER, -22, 90 - 22 - 18 - 18 );
-            date.set_style_text_font(lvgl::font::montserrat_22);
+            date.set_style_text_font(font);
             date.add_style(metric_style, lvgl::part::MAIN);
             date.set_text("NO SYNC");
 
+            font = lvgl::font::montserrat_12;
             week_style.set_text_color(lvgl::palette::darken(color, 0));
-            week_style.set_text_font(lvgl::font::montserrat_12);
+            week_style.set_text_font(font);
 
+            font = lvgl::font::montserrat_16;
             weekActual_style.set_text_color(color);
-            weekActual_style.set_text_font(lvgl::font::montserrat_16);
+            weekActual_style.set_text_font(font);
 
             int index = 0;
             for(auto &_week : this->week) {
                 _week.create(*this);
-                _week.align(lvgl::alignment::RIGHT_MID, -5, -54 + 18*index);
+                _week.align(lvgl::alignment::RIGHT_MID, -5, -54 + font->line_height * index);
                 _week.set_text(WEEK_NAME[index]);
                 _week.add_style(week_style, lvgl::part::MAIN);
                 index++;

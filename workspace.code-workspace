@@ -57,7 +57,8 @@
 			"streambuf": "cpp",
 			"cinttypes": "cpp",
 			"typeinfo": "cpp",
-			"lv_conf_internal.h": "c"
+			"lv_conf_internal.h": "c",
+			"iostream": "cpp"
 		}
 	}
 }

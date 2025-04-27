@@ -33,7 +33,7 @@ namespace rtos
   {
     if (_handler != nullptr)
       return;
-    _handler = xTimerCreate(_name, CHRONO_TO_TICK(_periode), autoreload, &_handler, callback);
+    _handler = xTimerCreate(_name, chronoToTick(_periode), autoreload, &_handler, callback);
   }
 
   void TimerStatic::start()
@@ -89,7 +89,7 @@ namespace rtos
     if (_handler == nullptr)
       return;
     _periode = periode;
-    xTimerChangePeriod(_handler, CHRONO_TO_TICK(periode), portMAX_DELAY);
+    xTimerChangePeriod(_handler, chronoToTick(periode), portMAX_DELAY);
   }
 
   void TimerStatic::changePeriodeFromISR(milliseconds periode)
@@ -98,7 +98,7 @@ namespace rtos
       return;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     _periode = periode;
-    xTimerChangePeriodFromISR(_handler, CHRONO_TO_TICK(periode), &xHigherPriorityTaskWoken);
+    xTimerChangePeriodFromISR(_handler, chronoToTick(periode), &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   }
 

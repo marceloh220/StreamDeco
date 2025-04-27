@@ -91,7 +91,7 @@ namespace rtos
   {
     if (_handle == nullptr)
       return 0;
-    return xEventGroupWaitBits(_handle, 0xFFFFFF, false, false, CHRONO_TO_TICK(timeout));
+    return xEventGroupWaitBits(_handle, 0xFFFFFF, false, false, chronoToTick(timeout));
   }
 
   bool EventGroupStatic::waitAllFlags(const EventBits_t flags)
@@ -106,7 +106,7 @@ namespace rtos
   {
     if (_handle == nullptr)
       return false;
-    EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, true, CHRONO_TO_TICK(timeout));
+    EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, true, chronoToTick(timeout));
     return (bits & flags) == flags ? true : false;
   }
 
@@ -122,7 +122,7 @@ namespace rtos
   {
     if (_handle == nullptr)
       return false;
-    EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, false, CHRONO_TO_TICK(timeout));
+    EventBits_t bits = xEventGroupWaitBits(_handle, flags, true, false, chronoToTick(timeout));
     return (bits & flags) ? true : false;
   }
 

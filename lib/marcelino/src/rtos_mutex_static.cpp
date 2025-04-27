@@ -45,7 +45,7 @@ namespace rtos
   {
     if (_handle == nullptr)
       return false;
-    return xSemaphoreTake(_handle, CHRONO_TO_TICK(timeout));
+    return xSemaphoreTake(_handle, chronoToTick(timeout));
   }
 
   bool MutexStatic::give()

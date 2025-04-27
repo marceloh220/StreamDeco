@@ -136,7 +136,7 @@ namespace rtos
     {
       if (_handle == nullptr)
         return false;
-      return xQueueSend(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
+      return xQueueSend(_handle, (void *)&data, chronoToTick(timeout));
     }
 
     /**
@@ -174,7 +174,7 @@ namespace rtos
     {
       if (_handle == nullptr)
         return false;
-      return xQueueSendToBack(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
+      return xQueueSendToBack(_handle, (void *)&data, chronoToTick(timeout));
     }
 
     /**
@@ -211,7 +211,7 @@ namespace rtos
     {
       if (_handle == nullptr)
         return false;
-      return xQueueSendToFront(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
+      return xQueueSendToFront(_handle, (void *)&data, chronoToTick(timeout));
     }
 
     /**
@@ -292,7 +292,7 @@ namespace rtos
     {
       if (_handle == nullptr)
         return false;
-      return xQueueReceive(_handle, (void *)&data, CHRONO_TO_TICK(timeout));
+      return xQueueReceive(_handle, (void *)&data, chronoToTick(timeout));
     }
 
     /**

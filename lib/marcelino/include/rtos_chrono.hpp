@@ -47,12 +47,9 @@ using std::chrono::seconds;
 namespace rtos
 {
 
-#define CHRONO_TO_TICK(_time) (pdMS_TO_TICKS(_time.count()))
-
-  template <typename t>
-  [[nodiscard]] int64_t duration_cast(microseconds time)
+  constexpr uint64_t chronoToTick(milliseconds timeout)
   {
-    return std::chrono::duration_cast<t>(time).count();
+    return pdMS_TO_TICKS(timeout.count());
   }
 
   template <typename t>
@@ -79,7 +76,7 @@ namespace rtos
     return std::chrono::duration_cast<t>(time).count();
   }
 
-  inline void sleep(milliseconds time) { vTaskDelay(CHRONO_TO_TICK(time)); }
+  inline void sleep(milliseconds time) { vTaskDelay(chronoToTick(time)); }
   inline void sleep(uint32_t time) { vTaskDelay(pdMS_TO_TICKS(time)); }
 
   template <typename t>

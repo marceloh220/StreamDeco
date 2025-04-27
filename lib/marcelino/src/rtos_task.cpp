@@ -68,14 +68,14 @@ namespace rtos
   {
     if (_handle == nullptr)
       return 0;
-    return ulTaskNotifyTake(true, CHRONO_TO_TICK(time));
+    return ulTaskNotifyTake(true, chronoToTick(time));
   }
 
   void Task::sleepUntil(milliseconds time)
   {
     if (_handle == nullptr)
       return;
-    vTaskDelayUntil(&_previousTime, CHRONO_TO_TICK(time));
+    vTaskDelayUntil(&_previousTime, chronoToTick(time));
   }
 
   BaseType_t Task::wakeup()
