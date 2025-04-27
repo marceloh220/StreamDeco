@@ -154,7 +154,7 @@ class MetricDate:
 
     def decode(self, last = False) -> str:
         _data = f'{self.sec}, {self.min}, {self.hour},'
-        _data = _data + f'{self.week}, {self.day}, {self.month}, {self.year}'
+        _data = _data + f' {self.week}, {self.day}, {self.month}, {self.year}'
         if last == True:
             _data = _data + '/'
         else:
