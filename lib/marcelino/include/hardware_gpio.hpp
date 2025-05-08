@@ -143,6 +143,8 @@ namespace hardware
 
     GPIO(gpio_num_t pin, mode_t mode);
 
+    GPIO(gpio_num_t pin);
+
     ~GPIO();
 
     /**

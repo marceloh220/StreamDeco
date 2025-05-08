@@ -161,10 +161,6 @@ namespace streamDeco
       multimedia.add_style(style_portrait, lvgl::part::MAIN);
       configurations.add_style(style_portrait, lvgl::part::MAIN);
       monitor.add_style(style_portrait, lvgl::part::MAIN);
-      applications.update_layout();
-      multimedia.update_layout();
-      configurations.update_layout();
-      monitor.update_layout();
       lvgl::port::mutex_give();
     }
 
@@ -175,10 +171,6 @@ namespace streamDeco
       multimedia.add_style(style_landscape, lvgl::part::MAIN);
       configurations.add_style(style_landscape, lvgl::part::MAIN);
       monitor.add_style(style_landscape, lvgl::part::MAIN);
-      applications.update_layout();
-      multimedia.update_layout();
-      configurations.update_layout();
-      monitor.update_layout();
       lvgl::port::mutex_give();
     }
   } // namespace streamDecoCanvas
@@ -618,7 +610,6 @@ namespace streamDeco
       slider.set_pos(494 + 10, 92);
       slider.set_size(20, 240);
       icon.set_pos(484 + 10, 345);
-      icon.update_layout();
     }
 
     /**
@@ -629,7 +620,6 @@ namespace streamDeco
       slider.set_pos(92, 494 + 10);
       slider.set_size(240, 20);
       icon.set_pos(345, 484 + 10);
-      icon.update_layout();
     }
 
     /**
@@ -651,7 +641,6 @@ namespace streamDeco
       lvgl::port::mutex_take();
       slider_style.set_bg_color(color);
       icon_style.set_img_recolor(color);
-      icon.update_layout();
       lvgl::port::mutex_give();
     }
 

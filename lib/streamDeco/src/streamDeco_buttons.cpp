@@ -262,7 +262,6 @@ namespace streamDeco
         break;
     }
     align(lvgl::alignment::CENTER, x, y);
-    update_layout();
     lvgl::port::mutex_give();
   } // MainButton::position
 
@@ -286,7 +285,6 @@ namespace streamDeco
         break;
     }
     align(lvgl::alignment::CENTER, x, y);
-    update_layout();
     lvgl::port::mutex_give();
   } // CanvasButton::position
 
@@ -310,7 +308,6 @@ namespace streamDeco
         break;
     }
     align(lvgl::alignment::CENTER, x, y);
-    update_layout();
     lvgl::port::mutex_give();
   } // ConfigButton::position
 

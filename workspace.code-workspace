@@ -58,7 +58,13 @@
 			"cinttypes": "cpp",
 			"typeinfo": "cpp",
 			"lv_conf_internal.h": "c",
-			"iostream": "cpp"
+			"iostream": "cpp",
+			"esp_lcd_panel_rgb.h": "c",
+			"esp_lcd_touch.h": "c",
+			"esp32_smartdisplay.h": "c",
+			"*.testing": "cpp",
+			"*.old": "cpp",
+			"semphr.h": "c"
 		}
 	}
 }

@@ -114,11 +114,13 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::configurations_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::applications_canvas.unpin();
             streamDecoCanvas::multimedia.hidden();
             streamDecoCanvas::configurations.hidden();
             streamDecoCanvas::monitor.hidden();
             streamDecoCanvas::applications.change_hidden();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Applications button receive a long click
@@ -133,11 +135,13 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::configurations_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::applications_canvas.pin();
             streamDecoCanvas::multimedia.hidden();
             streamDecoCanvas::monitor.hidden();
             streamDecoCanvas::configurations.hidden();
             streamDecoCanvas::applications.unhidden();
+            lvgl::port::mutex_give();
             break;
 
         /* Second row buttons */
@@ -160,11 +164,13 @@ namespace streamDeco
          */
         case multimedia_play_event:
             bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+            lvgl::port::mutex_take();
             streamDecoButtons::multimedia_play.iconSwap();
             if (streamDecoButtons::multimedia_play.pinned())
                 streamDecoButtons::multimedia_play.unpin();
             else
                 streamDecoButtons::multimedia_play.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Multimedia_next button is pressed
@@ -189,11 +195,13 @@ namespace streamDeco
             bleKeyboard.press(KEY_F2);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
+            lvgl::port::mutex_take();
             streamDecoButtons::multimedia_mic.iconSwap();
             if (streamDecoButtons::multimedia_mic.pinned())
                 streamDecoButtons::multimedia_mic.unpin();
             else
                 streamDecoButtons::multimedia_mic.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Multimedia button receive a short click
@@ -210,11 +218,13 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::configurations_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::multimedia_canvas.unpin();
             streamDecoCanvas::applications.hidden();
             streamDecoCanvas::configurations.hidden();
             streamDecoCanvas::monitor.hidden();
             streamDecoCanvas::multimedia.change_hidden();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Multimedia button receive a long click
@@ -229,11 +239,13 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::configurations_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::multimedia_canvas.pin();
             streamDecoCanvas::applications.hidden();
             streamDecoCanvas::configurations.hidden();
             streamDecoCanvas::monitor.hidden();
             streamDecoCanvas::multimedia.unhidden();
+            lvgl::port::mutex_give();
             break;
 
         /* Third row buttons */
@@ -276,8 +288,10 @@ namespace streamDeco
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
+            lvgl::port::mutex_take();
             streamDecoButtons::pin.iconSwap();
             streamDecoButtons::pin.pinned() ? streamDecoButtons::pin.unpin() : streamDecoButtons::pin.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Lock_computer button is pressed
@@ -304,8 +318,10 @@ namespace streamDeco
             bleKeyboard.press(KEY_F7);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
+            lvgl::port::mutex_take();
             streamDecoButtons::desktop_mode.iconSwap();
             streamDecoButtons::desktop_mode.pinned() ? streamDecoButtons::desktop_mode.unpin() : streamDecoButtons::desktop_mode.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Configurations button receive a short click
@@ -322,6 +338,7 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::multimedia_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::configurations_canvas.unpin();
             streamDecoCanvas::applications.hidden();
             streamDecoCanvas::multimedia.hidden();
@@ -334,6 +351,7 @@ namespace streamDeco
                 streamDecoCanvas::configurations.hidden();
             }
             streamDecoCanvas::monitor.hidden();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Configurations button receive a long click
@@ -348,11 +366,13 @@ namespace streamDeco
                 break;
             if (streamDecoButtons::multimedia_canvas.pinned())
                 break;
+            lvgl::port::mutex_take();
             streamDecoButtons::configurations_canvas.pin();
             streamDecoCanvas::applications.hidden();
             streamDecoCanvas::multimedia.hidden();
             streamDecoCanvas::configurations.hidden();
             streamDecoCanvas::monitor.unhidden();
+            lvgl::port::mutex_give();
             break;
 
             /* --- APPLICATIONS CANVAS --- */
@@ -479,8 +499,10 @@ namespace streamDeco
             bleKeyboard.press('r');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
+            lvgl::port::mutex_take();
             streamDecoButtons::mult1.iconSwap();
             streamDecoButtons::mult1.pinned() ? streamDecoButtons::mult1.unpin() : streamDecoButtons::mult1.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Mult2 button is pressed
@@ -493,8 +515,10 @@ namespace streamDeco
             bleKeyboard.press('m');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
+            lvgl::port::mutex_take();
             streamDecoButtons::mult2.iconSwap();
             streamDecoButtons::mult2.pinned() ? streamDecoButtons::mult2.unpin() : streamDecoButtons::mult2.pin();
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Mult3 button is pressed
@@ -626,9 +650,11 @@ namespace streamDeco
          **/
         case configuration_canvas_colorbutton_event:
             settings::cache.color_buttons = settings::nextButtonColor(settings::cache.color_buttons_index);
+            lvgl::port::mutex_take();
             streamDecoButtons::color(settings::cache.color_buttons);
             streamDecoBrightSlider::color(settings::cache.color_buttons);
             streamDecoMonitor::color(settings::cache.color_buttons);
+            lvgl::port::mutex_give();
             lvgl::screen::refresh();
             break;
 
@@ -637,6 +663,7 @@ namespace streamDeco
          *  @note     Work in progress
          **/
         case configuration_canvas_rotate_screen_event:
+            lvgl::port::mutex_take();
             rotation = lvgl::screen::get_rotation();
             if (rotation == lvgl::screen::LANDSCAPE)
             {
@@ -654,6 +681,7 @@ namespace streamDeco
                 streamDecoBrightSlider::landscape();
                 streamDecoButtons::landscape();
             }
+            lvgl::port::mutex_give();
             break;
 
         /** @brief    Sysmon button is pressed

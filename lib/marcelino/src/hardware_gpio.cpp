@@ -31,6 +31,13 @@ namespace hardware
     this->mode(mode);
   }
 
+  GPIO::GPIO(gpio_num_t pin)
+      : _pin(pin)
+  {
+    esp_rom_gpio_pad_select_gpio(pin);
+    this->mode(GPIO::INPUT);
+  }
+
   GPIO::~GPIO()
   {
     gpio_isr_handler_remove(_pin);

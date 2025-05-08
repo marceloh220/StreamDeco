@@ -126,7 +126,8 @@ namespace streamDeco
     /* delete apresentation icons and text, sad =( */
     startScreen_icon.del();
     startScreen_label.del();
-    lvgl::screen::refresh();
+
+    lvgl::port::mutex_take();
 
     /* --- MAIN BUTTONS --- */
     streamDecoButtons::createMain(settings::cache);
@@ -169,6 +170,8 @@ namespace streamDeco
       streamDecoBrightSlider::portrait();
       streamDecoButtons::portrait();
     }
+
+    lvgl::port::mutex_give();
 
     /* register ISR to handle with timer_ui::backlight and uiResetTimer event */
     timer_ui::backlight.attach(timer_callback);
