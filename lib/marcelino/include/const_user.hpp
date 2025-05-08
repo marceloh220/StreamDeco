@@ -1,6 +1,8 @@
 #ifndef __CONST_USER_HPP__
 #define __CONST_USER_HPP__
 
+#include "esp_heap_caps.h"
+
 constexpr unsigned long long operator"" _kHz(unsigned long long x)
 {
     return x * 1000;
@@ -46,25 +48,54 @@ constexpr unsigned long long operator"" _GB(unsigned long long x)
     return x * 1024 * 1024 * 1024;
 }
 
+namespace memory
+{
+
+    template <typename T>
+    T *alloc(uint32_t caps)
+    {
+        return static_cast<T *>(heap_caps_malloc(sizeof(T), caps));
+    }
+
+    template <typename T>
+    T *alloc(size_t size, uint32_t caps)
+    {
+        return static_cast<T *>(heap_caps_calloc(size, sizeof(T), caps));
+    }
+
+    template <typename T>
+    void free(T *pointer)
+    {
+        heap_caps_free(static_cast<void *>(pointer));
+    }
+
+} //
+
 namespace math
 {
 
     constexpr float pi = 3.14159f;
     constexpr float e = 2.71828f;
 
-    template<typename T>
-    T map(T x, T in_min, T in_max, T out_min, T out_max) {
+    template <typename T>
+    T map(T x, T in_min, T in_max, T out_min, T out_max)
+    {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    template<typename T>
+    template <typename T>
     T max(T a, T b) { return a > b ? a : b; }
 
-    template<typename T>
+    template <typename T>
     T min(T a, T b) { return a < b ? a : b; }
 
-    template<typename T>
-    void swap(T &a, T &b) { T temp = a; a = b; b = temp; }
+    template <typename T>
+    void swap(T &a, T &b)
+    {
+        T temp = a;
+        a = b;
+        b = temp;
+    }
 
 } // namespace math
 

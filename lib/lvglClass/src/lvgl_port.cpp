@@ -150,9 +150,9 @@ namespace lvgl
     void init()
     {
 
-      static lv_disp_draw_buf_t draw_buffer;// = static_cast<lv_disp_draw_buf_t*>(heap_caps_calloc(1, sizeof(lv_disp_draw_buf_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL));
-      static lv_disp_drv_t display_driver;// = static_cast<lv_disp_drv_t*>(heap_caps_calloc(1, sizeof(lv_disp_drv_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL));
-      static lv_indev_drv_t indev_driver;// = static_cast<lv_indev_drv_t*>(heap_caps_calloc(1, sizeof(lv_indev_drv_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL));
+      static lv_disp_draw_buf_t draw_buffer;
+      static lv_disp_drv_t display_driver;
+      static lv_indev_drv_t indev_driver;
 
       esp_lcd_panel_handle_t panel_handle;
       esp_lcd_panel_io_handle_t touch_io_handle;
@@ -208,7 +208,11 @@ namespace lvgl
           .disp_gpio_num = ST7262_PANEL_CONFIG_DISP_GPIO_NUM,
           .on_frame_trans_done = nullptr,
           .user_ctx = &display_driver,
-          .flags = {.disp_active_low = ST7262_PANEL_CONFIG_FLAGS_DISP_ACTIVE_LOW, .relax_on_idle = ST7262_PANEL_CONFIG_FLAGS_RELAX_ON_IDLE, .fb_in_psram = ST7262_PANEL_CONFIG_FLAGS_FB_IN_PSRAM}};
+          .flags = {
+            .disp_active_low = ST7262_PANEL_CONFIG_FLAGS_DISP_ACTIVE_LOW,
+            .relax_on_idle = ST7262_PANEL_CONFIG_FLAGS_RELAX_ON_IDLE,
+            .fb_in_psram = ST7262_PANEL_CONFIG_FLAGS_FB_IN_PSRAM
+          }};
 
       ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&rgb_panel_config, &panel_handle));
       ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
@@ -285,8 +289,8 @@ namespace lvgl
        */
       lv_init();
 
-      lv_color_t *display_draw_buffer1 = static_cast<lv_color_t*>(heap_caps_malloc(sizeof(lv_color_t) * LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS));
-      lv_color_t *display_draw_buffer2 = static_cast<lv_color_t*>(heap_caps_malloc(sizeof(lv_color_t) * LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS));
+      lv_color_t *display_draw_buffer1 = memory::alloc<lv_color_t>(LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
+      lv_color_t *display_draw_buffer2 = memory::alloc<lv_color_t>(LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
 
       if (display_draw_buffer1 == nullptr || display_draw_buffer2 == nullptr)
       {
