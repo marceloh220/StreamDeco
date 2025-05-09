@@ -35,6 +35,8 @@ namespace lvgl
          */
         void init();
 
+        uint32_t backlight_max();
+
         /**
          * @brief    set backlight bright
          * @param    bright  Backlight bright in float percent unity value

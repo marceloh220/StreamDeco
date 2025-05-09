@@ -46,12 +46,17 @@ namespace lvgl
 
     static rtos::TaskStatic<4_kB> task("Port task LVGL", 5);
 
+    constexpr ledc_timer_bit_t backlight_resolution() { return LEDC_TIMER_8_BIT;}
+
+    uint32_t backlight_max() {
+      return ((uint32_t)1 << backlight_resolution()) - 1;
+    }
+
     /* Display flushing */
     static void display_lvgl_flush(lv_disp_drv_t *driver, const lv_area_t *area, lv_color_t *color_map)
     {
-      const esp_lcd_panel_handle_t panel_handle = static_cast<const esp_lcd_panel_handle_t>(driver->user_data);
-      // LV_COLOR_16_SWAP is handled by mapping of the data
-      ESP_ERROR_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, area->x1, area->y1, area->x2 + 1, area->y2 + 1, color_map));
+      const esp_lcd_panel_handle_t display_handle = static_cast<const esp_lcd_panel_handle_t>(driver->user_data);
+      ESP_ERROR_CHECK(esp_lcd_panel_draw_bitmap(display_handle, area->x1, area->y1, area->x2 + 1, area->y2 + 1, color_map));
       lv_disp_flush_ready(driver);
     }
 
@@ -59,24 +64,24 @@ namespace lvgl
     {
       if (driver->sw_rotate == false)
       {
-        const esp_lcd_panel_handle_t panel_handle = static_cast<const esp_lcd_panel_handle_t>(driver->user_data);
+        const esp_lcd_panel_handle_t display_handle = static_cast<const esp_lcd_panel_handle_t>(driver->user_data);
         switch (driver->rotated)
         {
         case LV_DISP_ROT_NONE:
-          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, DISPLAY_SWAP_XY));
-          ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y));
+          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(display_handle, DISPLAY_SWAP_XY));
+          ESP_ERROR_CHECK(esp_lcd_panel_mirror(display_handle, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y));
           break;
         case LV_DISP_ROT_90:
-          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, !DISPLAY_SWAP_XY));
-          ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, DISPLAY_MIRROR_X, !DISPLAY_MIRROR_Y));
+          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(display_handle, !DISPLAY_SWAP_XY));
+          ESP_ERROR_CHECK(esp_lcd_panel_mirror(display_handle, DISPLAY_MIRROR_X, !DISPLAY_MIRROR_Y));
           break;
         case LV_DISP_ROT_180:
-          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, DISPLAY_SWAP_XY));
-          ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, !DISPLAY_MIRROR_X, !DISPLAY_MIRROR_Y));
+          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(display_handle, DISPLAY_SWAP_XY));
+          ESP_ERROR_CHECK(esp_lcd_panel_mirror(display_handle, !DISPLAY_MIRROR_X, !DISPLAY_MIRROR_Y));
           break;
         case LV_DISP_ROT_270:
-          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, !DISPLAY_SWAP_XY));
-          ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, !DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y));
+          ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(display_handle, !DISPLAY_SWAP_XY));
+          ESP_ERROR_CHECK(esp_lcd_panel_mirror(display_handle, !DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y));
           break;
         }
       }
@@ -123,25 +128,28 @@ namespace lvgl
       }
     }
 
+    ledc_channel_config_t *backlight_channel;
+
     void backlight_set(float bright)
     {
       if (bright > 1.0f)
         bright = 1.0f;
       if (bright < 0.0f)
         bright = 0.0f;
-      uint32_t pwm_value = 4095 * bright;
-      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, pwm_value);
-      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+      uint32_t pwm_value = backlight_max() * bright;
+      ledc_set_duty(backlight_channel->speed_mode, backlight_channel->channel, pwm_value);
+      ledc_update_duty(backlight_channel->speed_mode, backlight_channel->channel);
     }
 
     void backlight_setRaw(int bright)
     {
-      if (bright > 4095)
-        bright = 4095;
+      uint32_t max = backlight_max();
+      if (bright > max)
+        bright = max;
       if (bright < 0)
         bright = 0;
-      ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, bright);
-      ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+      ledc_set_duty(backlight_channel->speed_mode, backlight_channel->channel, bright);
+      ledc_update_duty(backlight_channel->speed_mode, backlight_channel->channel);
     }
 
     void mutex_take() { mutex.take(); }
@@ -154,9 +162,9 @@ namespace lvgl
       static lv_disp_drv_t display_driver;
       static lv_indev_drv_t indev_driver;
 
-      esp_lcd_panel_handle_t panel_handle;
-      esp_lcd_panel_io_handle_t touch_io_handle;
-      esp_lcd_touch_handle_t touch_handle;
+      esp_lcd_panel_handle_t display_handle;
+      esp_lcd_panel_io_handle_t touchpad_bus_handle;
+      esp_lcd_touch_handle_t touchpad_handle;
 
       /**
        * Panel RGB driver configure
@@ -214,9 +222,9 @@ namespace lvgl
             .fb_in_psram = ST7262_PANEL_CONFIG_FLAGS_FB_IN_PSRAM
           }};
 
-      ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&rgb_panel_config, &panel_handle));
-      ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
-      ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
+      ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&rgb_panel_config, &display_handle));
+      ESP_ERROR_CHECK(esp_lcd_panel_reset(display_handle));
+      ESP_ERROR_CHECK(esp_lcd_panel_init(display_handle));
 
       /**
        * Panel touch driver configure
@@ -260,29 +268,30 @@ namespace lvgl
 
       ESP_ERROR_CHECK(i2c_param_config(GT911_I2C_HOST, &i2c_config));
       ESP_ERROR_CHECK(i2c_driver_install(GT911_I2C_HOST, i2c_config.mode, 0, 0, 0));
-      ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(GT911_I2C_HOST, &io_i2c_config, &touch_io_handle));
-      ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_gt911(touch_io_handle, &touch_config, &touch_handle));
+      ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(GT911_I2C_HOST, &io_i2c_config, &touchpad_bus_handle));
+      ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_gt911(touchpad_bus_handle, &touch_config, &touchpad_handle));
 
       /**
        * Backlight diver configure
        */
       const ledc_timer_config_t ledc_timer = {
           .speed_mode = LEDC_LOW_SPEED_MODE,
-          .duty_resolution = LEDC_TIMER_12_BIT,
+          .duty_resolution = backlight_resolution(),
           .timer_num = LEDC_TIMER_0,
-          .freq_hz = 1_kHz,
+          .freq_hz = 22_kHz,
           .clk_cfg = LEDC_AUTO_CLK};
       ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
-      const ledc_channel_config_t ledc_channel = {
+      static ledc_channel_config_t ledc_channel = {
           .gpio_num = GPIO_BCKL,
-          .speed_mode = LEDC_LOW_SPEED_MODE,
+          .speed_mode = ledc_timer.speed_mode,
           .channel = LEDC_CHANNEL_0,
           .intr_type = LEDC_INTR_DISABLE,
-          .timer_sel = LEDC_TIMER_0,
-          .duty = 2457,
+          .timer_sel = ledc_timer.timer_num,
+          .duty = backlight_max()/2,
           .hpoint = 0};
       ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+      backlight_channel = &ledc_channel;
 
       /**
        * LVGL framebuffer configure
@@ -302,7 +311,7 @@ namespace lvgl
        * LVGL display driver link
        */
       lv_disp_drv_init(&display_driver);
-      display_driver.user_data = panel_handle;
+      display_driver.user_data = display_handle;
       display_driver.hor_res = DISPLAY_WIDTH;
       display_driver.ver_res = DISPLAY_HEIGHT;
       display_driver.flush_cb = display_lvgl_flush;
@@ -317,7 +326,7 @@ namespace lvgl
       lv_indev_drv_init(&indev_driver);
       indev_driver.disp = lv_disp_get_default();
       indev_driver.type = LV_INDEV_TYPE_POINTER;
-      indev_driver.user_data = touch_handle;
+      indev_driver.user_data = touchpad_handle;
       indev_driver.read_cb = touchpad_read;
       lv_indev_drv_register(&indev_driver);
 

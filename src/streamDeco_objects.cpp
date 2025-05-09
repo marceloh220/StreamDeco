@@ -586,7 +586,7 @@ namespace streamDeco
     {
       /* configure streamDecoBrightSlider bright */
       slider.create(parent);
-      slider.set_range(410, 4095);
+      slider.set_range(lvgl::port::backlight_max() * .1, lvgl::port::backlight_max());
       slider.set_ext_click_area(30);
       slider.set_value(settings.lcd_bright);
       slider_style.set_bg_color(settings.color_buttons);

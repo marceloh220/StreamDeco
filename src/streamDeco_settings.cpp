@@ -86,7 +86,7 @@ namespace streamDeco
                 cache.color_buttons = lvgl::palette::PURPLE;
                 cache.color_background_index = 0;
                 cache.color_buttons_index = 3;
-                cache.lcd_bright = static_cast<int>(4095.0f * 0.5f);
+                cache.lcd_bright = static_cast<int>(lvgl::port::backlight_max() * 0.5f);
                 flash = cache;
             }
         }

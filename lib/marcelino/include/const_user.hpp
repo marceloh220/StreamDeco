@@ -3,6 +3,11 @@
 
 #include "esp_heap_caps.h"
 
+constexpr unsigned long long operator"" _Hz(unsigned long long x)
+{
+    return x * 1;
+}
+
 constexpr unsigned long long operator"" _kHz(unsigned long long x)
 {
     return x * 1000;
@@ -76,6 +81,8 @@ namespace math
 
     constexpr float pi = 3.14159f;
     constexpr float e = 2.71828f;
+
+    float pow(int base, int expoent);
 
     template <typename T>
     T map(T x, T in_min, T in_max, T out_min, T out_max)
