@@ -91,7 +91,8 @@ namespace streamDeco
       } // Serial.avaliable
 
       attempts++;
-      if (attempts > tryes)
+
+      if (attempts > tryes && tryes != -1)
         break;
       rtos::sleep(1s);
 

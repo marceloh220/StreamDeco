@@ -684,7 +684,7 @@ namespace streamDeco
      * @param  icon      Pointer to an lvgl::lv_img_dsc_t to be streamDecoBrightSlider icon
      * @param  settings  Settings configuration
      **/
-    void init(lvgl::Object &parent, lvgl::icon_t _icon, settings::settings_t &settings);
+    void init(lvgl::Object &parent, settings::settings_t &settings);
 
     /**
      * @brief  Put slider in landscape format

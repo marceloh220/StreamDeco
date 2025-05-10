@@ -152,7 +152,7 @@ namespace streamDeco
     streamDecoButtons::createConfiguration(streamDecoCanvas::configurations, settings::cache);
 
     /* configure slider bright */
-    streamDecoBrightSlider::init(streamDecoCanvas::configurations, &brightness_simp, settings::cache);
+    streamDecoBrightSlider::init(streamDecoCanvas::configurations, settings::cache);
 
     /* --- MONITOR --- */
 

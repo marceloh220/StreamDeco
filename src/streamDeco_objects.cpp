@@ -582,7 +582,7 @@ namespace streamDeco
      * @param  icon      Pointer to an lvgl::lv_img_dsc_t to be streamDecoBrightSlider icon
      * @param  settings  Settings configuration
      **/
-    void init(lvgl::Object &parent, lvgl::icon_t _icon, settings::settings_t &settings)
+    void init(lvgl::Object &parent, settings::settings_t &settings)
     {
       /* configure streamDecoBrightSlider bright */
       slider.create(parent);
@@ -597,7 +597,7 @@ namespace streamDeco
       icon_style.set_img_recolor(settings.color_buttons);
       icon_style.set_img_recolor_opa(lvgl::opacity::OPA_COVER);
       icon.add_style(icon_style, lvgl::part::MAIN);
-      icon.set_src(_icon);
+      icon.set_src(&brightness_simp);
       lvgl::port::backlight_setRaw(settings.lcd_bright);
       settings.rotation == lvgl::screen::LANDSCAPE ? landscape() : portrait();
     }
