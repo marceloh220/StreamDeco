@@ -24,7 +24,20 @@
 
 namespace streamDeco
 {
+
+  /**
+   * @brief   Init StreamDeco
+   * @details Attach StreamDeco's tasks and made buttons configurations, layers and timers
+   * @details Called in function main_app, function handler task or Arduino setup to init StreamDeco
+   *
+   */
   void init();
+
+  /**
+   * @brief   Print tasks memory usage
+   * @details Called in function main_app loop, function handler task loop or Arduino loop
+   * @details to print on serial StreamDecoMonitor tasks memory usage
+   */
   void print_task_memory_usage();
 }
 #endif

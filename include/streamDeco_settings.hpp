@@ -114,7 +114,16 @@ namespace streamDeco
          */
         lvgl::palette::palette_t nextButtonColor(uint8_t &autoColor);
 
+        /**
+         * @brief    Read flash memory settings file and save on cache
+         * @details  If new flash file state load cache and flash with standard settings configuration
+         */
         void initCache();
+
+        /**
+         * @brief    Save cache on flash settings file
+         * @details  Verify if cache and if c ache change save settings file on flash memory
+         */
         void saveCache();
 
     } // namespace settings

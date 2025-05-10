@@ -27,6 +27,8 @@
 #include "streamDeco_handlers.hpp"
 #include "streamDeco_timerCallback.hpp"
 
+#include "esp_log.h"
+
 /**
  * @brief 0 Disable StreamDeco StreamDecoMonitor first syncro
  *        1 Enable  StreamDeco StreamDecoMonitor first syncro
@@ -44,10 +46,12 @@
 namespace streamDeco
 {
 
+  const char* log_tag = "Stream Deco";
+
   /**
    * @brief    Synchronizes ESP32-RTC with Computer clock
    * @details  Wait for StreamDeco StreamDecoMonitor application response to synchronizes ESP32 RTC clock
-   * @param    tryes - number of attemps to try sinchron clock with computer
+   * @param    tryes - number of attemps to try sinchron clock with computer, if -1 try forever
    */
   void synchro_clock(int tryes);
 
@@ -198,12 +202,12 @@ namespace streamDeco
    */
   void print_task_memory_usage()
   {
-    printf("Task Buttons mem usage %d kB\n", streamDecoTasks::buttons.memUsage());
-    printf("Task UI Reset mem usage %d kB\n", streamDecoTasks::uiReset.memUsage());
-    printf("Task Monitor mem usage %d kB\n", streamDecoTasks::monitor.memUsage());
-    printf("Task Ckock mem usage %d kB\n", streamDecoTasks::clock.memUsage());
-    printf("Task Ckock synchro mem usage %d kB\n", streamDecoTasks::clockSynchro.memUsage());
-    printf("Task Cache update mem usage %d kB\n", streamDecoTasks::updateCache.memUsage());
+    ESP_LOGI(log_tag, "Task Buttons mem usage %d kB\n", streamDecoTasks::buttons.memUsage());
+    ESP_LOGI(log_tag, "Task UI Reset mem usage %d kB\n", streamDecoTasks::uiReset.memUsage());
+    ESP_LOGI(log_tag, "Task Monitor mem usage %d kB\n", streamDecoTasks::monitor.memUsage());
+    ESP_LOGI(log_tag, "Task Ckock mem usage %d kB\n", streamDecoTasks::clock.memUsage());
+    ESP_LOGI(log_tag, "Task Ckock synchro mem usage %d kB\n", streamDecoTasks::clockSynchro.memUsage());
+    ESP_LOGI(log_tag, "Task Cache update mem usage %d kB\n", streamDecoTasks::updateCache.memUsage());
   }
 
 } // namespace streamDeco

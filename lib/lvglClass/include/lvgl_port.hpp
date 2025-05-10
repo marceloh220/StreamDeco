@@ -35,6 +35,10 @@ namespace lvgl
          */
         void init();
 
+        /**
+         * @brief    Get maximun PWM value based on PWM resolution
+         * @return   Maximun PWM value
+         */
         uint32_t backlight_max();
 
         /**
@@ -58,7 +62,7 @@ namespace lvgl
         /**
          * @brief    take the LVGL mutex
          * @details  this mutex prevents display alterations while
-         *           internal timer are processed
+         *           internal timer are processed, changes cant no be done while LVGL handle
          * @note     Affter take, the mutex must be released as soon as possible
          */
         void mutex_take();
@@ -71,21 +75,30 @@ namespace lvgl
         void mutex_give();
 
         /**
-         * @brief   Send LVGL used RAM memory through Serial interface
-         */
-        void print_task_memory_usage();
-
-        /**
          * @brief   Set screen rotations
          * @param   rotation An lv_disp_rot_t type
-         *    LV_DISP_ROT_0   for 0 degree rotation, generaly landscape screen
-         *    LV_DISP_ROT_90  for 90 degrees rotation, generaly portrait screen
-         *    LV_DISP_ROT_180 for 180 degrees rotation, generaly mirror landscape screen
-         *    LV_DISP_ROT_270 for 270 degrees rotation, generally mirror portrait screen
+         *    LV_DISP_ROT_0   for 0 degree rotation - landscape screen
+         *    LV_DISP_ROT_90  for 90 degrees rotation - portrait screen
+         *    LV_DISP_ROT_180 for 180 degrees rotation - mirror landscape screen
+         *    LV_DISP_ROT_270 for 270 degrees rotation - mirror portrait screen
          *
          */
         void set_screen_rotation(lv_disp_rot_t rotation);
+
+        /**
+         * @brief    Check display orientation
+         * @return   Rotation  display orientation
+         *            LV_DISP_ROT_NONE - Landscape orientation
+         *            LV_DISP_ROT_90   - Portrait orientation
+         *            LV_DISP_ROT_180  - Mirror Landscape orientation
+         *            LV_DISP_ROT_270  - Mirror Portrait orientation
+         */
         lv_disp_rot_t get_screen_rotation();
+
+        /**
+         * @brief   Send LVGL used RAM memory through Serial interface
+         */
+        void print_task_memory_usage();
 
     } // namespace port
 

@@ -34,12 +34,22 @@ namespace lvgl
      * Send an event to the object
      * @param object      pointer to an object
      * @param code        the type of the event from `event_t`
-     * @param param       arbitrary data depending on the widget type and the event.
-     * (Usually `nullptr`)
-     * @return LV_RES_OK: `obj` was not deleted in the event; LV_RES_INV: `obj` was
-     * deleted in the event_code
+     * @param param       arbitrary data depending on the widget type and the event (Usually `nullptr`)
+     * @return            LV_RES_OK: `obj` was not deleted in the event;
+     *                    LV_RES_INV: `obj` was deleted in the event_code
      */
     lv_res_t send(object_t *object, code_t code, void *param);
+
+
+    /**
+     * Send an event to the object
+     * @param object      pointer to an object
+     * @param code        the type of the event from `event_t`
+     * @param param       arbitrary data depending on the widget type and the event (Usually `nullptr`)
+     * @return            LV_RES_OK: `obj` was not deleted in the event; 
+     *                    LV_RES_INV: `obj` was deleted in the event_code
+     */
+    lv_res_t send(Object &object, code_t code, void *param);
 
     /**
      * Get the current target of the event. It's the object which event handler
@@ -52,8 +62,7 @@ namespace lvgl
     /**
      * Get the event code of an event
      * @param e     pointer to the event descriptor
-     * @return      the event code. (E.g. `LV_EVENT_CLICKED`, `LV_EVENT_FOCUSED`,
-     * etc)
+     * @return      the event code. (E.g. `LV_EVENT_CLICKED`, `LV_EVENT_FOCUSED`, etc)
      */
     code_t get_code(event_t e);
 
