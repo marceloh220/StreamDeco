@@ -210,8 +210,8 @@ namespace lvgl
               .vsync_back_porch = ST7262_PANEL_CONFIG_TIMINGS_VSYNC_BACK_PORCH,
               .vsync_front_porch = ST7262_PANEL_CONFIG_TIMINGS_VSYNC_FRONT_PORCH,
               .flags = {
-                  .hsync_idle_low = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_HSYNC_IDLE_LOW == 0 ? 1 : 0,
-                  .vsync_idle_low = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_VSYNC_IDLE_LOW == 0 ? 1 : 0,
+                  .hsync_idle_low = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_HSYNC_IDLE_LOW == false ? 1 : 0,
+                  .vsync_idle_low = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_VSYNC_IDLE_LOW == false ? 1 : 0,
                   .de_idle_high = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_DE_IDLE_HIGH,
                   .pclk_active_neg = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_PCLK_ACTIVE_NEG,
                   .pclk_idle_high = ST7262_PANEL_CONFIG_TIMINGS_FLAGS_PCLK_IDLE_HIGH},
@@ -327,6 +327,7 @@ namespace lvgl
 
       if (display_draw_buffer1 == nullptr || display_draw_buffer2 == nullptr)
       {
+        ESP_LOGE(log_tag, "Error in buffer draw alocation!");
         return;
       }
       lv_disp_draw_buf_init(&draw_buffer, display_draw_buffer1, display_draw_buffer2, LVGL_BUFFER_PIXELS);

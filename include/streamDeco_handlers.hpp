@@ -39,7 +39,7 @@ namespace streamDeco
    * @details Each 10 seconds a timer will pass a event to this streamDecoTasks
    *          to hidden additional screens and return to Main screen
    */
-  void handleUiReset(taskArg_t arg);
+  void handleUIReset(taskArg_t arg);
 
   /**
    * @brief   Handle the monitor streamDecoTasks

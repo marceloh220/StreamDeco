@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file  streamDeco_timerCallback.cpp
+ * @file  streamDeco_CallbackTimer.cpp
  * @brief Callback for timers of StreamDeco
  */
 
@@ -31,11 +31,14 @@ namespace streamDeco
 
   /**
    * @brief    Callback function to handle timers
-   * @details  Set backlight bright to 10% affter timer backlight overflow
-   * @details  Hidden streamDecoCanvas affter timer uiReset overflow
-   * @param    timerHandle The rtos timer send the timer handler to callback function
-   * @note     The timerHandle can be used to verify what timer generate the interrupt
-   * @note     by the timer ID
+   * @details  Set backlight bright to 10% affter timer backlight overflow and
+   *           hidden streamDeco canvas affter timer uiReset overflow
+   * @param    timerHandle The rtos timer send the timer handler to callback function 
+   *           as argument, this parameter is used to verify what timer generate the
+   *           interrupt by the timer ID
+   * @note     It is therefore essential that timer callback functions never attempt to block, 
+   *           to avoid trobles this implementation sends a notification to a task that handles 
+   *           the backlight reset and canvas hide
    **/
   void timer_callback(TimerHandle_t timerHandle)
   {

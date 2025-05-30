@@ -36,13 +36,13 @@ void setup()
 
 void loop()
 {
-#if 1
+#if 0
   static int test_count = 0;
 
   streamDeco::mutex_serial.take();
   lvgl::port::print_task_memory_usage();
   streamDeco::print_task_memory_usage();
-  std::cout << "Test Cycle: " << test_count++ << std::endl;
+  ESP_LOGI("Test Cycle", "%d", test_count++);
   streamDeco::mutex_serial.give();
 #endif
 

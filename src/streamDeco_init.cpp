@@ -187,7 +187,7 @@ namespace streamDeco
 
     /* attach tasks handlers and start them */
     streamDecoTasks::buttons.attach(handleButtons);
-    streamDecoTasks::uiReset.attach(handleUiReset);
+    streamDecoTasks::uiReset.attach(handleUIReset);
     streamDecoTasks::monitor.attach(handleMonitor);
     streamDecoTasks::clock.attach(handleClock);
     streamDecoTasks::clockSynchro.attach(handleClockSynchro);
