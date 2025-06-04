@@ -57,12 +57,12 @@ namespace streamDeco
    **/
   namespace streamDecoTasks
   {
-    rtos::TaskStatic<streamDecoTask_buttons_stackSize> buttons("Task Buttons", 5);
+    rtos::TaskStatic<streamDecoTask_buttons_stackSize> buttons("Task Buttons", 4);
     rtos::TaskStatic<streamDecoTask_uiReset_stackSize> uiReset("Task reset canvas", 3);
     rtos::TaskStatic<streamDecoTask_monitor_stackSize> monitor("Task Monitor", 5);
     rtos::TaskStatic<streamDecoTask_clock_stackSize> clock("Task Clock", 5);
     rtos::TaskStatic<streamDecoTask_clockSynchro_stackSize> clockSynchro("Task synchro clock", 3);
-    rtos::TaskStatic<streamDecoTask_updateCache_stackSize> updateCache("Task update cache", 5);
+    rtos::TaskStatic<streamDecoTask_updateCache_stackSize> updateCache("Task update cache", 3);
   } // namespace streamDecoTask
 
   /**

@@ -63,9 +63,8 @@ namespace lvgl
      */
     constexpr ledc_timer_bit_t backlight_resolution = LEDC_TIMER_8_BIT;
 
-    void lvgl_timer_callback(void *arg) {
-      const uint32_t tick_period_ms = (const uint32_t)arg;
-      lv_tick_inc(tick_period_ms);
+    extern "C" unsigned long lvgl_tick_millis() {
+      return (unsigned long) (esp_timer_get_time() / 1000UL);
     }
 
 #if PORT_TESTING
@@ -73,11 +72,11 @@ namespace lvgl
      * @brief    Display flush done
      * @details  Indicate to LVGL that previous framebuffer is free to be used again
      * */
-    bool display_transfer_done(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_data)
+    bool display_transfer_done(esp_lcd_panel_handle_t panel_io, esp_lcd_rgb_panel_event_data_t *edata, void *user_data)
     {
-      lv_disp_drv_t *driver = static_cast<lv_disp_drv_t *>(user_data);
-      if(driver == nullptr) return 0;
-      lv_disp_flush_ready(driver);
+      lv_disp_drv_t *lvgl_display_driver = static_cast<lv_disp_drv_t *>(user_data);
+      if(lvgl_display_driver == nullptr) return 0;
+      lv_disp_flush_ready(lvgl_display_driver);
       return false;
     }
 #endif
@@ -86,13 +85,13 @@ namespace lvgl
      * @brief    Display flush
      * @details  Send a ready framebuffer to display
      * */
-    static void display_flush(lv_disp_drv_t *lvgl_display_handle, const lv_area_t *area, lv_color_t *framebuffer)
+    static void display_flush(lv_disp_drv_t *lvgl_display_driver, const lv_area_t *area, lv_color_t *framebuffer)
     {
-      const esp_lcd_panel_handle_t esp_display_handle = static_cast<const esp_lcd_panel_handle_t>(lvgl_display_handle->user_data);
+      const esp_lcd_panel_handle_t esp_display_handle = static_cast<const esp_lcd_panel_handle_t>(lvgl_display_driver->user_data);
       assert(esp_display_handle);
       ESP_ERROR_CHECK(esp_lcd_panel_draw_bitmap(esp_display_handle, area->x1, area->y1, area->x2 + 1, area->y2 + 1, framebuffer));
 #if PORT_TESTING == 0
-      lv_disp_flush_ready(lvgl_display_handle);
+      lv_disp_flush_ready(lvgl_display_driver);
 #endif
     }
 
@@ -207,7 +206,7 @@ namespace lvgl
     {
 
       static lv_disp_draw_buf_t lvgl_draw_buffer;
-      static lv_disp_drv_t lvgl_display_handle;
+      static lv_disp_drv_t lvgl_display_driver;
       static lv_indev_drv_t lvgl_indev_driver;
 
       esp_lcd_panel_handle_t esp_display_handle;
@@ -264,8 +263,8 @@ namespace lvgl
         },
         .disp_gpio_num = ST7262_PANEL_CONFIG_DISP_GPIO_NUM,
 #if PORT_TESTING
-        .on_frame_trans_done = nullptr,
-        .user_ctx = nullptr,
+        .on_frame_trans_done = display_transfer_done,
+        .user_ctx = &lvgl_display_driver,
 #else 
         .on_frame_trans_done = nullptr,
         .user_ctx = nullptr,
@@ -377,15 +376,15 @@ namespace lvgl
       /**
        * LVGL display driver link
        */
-      lv_disp_drv_init(&lvgl_display_handle);
-      lvgl_display_handle.user_data = esp_display_handle;
-      lvgl_display_handle.hor_res = DISPLAY_WIDTH;
-      lvgl_display_handle.ver_res = DISPLAY_HEIGHT;
-      lvgl_display_handle.flush_cb = display_flush;
-      lvgl_display_handle.draw_buf = &lvgl_draw_buffer;
-      lvgl_display_handle.sw_rotate = true;
-      lvgl_display_handle.drv_update_cb = nullptr;
-      lv_disp_drv_register(&lvgl_display_handle);
+      lv_disp_drv_init(&lvgl_display_driver);
+      lvgl_display_driver.user_data = esp_display_handle;
+      lvgl_display_driver.hor_res = DISPLAY_WIDTH;
+      lvgl_display_driver.ver_res = DISPLAY_HEIGHT;
+      lvgl_display_driver.flush_cb = display_flush;
+      lvgl_display_driver.draw_buf = &lvgl_draw_buffer;
+      lvgl_display_driver.sw_rotate = true;
+      lvgl_display_driver.drv_update_cb = nullptr;
+      lv_disp_drv_register(&lvgl_display_driver);
 
       /**
        * LVGL touch driver link
@@ -396,20 +395,6 @@ namespace lvgl
       lvgl_indev_driver.user_data = esp_touchscreen_handle;
       lvgl_indev_driver.read_cb = touchpad_read;
       lv_indev_drv_register(&lvgl_indev_driver);
-
-      /**
-       * Configure LVGL timer
-       */
-      const esp_timer_create_args_t lvgl_timer_args = {
-        .callback = lvgl_timer_callback,
-        .arg = (void*)2,  // LVGL receive time in milliseconds
-        .dispatch_method = ESP_TIMER_TASK,
-        .name = "LVGL TIMER",
-        .skip_unhandled_events = false
-      };
-      esp_timer_handle_t lvgl_timer_handler = nullptr;
-      ESP_ERROR_CHECK(esp_timer_create(&lvgl_timer_args, &lvgl_timer_handler));
-      ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_timer_handler, 2000));
 
       /**
        * LVGL update task init
