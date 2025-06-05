@@ -48,7 +48,7 @@ namespace lvgl
 
     const char *log_tag = "LVGL PORT";
     static rtos::MutexRecursiveStatic mutex;
-    static rtos::TaskStatic<4_kB> task("Port task LVGL", 2);
+    static rtos::TaskStatic<4_kB> task("Port task LVGL", 3);
 
     /**
      * @brief    Pointer to backlight PWM channel configurations
@@ -129,13 +129,18 @@ namespace lvgl
      */
     static void task_handle(void *arg)
     {
+      
+      task.sleepUntilInit();
+
       while (1)
       {
         mutex.take();
-        uint32_t time_till_next_run = lv_timer_handler();
+        const uint32_t time_till_next_run = lv_timer_handler();
         mutex.give();
+        //task.sleepUntil(time_till_next_run);
         rtos::sleep(time_till_next_run);
       }
+
     }
 
     /**

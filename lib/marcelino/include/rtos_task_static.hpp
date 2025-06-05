@@ -216,6 +216,10 @@ namespace rtos
       return ulTaskNotifyTake(true, chronoToTick(time));
     }
 
+    void sleepUntilInit() {
+      _previousTime = xTaskGetTickCount();
+    }
+
     /**
      * @brief   Put task in Blocked until a specified time.
      * @details This method can be used by periodic
@@ -230,6 +234,22 @@ namespace rtos
       if (_handle == nullptr)
         return;
       vTaskDelayUntil(&_previousTime, chronoToTick(time));
+    }
+
+    /**
+     * @brief   Put task in Blocked until a specified time.
+     * @details This method can be used by periodic
+     *          tasks to ensure a constant execution frequency.
+     * @param time The cycle time period. The task will be unblocked at
+     *             time last sleep time + time. Calling sleepUntil with the
+     *             same time parameter value will cause the task to execute with
+     *             a fixed interface period.
+     */
+    void sleepUntil(uint32_t time)
+    {
+      if (_handle == nullptr)
+        return;
+      vTaskDelayUntil(&_previousTime, pdMS_TO_TICKS(time));
     }
 
     /**
