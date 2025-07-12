@@ -40,10 +40,11 @@ namespace streamDeco
     int attempts = 0;
     struct tm tm_date = {0};
 
-    mutex_serial.take();
-
     while (1)
     {
+
+      mutex_serial.take();
+
       if (Serial.available())
       {
         String cpu_load = Serial.readStringUntil(',');
@@ -86,19 +87,22 @@ namespace streamDeco
         time_epoch.tv_usec = 0;
         settimeofday(&time_epoch, nullptr);
 
-        break;
+        mutex_serial.give();
+
+        return;;
 
       } // Serial.avaliable
+      
+      mutex_serial.give();
 
       attempts++;
 
       if (attempts > tryes && tryes != -1)
-        break;
+        return;
       rtos::sleep(1s);
 
     } // loop check time
 
-    mutex_serial.give();
   }
 
   /* Handle the clock streamDecoTasks,

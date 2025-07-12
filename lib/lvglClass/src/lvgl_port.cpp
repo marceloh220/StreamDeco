@@ -135,10 +135,13 @@ namespace lvgl
       while (1)
       {
         mutex.take();
-        const uint32_t time_till_next_run = lv_timer_handler();
+        lv_timer_handler();
         mutex.give();
-        //task.sleepUntil(time_till_next_run);
-        rtos::sleep(time_till_next_run);
+        #if 1
+          task.sleepUntil(20ms);
+        #else
+          rtos::sleep(20ms);
+        #endif
       }
 
     }
