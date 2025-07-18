@@ -62,8 +62,7 @@ namespace streamDeco
              * @note     Need configuration on application or system
              **/
         case terminal_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(KEY_LEFT_GUI);
             bleKeyboard.press(KEY_RETURN);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -86,7 +85,10 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case web_event:
-            bleKeyboard.write(KEY_MEDIA_WWW_HOME);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('w');
+            rtos::sleep(10ms);
+            bleKeyboard.releaseAll();
             break;
 
         /** @brief    Search button is pressed
@@ -95,7 +97,7 @@ namespace streamDeco
          **/
         case search_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press('s');
+            bleKeyboard.press(' ');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -314,8 +316,8 @@ namespace streamDeco
          *            but have no feedback from computer to indentify the desktop state
          */
         case desktop_mode_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_F7);
+            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press('f');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             lvgl::port::mutex_take();
