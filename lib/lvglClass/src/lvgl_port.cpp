@@ -349,7 +349,7 @@ namespace lvgl
         .speed_mode = LEDC_LOW_SPEED_MODE,
         .duty_resolution = backlight_resolution,
         .timer_num = LEDC_TIMER_0,
-        .freq_hz = 22_kHz,
+        .freq_hz = 1_kHz,
         .clk_cfg = LEDC_AUTO_CLK
       };
       ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
