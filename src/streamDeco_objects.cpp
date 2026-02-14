@@ -221,59 +221,59 @@ namespace streamDeco
     streamDeco::MainButton left_workspace("Left Workspace", &previous_workspace_simp, nullptr);
     streamDeco::MainButton right_workspace("Right Workspace", &next_workspace_simp, nullptr);
     streamDeco::MainButton pin("Pin", &pin_simp, &unpin_simp);
-    streamDeco::MainButton desktop_mode("Desktop Mode", &mult_window_simp, &single_window_simp);
+    streamDeco::MainButton ruler("Ruler", &ruler_simp, nullptr);
     streamDeco::MainButton configurations_canvas("Config", &config_simp, nullptr);
 
     /* ---   Applications canvas buttons   --- */
 
     /* First line */
-    CanvasButton app1("app1", &gogcom_simp, nullptr);
-    CanvasButton app2("app2", &discord_simp, nullptr);
-    CanvasButton app3("app3", &fps_simp, nullptr);
+    streamDeco::CanvasButton app1("app1", &gogcom_simp, nullptr);
+    streamDeco::CanvasButton app2("app2", &discord_simp, nullptr);
+    streamDeco::CanvasButton app3("app3", &fps_simp, nullptr);
 
     /* Second line */
-    CanvasButton app4("app4", &code_simp, nullptr);
-    CanvasButton app5("app5", &texcompiler_simp, nullptr);
-    CanvasButton app6("app6", &calculator_simp, nullptr);
+    streamDeco::CanvasButton app4("app4", &code_simp, nullptr);
+    streamDeco::CanvasButton app5("app5", &texcompiler_simp, nullptr);
+    streamDeco::CanvasButton app6("app6", &calculator_simp, nullptr);
 
     /* Third line */
-    CanvasButton app7("app7", &build_simp, nullptr);
-    CanvasButton app8("app8", &download_simp, nullptr);
-    CanvasButton app9("app9", &serialport_simp, nullptr);
+    streamDeco::CanvasButton app7("app7", &build_simp, nullptr);
+    streamDeco::CanvasButton app8("app8", &download_simp, nullptr);
+    streamDeco::CanvasButton app9("app9", &serialport_simp, nullptr);
 
     /* ---   Multimedia canvas buttons   --- */
 
     /* First line */
-    CanvasButton mult1("mult 1", &video_stop_capt_simp, &video_start_capt_simp);
-    CanvasButton mult2("mult 2", &mic_off_simp, &mic_on_simp);
-    CanvasButton mult3("mult 3", &screen_capt_simp, nullptr);
+    streamDeco::CanvasButton mult1("mult 1", &video_stop_capt_simp, &video_start_capt_simp);
+    streamDeco::CanvasButton mult2("mult 2", &mic_off_simp, &mic_on_simp);
+    streamDeco::CanvasButton mult3("mult 3", &screen_capt_simp, nullptr);
 
     /* Second line */
-    CanvasButton mult4("mult 4", &add_clip_simp, nullptr);
-    CanvasButton mult5("mult 5", &ripple_simp, nullptr);
-    CanvasButton mult6("mult 6", &rolling_simp, nullptr);
+    streamDeco::CanvasButton mult4("mult 4", &add_clip_simp, nullptr);
+    streamDeco::CanvasButton mult5("mult 5", &ripple_simp, nullptr);
+    streamDeco::CanvasButton mult6("mult 6", &rolling_simp, nullptr);
 
     /* Third line */
-    CanvasButton mult7("mult 7", &seek_backward_simp, nullptr);
-    CanvasButton mult8("mult 8", &play_simp, nullptr);
-    CanvasButton mult9("mult 9", &seek_forward_simp, nullptr);
+    streamDeco::CanvasButton mult7("mult 7", &seek_backward_simp, nullptr);
+    streamDeco::CanvasButton mult8("mult 8", &play_simp, nullptr);
+    streamDeco::CanvasButton mult9("mult 9", &seek_forward_simp, nullptr);
 
     /* ---   Configurations canvas buttons   --- */
 
     /* First line */
-    ConfigButton volmut("Vol Mute", &volume_mute_simp, nullptr);
-    ConfigButton voldown("Vol Down", &volume_low_simp, nullptr);
-    ConfigButton volup("Vol Up", &volume_high_simp, nullptr);
+    streamDeco::ConfigButton volmut("Vol Mute", &volume_mute_simp, nullptr);
+    streamDeco::ConfigButton voldown("Vol Down", &volume_low_simp, nullptr);
+    streamDeco::ConfigButton volup("Vol Up", &volume_high_simp, nullptr);
 
     /* Second line */
-    ConfigButton color_background("Color BG", &bgtheme_simp, nullptr);
-    ConfigButton color_button("Color Buttons", &btntheme_simp, nullptr);
-    ConfigButton rotation("Rotation", &rotation_simp, nullptr);
+    streamDeco::ConfigButton color_background("Color BG", &bgtheme_simp, nullptr);
+    streamDeco::ConfigButton color_button("Color Buttons", &btntheme_simp, nullptr);
+    streamDeco::ConfigButton rotation("Rotation", &rotation_simp, nullptr);
 
     /* Third line */
-    ConfigButton sysmonitor("System Monitor", &sysmon_simp, nullptr);
-    ConfigButton sysconfig("System Config", &config_simp, nullptr);
-    ConfigButton reboot("Reboot", &reboot_simp, nullptr);
+    streamDeco::ConfigButton sysmonitor("System Monitor", &sysmon_simp, nullptr);
+    streamDeco::ConfigButton sysconfig("System Config", &config_simp, nullptr);
+    streamDeco::ConfigButton reboot("Reboot", &reboot_simp, nullptr);
 
     /**
      * @brief  Create the main canva buttons
@@ -298,7 +298,7 @@ namespace streamDeco
       left_workspace.create(10, settings.color_buttons);
       right_workspace.create(11, settings.color_buttons);
       pin.create(12, settings.color_buttons);
-      desktop_mode.create(13, settings.color_buttons);
+      ruler.create(13, settings.color_buttons);
       configurations_canvas.create(14, settings.color_buttons);
 
       /* register buttons event */
@@ -319,7 +319,7 @@ namespace streamDeco
       left_workspace.callback(buttons_callback, lvgl::event::PRESSED, left_workspace_event);
       right_workspace.callback(buttons_callback, lvgl::event::PRESSED, right_workspace_event);
       pin.callback(buttons_callback, lvgl::event::PRESSED, pin_window_event);
-      desktop_mode.callback(buttons_callback, lvgl::event::PRESSED, desktop_mode_event);
+      ruler.callback(buttons_callback, lvgl::event::PRESSED, ruler_event);
       configurations_canvas.callback(buttons_callback, lvgl::event::SHORT_CLICKED, configurations_canvas_event);
       configurations_canvas.callback(buttons_callback, lvgl::event::LONG_PRESSED, configurations_canvas_fix_event);
     }
@@ -449,7 +449,7 @@ namespace streamDeco
       left_workspace.buttonColor(color);
       right_workspace.buttonColor(color);
       pin.buttonColor(color);
-      desktop_mode.buttonColor(color);
+      ruler.buttonColor(color);
       configurations_canvas.buttonColor(color);
       app1.buttonColor(color);
       app2.buttonColor(color);
@@ -498,7 +498,7 @@ namespace streamDeco
       left_workspace.position(2);
       right_workspace.position(5);
       pin.position(8);
-      desktop_mode.position(11);
+      ruler.position(11);
       configurations_canvas.position(14);
       volmut.position(0);
       voldown.position(1);
@@ -529,7 +529,7 @@ namespace streamDeco
       left_workspace.position(10);
       right_workspace.position(11);
       pin.position(12);
-      desktop_mode.position(13);
+      ruler.position(13);
       configurations_canvas.position(14);
       volmut.position(0);
       voldown.position(1);

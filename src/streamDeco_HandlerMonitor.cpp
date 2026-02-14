@@ -25,8 +25,29 @@
 
 #include "streamDeco_objects.hpp"
 
+
 namespace streamDeco
 {
+
+  static String cpu_load;
+  static String cpu_temp;
+  static String cpu_freq;
+
+  static String gpu_load;
+  static String gpu_temp;
+  static String gpu_freq;
+
+  static String mem_used;
+  static String mem_max;
+  static String disk_used;
+  static String disk_max;
+
+  static String sec;
+  static String min;
+  static String hour;
+  static String day;
+  static String month;
+  static String year;
 
   /* Handle the StreamDecoMonitor streamDecoTasks,
    * show computer metrics on configure pinned streamDecoCanvas */
@@ -39,25 +60,25 @@ namespace streamDeco
       mutex_serial.take();
       if (Serial.available())
       {
-        String cpu_load = Serial.readStringUntil(',');
-        String cpu_temp = Serial.readStringUntil(',');
-        String cpu_freq = Serial.readStringUntil(',');
+        cpu_load = Serial.readStringUntil(',');
+        cpu_temp = Serial.readStringUntil(',');
+        cpu_freq = Serial.readStringUntil(',');
 
-        String gpu_load = Serial.readStringUntil(',');
-        String gpu_temp = Serial.readStringUntil(',');
-        String gpu_freq = Serial.readStringUntil(',');
+        gpu_load = Serial.readStringUntil(',');
+        gpu_temp = Serial.readStringUntil(',');
+        gpu_freq = Serial.readStringUntil(',');
 
-        String mem_used = Serial.readStringUntil(',');
-        String mem_max = Serial.readStringUntil(',');
-        String disk_used = Serial.readStringUntil(',');
-        String disk_max = Serial.readStringUntil(',');
+        mem_used = Serial.readStringUntil(',');
+        mem_max = Serial.readStringUntil(',');
+        disk_used = Serial.readStringUntil(',');
+        disk_max = Serial.readStringUntil(',');
 
-        String sec = Serial.readStringUntil(',');
-        String min = Serial.readStringUntil(',');
-        String hour = Serial.readStringUntil(',');
-        String day = Serial.readStringUntil(',');
-        String month = Serial.readStringUntil(',');
-        String year = Serial.readStringUntil('/');
+        sec = Serial.readStringUntil(',');
+        min = Serial.readStringUntil(',');
+        hour = Serial.readStringUntil(',');
+        day = Serial.readStringUntil(',');
+        month = Serial.readStringUntil(',');
+        year = Serial.readStringUntil('/');
 
         streamDecoMonitor::cpu.arc_set_value(cpu_load.toInt());
         streamDecoMonitor::cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");

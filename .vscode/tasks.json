@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "PlatformIO",
+			"task": "Program Size (esp32-8048S043C)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Program Size (esp32-8048S043C)",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}

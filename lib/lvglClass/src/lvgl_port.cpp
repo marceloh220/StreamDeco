@@ -26,6 +26,7 @@
 #include "rtos_task_static.hpp"
 
 #include "driver/ledc.h"
+#include "driver/gpio.h"
 
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_rgb.h"
@@ -44,17 +45,45 @@ namespace lvgl
   namespace port
   {
 
+    /**
+     * @brief    Enable or disable port testing features
+     * @details  Uses display buffer transfer done callback to notify LVGL
+     * @note     Don't working yet
+     */
     #define PORT_TESTING 0
 
+    /**
+     * @brief    Use simple backlight control for testing
+     * @details  Set backlight pin high to enable backlight without PWM
+     * @note     Useful to test backlight circuit without PWM configuration
+     *           to test if backlight circuit is working
+     */
+    #define BACKLIGHT_TESTING 0
+
+    /**
+     * @brief    Log tag for LVGL port
+     * @details  Used in ESP_LOG functions to identify log messages from LVGL port
+     */
     const char *log_tag = "LVGL PORT";
+
+    /**
+     * @brief    LVGL mutex
+     * @details  This mutex prevents display alterations while internal timer are processed
+     *           changes cant no be done while LVGL handle
+     */
     static rtos::MutexRecursiveStatic mutex;
+
+    /**
+     * @brief    LVGL task
+     * @details  Task to handle LVGL timer
+     */
     static rtos::TaskStatic<4_kB> task("Port task LVGL", 3);
 
     /**
      * @brief    Pointer to backlight PWM channel configurations
      * @details  Pass to PWM set functions speed mode and channel of PWM pin
      */
-    ledc_channel_config_t *backlight_channel;
+    ledc_channel_config_t const *backlight_channel = nullptr;
 
     /**
      * @brief    Get backlight PWM resolution
@@ -63,6 +92,10 @@ namespace lvgl
      */
     constexpr ledc_timer_bit_t backlight_resolution = LEDC_TIMER_8_BIT;
 
+    /**
+     * @brief    LVGL tick in milliseconds
+     * @details  This function is used by LVGL to get the current tick in milliseconds
+     */
     extern "C" unsigned long lvgl_tick_millis() {
       return (unsigned long) (esp_timer_get_time() / 1000UL);
     }
@@ -84,33 +117,46 @@ namespace lvgl
     /**
      * @brief    Display flush
      * @details  Send a ready framebuffer to display
+     * @note     The framebuffer is provided by LVGL and should be ready to be sent to display after this function is called,
+     *           the framebuffer will be used by LVGL again to draw the next screen,
+     *           so this function must not free or alter the framebuffer,
+     *           just send it to display and call lv_disp_flush_ready() when done 
      * */
     static void display_flush(lv_disp_drv_t *lvgl_display_driver, const lv_area_t *area, lv_color_t *framebuffer)
     {
+      // get esp display handle from LVGL display driver user data
       const esp_lcd_panel_handle_t esp_display_handle = static_cast<const esp_lcd_panel_handle_t>(lvgl_display_driver->user_data);
-      assert(esp_display_handle);
+      assert(esp_display_handle); // check if display handle is valid
+      // send framebuffer to display
       ESP_ERROR_CHECK(esp_lcd_panel_draw_bitmap(esp_display_handle, area->x1, area->y1, area->x2 + 1, area->y2 + 1, framebuffer));
 #if PORT_TESTING == 0
+      // indicate to LVGL that previous framebuffer is free to be used again
       lv_disp_flush_ready(lvgl_display_driver);
 #endif
     }
 
+#ifdef BOARD_HAS_TOUCH
     /**
      * @brief    Touchpad read
      * @details  Read touchpad and send coordinates to LVGL if touch is pressed
      * */
     static void touchpad_read(lv_indev_drv_t *lvgl_indev_driver, lv_indev_data_t *lvgl_out_data)
     {
+      // get esp touchscreen panel handle from LVGL input device driver user data
       const esp_lcd_touch_handle_t esp_touchscreen_panel = static_cast<esp_lcd_touch_handle_t>(lvgl_indev_driver->user_data);
+      // check if touchscreen panel handle is valid
       assert(esp_touchscreen_panel);
 
-      uint16_t touchscreen_x;
-      uint16_t touchscreen_y;
+      uint16_t touchscreen_x = 0;
+      uint16_t touchscreen_y = 0;
       uint8_t touchscreen_cnt = 0;
 
+      // read touchpad data to update internal coordinates and touch state
       esp_lcd_touch_read_data(esp_touchscreen_panel);
 
+      // get touchpad coordinates and touch state, if touch is pressed send coordinates to LVGL, if not send released state to LVGL
       bool touchpad_pressed = esp_lcd_touch_get_coordinates(esp_touchscreen_panel, &touchscreen_x, &touchscreen_y, nullptr, &touchscreen_cnt, 1);
+
       if (touchpad_pressed && touchscreen_cnt > 0)
       {
         lvgl_out_data->point.x = math::map<uint16_t>(touchscreen_x, 0, GT911_TOUCH_CONFIG_X_MAX, 0, DISPLAY_WIDTH);
@@ -121,7 +167,9 @@ namespace lvgl
       {
         lvgl_out_data->state = LV_INDEV_STATE_RELEASED;
       }
+
     }
+#endif // BOARD_HAS_TOUCH
 
     /**
      * @brief    Handle LVGL timer
@@ -152,7 +200,7 @@ namespace lvgl
      */
     uint32_t backlight_max()
     {
-      return (((uint32_t)1 << backlight_resolution) - 1);
+      return (((uint32_t)1 << backlight_resolution) - (uint32_t)1);
     }
 
     /**
@@ -163,13 +211,14 @@ namespace lvgl
      */
     void backlight_set(float bright)
     {
-      if (bright > 1.0f)
-        bright = 1.0f;
-      if (bright < 0.0f)
-        bright = 0.0f;
+      #if BACKLIGHT_TESTING == 0
+      if(backlight_channel == nullptr)
+        return;
+      math::clamp<float>(bright, 0.0f, 1.0f);
       uint32_t pwm_value = backlight_max() * bright;
       ledc_set_duty(backlight_channel->speed_mode, backlight_channel->channel, pwm_value);
       ledc_update_duty(backlight_channel->speed_mode, backlight_channel->channel);
+      #endif
     }
 
     /**
@@ -181,13 +230,13 @@ namespace lvgl
      */
     void backlight_setRaw(int bright)
     {
-      uint32_t max = backlight_max();
-      if (bright > max)
-        bright = max;
-      if (bright < 0)
-        bright = 0;
+      #if BACKLIGHT_TESTING == 0
+      if(backlight_channel == nullptr)
+        return;
+      math::clamp<int>(bright, 0, backlight_max());
       ledc_set_duty(backlight_channel->speed_mode, backlight_channel->channel, bright);
       ledc_update_duty(backlight_channel->speed_mode, backlight_channel->channel);
+      #endif
     }
 
     /**
@@ -207,22 +256,30 @@ namespace lvgl
 
     /**
      * @brief    Init display panel, touchpad panel and LVGL port
-     * @details  Must be called before any LVGL object be createdm
+     * @details  Must be called before any LVGL object be created
      *           e.g. in system initiation
      */
     void init()
     {
 
-      static lv_disp_draw_buf_t lvgl_draw_buffer;
-      static lv_disp_drv_t lvgl_display_driver;
-      static lv_indev_drv_t lvgl_indev_driver;
+      static lv_disp_draw_buf_t lvgl_draw_buffer; // LVGL display buffer (2 buffers for double buffering for all screen size)
+      static lv_disp_drv_t lvgl_display_driver; // LVGL display driver (used to send framebuffer to display and set display parameters)
+      static lv_indev_drv_t lvgl_indev_driver; // LVGL input device driver (used to read touchpad data and send coordinates to LVGL)
 
-      esp_lcd_panel_handle_t esp_display_handle;
-      esp_lcd_panel_io_handle_t esp_touchscreen_bus_handle;
-      esp_lcd_touch_handle_t esp_touchscreen_handle;
+      esp_lcd_panel_handle_t esp_display_handle; // ESP LCD panel handle (parallel 16-bits RGB565 panel st7262)
+
+#ifdef BOARD_HAS_TOUCH
+      esp_lcd_panel_io_handle_t esp_touchscreen_bus_handle; // ESP LCD touchscreen panel IO bus handle (i2c bus for GT911)
+      esp_lcd_touch_handle_t esp_touchscreen_handle; // ESP LCD touchscreen panel handle (GT911)
+#endif
 
       /**
        * Panel RGB driver configure
+       * The configuration is based on the panel datasheet and the connections made in the hardware design,
+       * the configuration is used to initialize the panel and set the correct timings for the display,
+       * the configuration is also used to set the correct GPIOs for the panel signals, and the correct flags for the panel features
+       * The configuration is passed to the esp_lcd_new_rgb_panel() function to create a new panel handle, and then the panel is reset and initialized with the created handle
+       * The configuration is based on macros defined in board/esp32-8048s043c.json for this port
        */
       const esp_lcd_rgb_panel_config_t rgb_panel_config = {
         .clk_src = ST7262_PANEL_CONFIG_CLK_SRC,
@@ -288,6 +345,7 @@ namespace lvgl
       ESP_ERROR_CHECK(esp_lcd_panel_reset(esp_display_handle));
       ESP_ERROR_CHECK(esp_lcd_panel_init(esp_display_handle));
 
+#ifdef BOARD_HAS_TOUCH
       /**
        * Panel touch driver configure
        */
@@ -341,7 +399,18 @@ namespace lvgl
       ESP_ERROR_CHECK(i2c_driver_install(GT911_I2C_HOST, i2c_config.mode, 0, 0, 0));
       ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(GT911_I2C_HOST, &io_i2c_config, &esp_touchscreen_bus_handle));
       ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_gt911(esp_touchscreen_bus_handle, &touch_config, &esp_touchscreen_handle));
+#endif // BOARD_HAS_TOUCH
 
+#if BACKLIGHT_TESTING == 1
+      /**
+       * Backlight diver configure - simple on/off
+       * For testing backligh circuit without PWM 
+       */
+      gpio_pad_select_gpio(GPIO_BCKL);
+      gpio_set_direction(GPIO_BCKL, GPIO_MODE_OUTPUT);
+      gpio_set_level(GPIO_BCKL, 1);
+      backlight_channel = nullptr;
+      #else
       /**
        * Backlight diver configure
        */
@@ -354,7 +423,7 @@ namespace lvgl
       };
       ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
-      static ledc_channel_config_t ledc_channel = {
+      static const ledc_channel_config_t ledc_channel = {
         .gpio_num = GPIO_BCKL,
         .speed_mode = ledc_timer.speed_mode,
         .channel = LEDC_CHANNEL_0,
@@ -365,12 +434,21 @@ namespace lvgl
       };
       ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
       backlight_channel = &ledc_channel;
+  #endif // BACKLIGHT_TESTING
 
       /**
        * LVGL framebuffer configure
        */
       lv_init();
 
+      /**
+       * LVGL display buffer allocation
+       * @note   The buffer must be allocated statically or dynamically with
+       *         memory that wont be freed while LVGL is using it
+       *         in fact this buffer will never be freed until system shutdown
+       *         dinamic allocation is usefull when PSRAM is used to allocate
+       *         the framebuffer once internal RAM can be limited
+       */
       lv_color_t *display_draw_buffer1 = memory::alloc<lv_color_t>(LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
       lv_color_t *display_draw_buffer2 = memory::alloc<lv_color_t>(LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
 
@@ -379,6 +457,7 @@ namespace lvgl
         ESP_LOGE(log_tag, "Error in buffer draw alocation!");
         return;
       }
+      
       lv_disp_draw_buf_init(&lvgl_draw_buffer, display_draw_buffer1, display_draw_buffer2, LVGL_BUFFER_PIXELS);
 
       /**

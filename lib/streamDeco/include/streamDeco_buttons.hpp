@@ -25,6 +25,15 @@
 #include "lvgl.hpp"
 #include "marcelino.hpp"
 
+/**
+ * @namespace streamDeco
+ * @brief    Namespace for streamDeco related classes and functions
+ * @details  This namespace contains classes and functions related to streamDeco
+ *           decorations, such as buttons, labels, and other UI elements.
+ *         It provides an organized way to manage and create streamDeco
+ *          decorations within the application.
+ * @note     This is part of the streamDeco library.
+ */
 namespace streamDeco
 {
  

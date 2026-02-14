@@ -24,7 +24,6 @@
 
 #include "driver/gpio.h"
 #include "esp_intr_alloc.h"
-#include "esp_rom_gpio.h"
 #include "hal/gpio_types.h"
 
 #include "esp_attr.h"

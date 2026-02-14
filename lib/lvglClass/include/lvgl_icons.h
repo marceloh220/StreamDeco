@@ -108,6 +108,7 @@ extern const lv_img_dsc_t logout_simp;
 extern const lv_img_dsc_t cut_simp;
 extern const lv_img_dsc_t copy_simp;
 extern const lv_img_dsc_t paste_simp;
+extern const lv_img_dsc_t ruler_simp;
 
 extern const lv_img_dsc_t document_simp;
 extern const lv_img_dsc_t spreadsheet_simp;

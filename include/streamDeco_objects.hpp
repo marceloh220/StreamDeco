@@ -37,9 +37,9 @@ namespace streamDeco
 
   constexpr long streamDecoTask_buttons_stackSize = 3_kB;
   constexpr long streamDecoTask_uiReset_stackSize = 1_kB;
-  constexpr long streamDecoTask_monitor_stackSize = 3_kB;
+  constexpr long streamDecoTask_monitor_stackSize = 2_kB;
   constexpr long streamDecoTask_clock_stackSize = 3_kB;
-  constexpr long streamDecoTask_clockSynchro_stackSize = 3_kB;
+  constexpr long streamDecoTask_clockSynchro_stackSize = 4_kB;
   constexpr long streamDecoTask_updateCache_stackSize = 3_kB;
 
   /**
@@ -71,6 +71,7 @@ namespace streamDeco
     right_workspace_event,
     pin_window_event,
     lock_computer_event,
+    ruler_event,
     desktop_mode_event,
     configurations_canvas_event,
     configurations_canvas_fix_event,
@@ -394,11 +395,11 @@ namespace streamDeco
     extern MainButton pin;
 
     /**
-     * @var      desktop_mode
+     * @var      ruler
      * @brief    Lock streamDecoButtons
-     * @details  This streamDecoButtons is supposed to desktop_mode computer
+     * @details  This streamDecoButtons is supposed to show ruler on screem
      **/
-    extern MainButton desktop_mode;
+    extern MainButton ruler;
 
     /**
      * @var      configurations_canvas

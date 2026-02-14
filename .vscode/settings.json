@@ -53,6 +53,6 @@
         "typeinfo": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python",
-    "cmake.sourceDirectory": "D:/OneDrive/Documentos/PlatformIO/Projects/StreamDeco/lib/lvgl",
+    "cmake.sourceDirectory": "D:/Documentos/PlatformIO/Projects/StreamDeco/lib/esp_lcd_touch",
     "C_Cpp.errorSquiggles": "disabled"
 }

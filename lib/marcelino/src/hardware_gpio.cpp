@@ -27,14 +27,14 @@ namespace hardware
   GPIO::GPIO(gpio_num_t pin, mode_t mode)
       : _pin(pin), _mode(mode)
   {
-    esp_rom_gpio_pad_select_gpio(pin);
+    gpio_pad_select_gpio(pin);
     this->mode(mode);
   }
 
   GPIO::GPIO(gpio_num_t pin)
       : _pin(pin)
   {
-    esp_rom_gpio_pad_select_gpio(pin);
+    gpio_pad_select_gpio(pin);
     this->mode(GPIO::INPUT);
   }
 

@@ -62,7 +62,8 @@ namespace streamDeco
              * @note     Need configuration on application or system
              **/
         case terminal_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press(KEY_RETURN);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -85,7 +86,8 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case web_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press('w');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -96,7 +98,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows 11 and Linux KDE Plasma
          **/
         case search_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press(' ');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -259,7 +261,6 @@ namespace streamDeco
          **/
         case left_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -272,7 +273,6 @@ namespace streamDeco
          **/
         case right_workspace_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_RIGHT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -285,7 +285,7 @@ namespace streamDeco
          *            but have no feedback from computer to indentify a pinnned window
          **/
         case pin_window_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(KEY_LEFT_ALT);
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
@@ -315,15 +315,13 @@ namespace streamDeco
          *            Also this button is destaqued when pressed,
          *            but have no feedback from computer to indentify the desktop state
          */
-        case desktop_mode_event:
+        case ruler_event:
             bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press('f');
+            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press('m');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
-            lvgl::port::mutex_take();
-            streamDecoButtons::desktop_mode.iconSwap();
-            streamDecoButtons::desktop_mode.pinned() ? streamDecoButtons::desktop_mode.unpin() : streamDecoButtons::desktop_mode.pin();
-            lvgl::port::mutex_give();
             break;
 
         /** @brief    Configurations button receive a short click
