@@ -406,15 +406,9 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app3_event:
-#if 1
             bleKeyboard.press(KEY_LEFT_CTRL);
             bleKeyboard.press(KEY_LEFT_SHIFT);
             bleKeyboard.press('o');
-#else
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_LEFT_ALT);
-            bleKeyboard.press('F');
-#endif
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
