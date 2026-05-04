@@ -63,6 +63,8 @@
 # The COM device is searched until find ESP32 USB chip
 #
 
+from typing import Callable
+
 updateTime = 1       # monitor update interval
 boardCOM   = 'CH340' # USB/TTL on ESP32 8048s43c Board, check your controller
 debugCode  = False   # Show information in terminal, only to terminal execution
@@ -106,8 +108,8 @@ class MetricRAM:
         from psutil import virtual_memory, disk_usage
         self.used:str = ''
         self.max:str = ''
-        self.memory:callable = virtual_memory
-        self.disk:callable = disk_usage
+        self.memory:Callable = virtual_memory
+        self.disk:Callable = disk_usage
     
     def read(self) -> None:
         self.used  = str(self.memory().used / (1024 ** 2))
@@ -165,12 +167,12 @@ class MetricDate:
 class StreamMonitor:
     def __init__(self, boardName:str, debug = False) -> None:
         from time import sleep
-        self._sleep:callable = sleep
-        self._port:str = 'FAIL'
+        self._sleep:Callable = sleep
+        self._port:str = "Fail"
         self._name:str = boardName
         self._debug:bool = debug
-        self._port:callable = self._initPortConnection()
-        while self._port == 'FAIL':
+        self._port = self._initPortConnection()
+        while self._port == "Fail":
             self._port = self._initPortConnection()
             if self._debug == True:
                 print('No device found. Please, connect SteamDeco on USB to use monitor functions.')
@@ -251,7 +253,7 @@ class LibreHardwareMonitor:
                             data = data + f'{subsensor.Name} : '
                             data = data + str(subsensor.Value)
                             print(data)
-        return self._cpu, self._gpu
+        return [self._cpu, self._gpu]
     
     def decode(self, last = False) -> str:
         return self._cpu.decode() + self._gpu.decode(last)
@@ -277,7 +279,7 @@ class OpenHardwareMonitor(LibreHardwareMonitor):
 
 
 class Task():
-    def __init__(self, target:callable) -> None:
+    def __init__(self, target:Callable) -> None:
         import sys
         import multiprocessing
         if sys.platform.startswith('win'):

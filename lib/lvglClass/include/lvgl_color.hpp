@@ -182,7 +182,14 @@ namespace lvgl
          */
         static inline color_t darken(palette_t paletton, uint8_t level)
         {
-            return (color_t)lv_palette_lighten((lv_palette_t)paletton, level);
+            return (color_t)lv_palette_darken((lv_palette_t)paletton, level);
+        }
+
+        static inline color_t change_lightness(color_t c, float level)
+        {
+            if(level == 0.5f) return c;
+            else if(level < 0.5f) return darken(c, (uint8_t)((0.5f - level) * 2 * 255));
+            else return lighten(c, (uint8_t)((level - 0.5f) * 2 * 255));
         }
 
     } // namespace palette

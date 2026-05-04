@@ -323,39 +323,42 @@
  *   FONT USAGE
  *===================*/
 
+#define LV_ALL_FONTS  1 /**<Enable all the built-in fonts>**/
+
 /*Montserrat fonts with ASCII range and some symbols using bpp = 4
  *https://fonts.google.com/specimen/Montserrat*/
-#define LV_FONT_MONTSERRAT_8  1
-#define LV_FONT_MONTSERRAT_10 1
-#define LV_FONT_MONTSERRAT_12 1
-#define LV_FONT_MONTSERRAT_14 1
-#define LV_FONT_MONTSERRAT_16 1
-#define LV_FONT_MONTSERRAT_18 1
-#define LV_FONT_MONTSERRAT_20 1
-#define LV_FONT_MONTSERRAT_22 1
-#define LV_FONT_MONTSERRAT_24 1
-#define LV_FONT_MONTSERRAT_26 1
-#define LV_FONT_MONTSERRAT_28 1
-#define LV_FONT_MONTSERRAT_30 1
-#define LV_FONT_MONTSERRAT_32 1
-#define LV_FONT_MONTSERRAT_34 1
-#define LV_FONT_MONTSERRAT_36 1
-#define LV_FONT_MONTSERRAT_38 1
-#define LV_FONT_MONTSERRAT_40 1
-#define LV_FONT_MONTSERRAT_42 1
-#define LV_FONT_MONTSERRAT_44 1
-#define LV_FONT_MONTSERRAT_46 1
-#define LV_FONT_MONTSERRAT_48 1
+
+//#define LV_FONT_MONTSERRAT_8  1
+//#define LV_FONT_MONTSERRAT_10 1
+//#define LV_FONT_MONTSERRAT_12 1
+//#define LV_FONT_MONTSERRAT_14 1
+//#define LV_FONT_MONTSERRAT_16 1
+//#define LV_FONT_MONTSERRAT_18 1
+//#define LV_FONT_MONTSERRAT_20 1
+//#define LV_FONT_MONTSERRAT_22 1
+//#define LV_FONT_MONTSERRAT_24 1
+//#define LV_FONT_MONTSERRAT_26 1
+//#define LV_FONT_MONTSERRAT_28 1
+//#define LV_FONT_MONTSERRAT_30 1
+//#define LV_FONT_MONTSERRAT_32 1
+//#define LV_FONT_MONTSERRAT_34 1
+//#define LV_FONT_MONTSERRAT_36 1
+//#define LV_FONT_MONTSERRAT_38 1
+//#define LV_FONT_MONTSERRAT_40 1
+//#define LV_FONT_MONTSERRAT_42 1
+//#define LV_FONT_MONTSERRAT_44 1
+//#define LV_FONT_MONTSERRAT_46 1
+//#define LV_FONT_MONTSERRAT_48 1
 
 /*Demonstrate special features*/
-#define LV_FONT_MONTSERRAT_12_SUBPX      1
-#define LV_FONT_MONTSERRAT_28_COMPRESSED 1  /*bpp = 3*/
-#define LV_FONT_DEJAVU_16_PERSIAN_HEBREW 1  /*Hebrew, Arabic, Persian letters and all their forms*/
-#define LV_FONT_SIMSUN_16_CJK            1  /*1000 most common CJK radicals*/
+//#define LV_FONT_MONTSERRAT_12_SUBPX      1
+//#define LV_FONT_MONTSERRAT_28_COMPRESSED 1  /*bpp = 3*/
+//#define LV_FONT_DEJAVU_16_PERSIAN_HEBREW 1  /*Hebrew, Arabic, Persian letters and all their forms*/
+//#define LV_FONT_SIMSUN_16_CJK            1  /*1000 most common CJK radicals*/
 
 /*Pixel perfect monospace fonts*/
-#define LV_FONT_UNSCII_8  1
-#define LV_FONT_UNSCII_16 1
+//#define LV_FONT_UNSCII_8  1
+//#define LV_FONT_UNSCII_16 1
 
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
@@ -440,7 +443,7 @@
 
 #define LV_USE_BTN        1
 
-#define LV_USE_BTNMATRIX  0
+#define LV_USE_BTNMATRIX  1 /*Requires: lv_btn_matrix and lv_textarea*/
 
 #define LV_USE_CANVAS     1
 
@@ -465,9 +468,9 @@
 
 #define LV_USE_SLIDER     1   /*Requires: lv_bar*/
 
-#define LV_USE_SWITCH     0
+#define LV_USE_SWITCH     1
 
-#define LV_USE_TEXTAREA   0   /*Requires: lv_label*/
+#define LV_USE_TEXTAREA   1   /*Requires: lv_label*/
 #if LV_USE_TEXTAREA != 0
     #define LV_TEXTAREA_DEF_PWD_SHOW_TIME 1500    /*ms*/
 #endif
@@ -501,7 +504,7 @@
 
 #define LV_USE_IMGBTN     0
 
-#define LV_USE_KEYBOARD   0
+#define LV_USE_KEYBOARD   1
 
 #define LV_USE_LED        0
 

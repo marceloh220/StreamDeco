@@ -33,6 +33,9 @@
 #include "lvgl_port.hpp"
 #include "lvgl_screen.hpp"
 #include "lvgl_slider.hpp"
+#include "lvgl_textarea.hpp"
+#include "lvgl_button_matrix.hpp"
+#include "lvgl_keyboard.hpp"
 #include "lvgl_style.hpp"
 
 #include "lvgl_icons.h"
