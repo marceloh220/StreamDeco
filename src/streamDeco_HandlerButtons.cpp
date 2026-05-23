@@ -30,7 +30,7 @@ namespace streamDeco
 
   /**
    * @brief   Handle the buttons task to manager buttons events
-   * @details The events can generate a keyboard code to send to computer throug BLE Bluetooth
+    * @details The events can generate a keyboard code to send to computer through BLE Bluetooth
    *          or change StreamDeco configurations
    **/
   void handleButtons(taskArg_t task_arg)
@@ -54,10 +54,10 @@ namespace streamDeco
       /**
        * if some event is received the UI is not inactive
        * backlight bright change to setpoint value
-       * and timers are manting reseted */
+        * and timers are kept reset */
       lvgl::port::backlight_setRaw(settings::cache.lcd_bright);
-      timer_ui::backlight.reset();
-      timer_ui::uiReset.reset();
+      timers_idle::backlight_idle.reset();
+      timers_idle::canvas_idle.reset();
 
       rtos::sleep(100ms);
 

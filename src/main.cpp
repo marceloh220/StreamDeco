@@ -27,16 +27,18 @@
 
 #define STORAGE_TEST 0
 
-#if STORAGE_TEST
-#include "esp_vfs_fat.h"
-#include "tinyusb.h"
-#include "tusb_msc_storage.h"
+#if STORAGE_TEST == 1
+  #include "esp_vfs_fat.h"
+  #include "tinyusb.h"
+  #include "tusb_msc_storage.h"
 
-#define PARTITION_LABEL "storage"
-// USB MSC configuration
-#define VENDOR_ID "ESP32S3"
-#define PRODUCT_ID "MSC"
-#define PRODUCT_REV "1.0"
+  #define PARTITION_LABEL "storage"
+  // USB MSC configuration
+  #define VENDOR_ID "ESP32S3"
+  #define PRODUCT_ID "MSC"
+  #define PRODUCT_REV "1.0"
+
+  void storage_init();
 #endif
 
 void setup()
@@ -70,7 +72,7 @@ void loop()
   rtos::sleep(10s);
 }
 
-#if STORAGE_TEST
+#if STORAGE_TEST == 1
 void storage_init()
 {
   esp_err_t ret;

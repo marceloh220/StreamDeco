@@ -35,8 +35,8 @@ namespace lvgl
      *              Monochromatic, display support only one color
      *              RGB332, 8-bit bus color, which result in 258 colors
      *              RGB565, 16-bit bus color, which result in 65,536 colors
-     *              RGB888, 24-bit bus color, which tesult in 16,777,216 colors
-     *              ARGB8888, 32-bit bus color, an alfa opacity value is sended with RGB888 color
+    *              RGB888, 24-bit bus color, which results in 16,777,216 colors
+    *              ARGB8888, 32-bit bus color, an alpha opacity value is sent with RGB888 color
      *
      * @note      Same as lv_color_t
      * @note      The LVGL can simulate opacity in software even if display doesn't support ARGB8888 format
@@ -45,7 +45,7 @@ namespace lvgl
 
     /**
      * @namespace   color
-     * @brief       Color tools avaliable
+        * @brief       Color tools available
      */
     namespace color
     {
@@ -114,19 +114,19 @@ namespace lvgl
 
     /**
      * @namespace  palette
-     * @brief      Avaliable paletton of colors for lvgl
+        * @brief      Available palette of colors for lvgl
      */
     namespace palette
     {
 
         /**
          * @typedef palette_t
-         * @brief   Paleton color type, same as lv_palette_t
+         * @brief   Palette color type, same as lv_palette_t
          */
 
         /**
          * @enum    palette_e
-         * @brief   Some paletton of colors with main, lighter and darken color
+         * @brief   Some palette colors with main, lighter and darker variants
          */
         typedef enum palette_e
         {
@@ -154,42 +154,35 @@ namespace lvgl
         } palette_t;
 
         /**
-         * @brief   Get the main color of paletto
-         * @param   paletton  palette_t type of paletton color
-         * @return  Paletton color in display format
+         * @brief   Get the main color of a palette
+         * @param   palette  palette_t type of palette color
+         * @return  Palette color in display format
          */
-        static inline color_t main(palette_t paletton)
+        static inline color_t main(palette_t palette)
         {
-            return (color_t)lv_palette_main((lv_palette_t)paletton);
+            return (color_t)lv_palette_main((lv_palette_t)palette);
         }
 
         /**
-         * @brief   Get the color of paletton which can be 5 level of lighten
-         * @param   paletton  palette_t type of paletton color
+         * @brief   Get a palette color lightened up to 5 levels
+         * @param   palette  palette_t type of palette color
          * @param   level     level of lighten color, from 1 to 5, 5 means the more lighter color
-         * @return  Paletton lighten color in display format
+         * @return  Lightened palette color in display format
          */
-        static inline color_t lighten(palette_t paletton, uint8_t level)
+        static inline color_t lighten(palette_t palette, uint8_t level)
         {
-            return (color_t)lv_palette_lighten((lv_palette_t)paletton, level);
+            return (color_t)lv_palette_lighten((lv_palette_t)palette, level);
         }
 
         /**
-         * @brief   Get the color of paletton which can be 5 level of darken
-         * @param   paletton  palette_t type of paletton color
+         * @brief   Get a palette color darkened up to 5 levels
+         * @param   palette  palette_t type of palette color
          * @param   level     level of darken color, from 1 to 5, 5 means the more darker color
-         * @return  Paletton darken color in display format
+         * @return  Darkened palette color in display format
          */
-        static inline color_t darken(palette_t paletton, uint8_t level)
+        static inline color_t darken(palette_t palette, uint8_t level)
         {
-            return (color_t)lv_palette_darken((lv_palette_t)paletton, level);
-        }
-
-        static inline color_t change_lightness(color_t c, float level)
-        {
-            if(level == 0.5f) return c;
-            else if(level < 0.5f) return darken(c, (uint8_t)((0.5f - level) * 2 * 255));
-            else return lighten(c, (uint8_t)((level - 0.5f) * 2 * 255));
+            return (color_t)lv_palette_darken((lv_palette_t)palette, level);
         }
 
     } // namespace palette

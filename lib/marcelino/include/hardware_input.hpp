@@ -55,7 +55,7 @@ namespace hardware
   public:
     /**
      * @typedef   hardware::Input::mode_t
-     * @brief     GPIO Input modes avaliable
+      * @brief     GPIO Input modes available
      */
     typedef enum mode_e
     {

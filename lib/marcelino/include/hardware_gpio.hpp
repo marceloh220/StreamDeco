@@ -185,7 +185,7 @@ namespace hardware
      *
      * void IRAM_ATTR isr_button(void *arg) {
      *
-     *    // do some urgents and simples things. Don't print herer!
+    *    // do some urgent and simple things. Don't print here!
      *
      *    led ^= 1;
      *

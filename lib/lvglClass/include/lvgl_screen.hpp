@@ -31,7 +31,7 @@ namespace lvgl
 
     /**
      * @namespace  screen
-     * @brief      Screen resources avaliable for this port framework
+        * @brief      Screen resources available for this port framework
      */
     namespace screen
     {
@@ -60,7 +60,7 @@ namespace lvgl
 
         /**
          * @brief   Set the background color
-         * @param   color Color of background on lvgl paletton
+         * @param   color Color of background on lvgl palette
          */
         void set_bg_color(palette::palette_t color);
 

@@ -1,0 +1,14 @@
+{
+    "name": "marcelino",
+    "version": "1.0.0",
+    "description": "C++ Marcelino library for microcontrollers esp32 with support for various peripherals",
+    "frameworks": "*",
+    "platforms": "*",
+    "build": {
+        "includeDir": "include",
+        "srcDir": "src",
+        "srcFilter": [
+            "+<*.cpp>"
+        ]
+    }
+}

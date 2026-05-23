@@ -14,7 +14,7 @@
     #define LV_FONT_MONTSERRAT_38 1
 #endif
 
-#if LV_FONT_MONTSERRAT_38
+#if LV_FONT_MONTSERRAT_38 || LV_ALL_FONTS
 
 /*-----------------
  *    BITMAPS

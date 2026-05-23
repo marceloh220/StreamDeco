@@ -31,8 +31,8 @@ namespace streamDeco
 
   /**
    * @brief    Callback function to handle timers
-   * @details  Set backlight bright to 10% affter timer backlight overflow and
-   *           hidden streamDeco canvas affter timer uiReset overflow
+    * @details  Set backlight brightness to 10% after timer backlight overflow and
+    *           hide streamDeco canvas after timer uiReset overflow
    * @param    timerHandle The rtos timer send the timer handler to callback function 
    *           as argument, this parameter is used to verify what timer generate the
    *           interrupt by the timer ID
@@ -43,13 +43,13 @@ namespace streamDeco
   void timer_callback(TimerHandle_t timerHandle)
   {
     // verify what timer generated the event by ID
-    if (timer_ui::backlight.verifyID(timerHandle))
+    if (timers_idle::backlight_idle.verifyID(timerHandle))
     {
-      streamDecoTasks::uiReset.sendNotify(rest_backlight_event);
+      streamDecoTasks::idle.sendNotify(rest_backlight_event);
     }
-    if (timer_ui::uiReset.verifyID(timerHandle))
+    if (timers_idle::canvas_idle.verifyID(timerHandle))
     {
-      streamDecoTasks::uiReset.sendNotify(hidden_canvas_event);
+      streamDecoTasks::idle.sendNotify(hidden_canvas_event);
     }
   }
 

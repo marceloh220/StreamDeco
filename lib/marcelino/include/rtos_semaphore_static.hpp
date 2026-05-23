@@ -105,14 +105,14 @@ namespace rtos
 
     /**
      * @brief    Obtain a semaphore
-     * @details  Block the task until semaphore be received
-     * @return   This return is not utilizable, only for legacy  compatibility
+      * @details  Block the task until semaphore is received
+      * @return   This return is not usable, only for legacy compatibility
      */
     bool take();
 
     /**
      * @brief    Obtain a semaphore
-     * @details  Block the task until semaphore be received or timeout expire
+      * @details  Block the task until semaphore is received or timeout expires
      * @param    timeout The time in ticks to wait for the semaphore to become available
      * @return   pdTRUE if the semaphore was obtained
      *           pdFALSE if timeout expired without the semaphore becoming available

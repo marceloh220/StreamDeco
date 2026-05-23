@@ -79,7 +79,7 @@ namespace rtos
    *     while(true)
    *     {
    *
-   *          printf("Runing: %s\n", static_cast<const char*>(arg));
+  *          printf("Running: %s\n", static_cast<const char*>(arg));
    *
    *          rtos::sleep(1s);
    *
@@ -116,7 +116,7 @@ namespace rtos
 
     /**
      * @brief    Attach the handler callback on task
-     * @details  Affter instanciate the task still not running
+      * @details  After instantiating, the task is still not running
      *           and must have an handler attached to enter in execution
      * @param    callback  Function callback to handler the task execution
      * @param    args      Parameter that can be passed to task handler
@@ -128,7 +128,7 @@ namespace rtos
      *                while(true)
      *                {
      *
-     *                   printf("Task runing =)\n");
+    *                   printf("Task running =)\n");
      *
      *                   rtos::sleep(1s);
      *
@@ -141,7 +141,7 @@ namespace rtos
     /**
      * @see      rtos::Task::attach(TaskFunction_t callback, taskArg_t args)
      * @brief    Shortcut template to attach method
-     * @details  Work as attach function but receivint any type of args with auto convertion
+      * @details  Works as attach function but receives any type of args with auto conversion
      */
     template <typename T>
     void attach(TaskFunction_t callback, T args)
@@ -154,7 +154,7 @@ namespace rtos
      * @see      rtos::Task::takeNotify(millisecond time)
      * @brief    Sends a direct to task notification to task
      * @details  The task will wait for a notification using method takeNotify
-     * @param    notification  Data index sended to notify task
+    * @param    notification  Data index sent to notify task
      * @note     Similar to giving a counter semaphore
      */
     void sendNotify(uint32_t notification);
@@ -164,7 +164,7 @@ namespace rtos
      * @see      rtos::Task::takeNotify(millisecond time)
      * @brief    Sends a direct to task notification to task from a ISR
      * @details  The task will wait for a notification using method takeNotify
-     * @param    notification  Data index sended to notify task
+    * @param    notification  Data index sent to notify task
      * @note     Similar to giving a counter semaphore
      */
     void sendNotifyFromISR(uint32_t notification);
@@ -172,7 +172,7 @@ namespace rtos
     /**
      *
      * @brief    Wait until task receive a notification
-     * @return   Unsigned interger number with notification passed
+    * @return   Unsigned integer number with notification passed
      * @note     Similar to waiting for a counter semaphore
      *           The task will not consume any processing time while
      *           it is in the Blocked state
@@ -182,7 +182,7 @@ namespace rtos
     /**
      * @brief    Wait until task receive a notification until the passed time
      * @param    time  Time to wait notification be received
-     * @return   Unsigned interger number with notification passed
+      * @return   Unsigned integer number with notification passed
      *           Return 0 in the end of block time
      * @note     Similar to waiting for a counter semaphore
      *           The task will not consume any processing time while
@@ -297,8 +297,8 @@ namespace rtos
     uint32_t memUsage();
 
     /**
-     * @brief   Get task memory avaliable in stack specified as the number of bytes.
-     * @return  Unsigned integer number of stack memory avaliable specified as the number of bytes.
+    * @brief   Get task memory available in stack specified as the number of bytes.
+    * @return  Unsigned integer number of stack memory available specified as the number of bytes.
      * @note    NSFI - Not Safe For ISR
      */
     uint32_t memFree();

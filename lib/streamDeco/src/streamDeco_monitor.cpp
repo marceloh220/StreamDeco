@@ -28,52 +28,92 @@ namespace streamDeco
     namespace metric
     {
 
-        const char* week_name_en[] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+        namespace
+        {
+
+            template <typename InitializeFn>
+            void create_object(lvgl::object_t *&object, lvgl::object_t *parent, lvgl::palette::palette_t color, InitializeFn initialize)
+            {
+                if (object != nullptr) return;
+                lvgl::port::mutex_take();
+                object = lv_obj_create(parent != nullptr ? parent : lv_scr_act());
+                initialize(color);
+                lvgl::port::mutex_give();
+            }
+
+            template <typename ColorT>
+            void set_background_and_invalidate(lvgl::Style &style, lvgl::Object &object, ColorT color)
+            {
+                style.set_bg_color(color);
+                object.invalidate();
+            }
+
+            void setup_monitor_style(lvgl::Style &monitor_style, lvgl::palette::palette_t color)
+            {
+                monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
+                monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
+                monitor_style.set_border_width(1);
+                monitor_style.set_border_color(lvgl::palette::darken(color, 0));
+                monitor_style.set_pad_all(5);
+            }
+
+            void setup_metric_style(lvgl::Style &metric_style, lvgl::palette::palette_t color)
+            {
+                metric_style.set_bg_color(color);
+                metric_style.set_img_recolor(color);
+                metric_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
+                metric_style.set_text_color(color);
+                metric_style.set_arc_color(color);
+            }
+
+            void setup_warning_style(lvgl::Style &warning_style)
+            {
+                warning_style.set_bg_color(lvgl::color::make(160, 0, 0));
+                warning_style.set_img_recolor(lvgl::color::make(160, 0, 0));
+                warning_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
+                warning_style.set_text_color(lvgl::color::make(160, 0, 0));
+                warning_style.set_arc_color(lvgl::color::make(160, 0, 0));
+                warning_style.set_line_color(lvgl::color::make(160, 0, 0));
+            }
+
+            void setup_metric_indicator_style(lvgl::Style &metric_indicator_style, lvgl::palette::palette_t color)
+            {
+                metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
+                metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
+            }
+
+        } // namespace
+
         const char* week_name_pt[] = {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"};
 
         #define WEEK_NAME week_name_pt
 
-        static void config_monitor_style(lvgl::Style &monitor_style, lvgl::palette::palette_t color) {
-            monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
-            monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
-            monitor_style.set_border_width(1);
-            monitor_style.set_border_color(lvgl::palette::darken(color,0));
-            monitor_style.set_pad_all(5);
-        }
-
         void Complete::create(lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            object = lv_obj_create(lv_scr_act());
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, nullptr, color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // void Complete::create
 
         void Complete::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            object = lv_obj_create(parent);
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent, color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // void Complete::create
 
         void Complete::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            object = lv_obj_create(parent.get_object());
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent.get_object(), color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // Complete::create
 
         void Complete::set_bg_color(lvgl::color_t color)
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Complete::set_bg_color
 
@@ -81,8 +121,7 @@ namespace streamDeco
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Complete::set_bg_color
 
@@ -90,13 +129,8 @@ namespace streamDeco
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
-            metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
-
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
+            setup_metric_indicator_style(metric_indicator_style, color);
+            setup_metric_style(metric_style, color);
             invalidate();
             lvgl::port::mutex_give();
         } // Complete::color
@@ -131,28 +165,10 @@ namespace streamDeco
 
         void Complete::init_conf(lvgl::palette::palette_t color)
         {
-
-            monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
-            monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
-            monitor_style.set_border_color(lvgl::palette::main(color));
-            monitor_style.set_pad_all(5);
-
-            config_monitor_style(monitor_style, color);
-            metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
-            metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
-
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
-
-            warning_style.set_bg_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_img_recolor(lvgl::color::make(160, 0, 0));
-            warning_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
-            warning_style.set_text_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_arc_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_line_color(lvgl::color::make(160, 0, 0));
+            setup_monitor_style(monitor_style, color);
+            setup_metric_indicator_style(metric_indicator_style, color);
+            setup_metric_style(metric_style, color);
+            setup_warning_style(warning_style);
 
             auto font = lvgl::font::montserrat_22;
 
@@ -224,29 +240,23 @@ namespace streamDeco
 
         void Basic::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            if (parent == nullptr) parent = lv_scr_act();
-            object = lv_obj_create(parent);
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent, color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // Basic::create
 
         void Basic::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            object = lv_obj_create(parent.get_object());
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent.get_object(), color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // Basic::create
 
         void Basic::set_bg_color(lvgl::color_t color)
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Basic::set_bg_color
 
@@ -254,8 +264,7 @@ namespace streamDeco
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Basic::set_bg_color
 
@@ -263,13 +272,8 @@ namespace streamDeco
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
-            metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
-
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
+            setup_metric_indicator_style(metric_indicator_style, color);
+            setup_metric_style(metric_style, color);
             invalidate();
             lvgl::port::mutex_give();
         } // Basic::color
@@ -298,27 +302,10 @@ namespace streamDeco
 
         void Basic::init_conf(lvgl::palette::palette_t color)
         {
-            monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
-            monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
-            monitor_style.set_border_color(lvgl::palette::main(color));
-            monitor_style.set_pad_all(5);
-
-            config_monitor_style(monitor_style, color);
-            metric_indicator_style.set_bg_color(lvgl::palette::lighten(color, 3));
-            metric_indicator_style.set_arc_color(lvgl::palette::lighten(color, 3));
-
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
-
-            warning_style.set_bg_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_img_recolor(lvgl::color::make(160, 0, 0));
-            warning_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
-            warning_style.set_text_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_arc_color(lvgl::color::make(160, 0, 0));
-            warning_style.set_line_color(lvgl::color::make(160, 0, 0));
+            setup_monitor_style(monitor_style, color);
+            setup_metric_indicator_style(metric_indicator_style, color);
+            setup_metric_style(metric_style, color);
+            setup_warning_style(warning_style);
 
             auto font = lvgl::font::montserrat_22;
 
@@ -373,29 +360,23 @@ namespace streamDeco
 
         void Clock::create(lvgl::object_t *parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            if (parent == nullptr) parent = lv_scr_act();
-            object = lv_obj_create(parent);
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent, color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } // Clock::create
 
         void Clock::create(Object &parent, lvgl::palette::palette_t color)
         {
-            if (object != nullptr) return;
-            lvgl::port::mutex_take();
-            object = lv_obj_create(parent.get_object());
-            init_conf(color);
-            lvgl::port::mutex_give();
+            create_object(object, parent.get_object(), color, [this](lvgl::palette::palette_t current_color) {
+                init_conf(current_color);
+            });
         } //  Clock::create
 
         void Clock::set_bg_color(lvgl::color_t color)
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Clock::set_bg_color
 
@@ -403,8 +384,7 @@ namespace streamDeco
         {
             if (object == nullptr) return;
             lvgl::port::mutex_take();
-            monitor_style.set_bg_color(color);
-            invalidate();
+            set_background_and_invalidate(monitor_style, *this, color);
             lvgl::port::mutex_give();
         } // Clock::set_bg_color
 
@@ -444,17 +424,8 @@ namespace streamDeco
 
         void Clock::init_conf(lvgl::palette::palette_t color)
         {
-            monitor_style.set_bg_color(lvgl::color::make(41, 45, 50));
-            monitor_style.set_bg_opa(lvgl::opacity::OPA_100);
-            monitor_style.set_border_color(lvgl::palette::main(color));
-            monitor_style.set_pad_all(5);
-
-            config_monitor_style(monitor_style, color);
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_img_recolor_opa(lvgl::opacity::OPA_100);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
+            setup_monitor_style(monitor_style, color);
+            setup_metric_style(metric_style, color);
 
             auto font = lvgl::font::montserrat_22;
 

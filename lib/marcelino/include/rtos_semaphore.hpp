@@ -89,7 +89,7 @@ namespace rtos
      * @brief  Delete a semaphore. This function must be used with care,
      * the task waiting for the semaphore will be blocked forever and ever.
      * And ever... and ever.. and ever... and ever... and ever...
-     * I dont eve know why I left this method herer LOLOLOLOLOL
+      * I do not even know why I left this method here.
      */
     void semaphoreDelete();
 
@@ -113,14 +113,14 @@ namespace rtos
 
     /**
      * @brief    Obtain a semaphore
-     * @details  Block the task until semaphore be received
-     * @return   This return is not utilizable, only for legacy  compatibility
+      * @details  Block the task until semaphore is received
+      * @return   This return is not usable, only for legacy compatibility
      */
     bool take();
 
     /**
      * @brief    Obtain a semaphore
-     * @details  Block the task until semaphore be received or timeout expire
+      * @details  Block the task until semaphore is received or timeout expires
      * @param    timeout The time in ticks to wait for the semaphore to become available
      * @return   pdTRUE if the semaphore was obtained
      *           pdFALSE if timeout expired without the semaphore becoming available

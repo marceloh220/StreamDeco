@@ -187,7 +187,7 @@ namespace lvgl
      * Get the current map of a button matrix
      * @return          the current map
      */
-    const char ** lv_btnmatrix_get_map() const
+    const char ** get_map() const
     {
       if (object == nullptr)
         return nullptr;
@@ -202,7 +202,7 @@ namespace lvgl
      * Useful in the `event_cb` to get the text of the button, check if hidden etc.
      * @return          index of the last released button (LV_BTNMATRIX_BTN_NONE: if unset)
      */
-    uint16_t lv_btnmatrix_get_selected_btn() const
+    uint16_t get_selected_btn() const
     {
       if (object == nullptr)
         return 0;
@@ -217,7 +217,7 @@ namespace lvgl
      * @param btn_id    the index a button not counting new line characters.
      * @return          text of btn_index` button
      */
-    const char * lv_btnmatrix_get_btn_text(uint16_t btn_id) const
+    const char * get_btn_text(uint16_t btn_id) const
     {
       if (object == nullptr)
         return nullptr;
@@ -233,7 +233,7 @@ namespace lvgl
      * @param ctrl      control values to check (ORed value can be used)
      * @return          true: the control attribute is enabled false: disabled
      */
-    bool lv_btnmatrix_has_btn_ctrl(uint16_t btn_id, lv_btnmatrix_ctrl_t ctrl) const
+    bool has_btn_ctrl(uint16_t btn_id, lv_btnmatrix_ctrl_t ctrl) const
     {
       if (object == nullptr)
         return false;
@@ -247,7 +247,7 @@ namespace lvgl
      * Tell whether "one check" mode is enabled or not.
      * @return          true: "one check" mode is enabled; false: disabled
      */
-    bool lv_btnmatrix_get_one_checked() const
+    bool get_one_checked() const
     {
       if (object == nullptr)
         return false;
@@ -257,7 +257,7 @@ namespace lvgl
       return one_checked;
     }
     
-  } // class ButtonMatrix 
+  }; // class ButtonMatrix 
 } // namespace lvgl
 
 #endif

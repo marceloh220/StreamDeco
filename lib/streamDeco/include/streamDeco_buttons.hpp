@@ -30,8 +30,8 @@
  * @brief    Namespace for streamDeco related classes and functions
  * @details  This namespace contains classes and functions related to streamDeco
  *           decorations, such as buttons, labels, and other UI elements.
- *         It provides an organized way to manage and create streamDeco
- *          decorations within the application.
+ *           It provides an organized way to manage and create streamDeco
+ *           decorations within the application.
  * @note     This is part of the streamDeco library.
  */
 namespace streamDeco
@@ -150,6 +150,62 @@ namespace streamDeco
     virtual void position(uint8_t pos);
   
   protected:
+
+    template <typename Action>
+    void with_lock(Action action)
+    {
+      if (object == nullptr) return;
+      lvgl::port::mutex_take();
+      action();
+      lvgl::port::mutex_give();
+    }
+
+    /**
+     * @brief   Align the button using a base position and optional offsets
+     */
+    void align_position(lv_coord_t x, lv_coord_t y, lv_coord_t offset_x = 0, lv_coord_t offset_y = 0)
+    {
+      align(lvgl::alignment::CENTER, x + offset_x, y + offset_y);
+    }
+
+    /**
+     * @brief   Create the button content based on the configured icon/text sources
+     */
+    void init_content();
+
+    /**
+     * @brief   Apply the pinned or unpinned style state
+     * @param   pinned True to pin, false to unpin
+     */
+    void apply_pin_state(bool pinned);
+
+    /**
+     * @brief   Apply the main button color state
+     * @param   color Palette color to apply
+     */
+    void apply_button_color(lvgl::palette::palette_t color);
+
+    /**
+     * @brief   Apply the pinned button color state
+     * @param   color Palette color to apply
+     */
+    void apply_button_pinned_color(lvgl::palette::palette_t color);
+
+    /**
+     * @brief   Shared implementation for button creation
+     * @param   parent Parent object used to create the button
+     * @param   pos Position index inside the fixed layout grid
+     * @param   color Button base color
+     */
+    void create_impl(Object *parent, uint8_t pos, lvgl::palette::palette_t color);
+
+    /**
+     * @brief   Resolve the LVGL object used as creation parent
+     */
+    lvgl::object_t *resolve_parent_object(Object *parent)
+    {
+      return parent != nullptr ? parent->get_object() : lv_scr_act();
+    }
   
     /**
      * @brief   Internal init streamDecoButtons members

@@ -29,76 +29,91 @@
 namespace streamDeco
 {
 
+  namespace
+  {
+    constexpr time_t kEpochWrap = 2082758399;
+
+    void discardMonitorStatsFromSerial()
+    {
+      // Discard monitor stats fields that are not used by RTC synchronization.
+      for (int i = 0; i < 10; ++i)
+      {
+        Serial.readStringUntil(',');
+      }
+    }
+
+    void readClockFromSerial(struct tm &tm_date)
+    {
+      String sec = Serial.readStringUntil(',');
+      String min = Serial.readStringUntil(',');
+      String hour = Serial.readStringUntil(',');
+      String week = Serial.readStringUntil(',');
+      String day = Serial.readStringUntil(',');
+      String month = Serial.readStringUntil(',');
+      String year = Serial.readStringUntil('/');
+
+      tm_date.tm_sec = sec.toInt();
+      tm_date.tm_min = min.toInt();
+      tm_date.tm_hour = hour.toInt();
+      tm_date.tm_wday = week.toInt();
+      tm_date.tm_mday = day.toInt();
+      tm_date.tm_mon = month.toInt() - 1;
+      tm_date.tm_year = year.toInt() - 1900;
+    }
+
+    void updateRtcFromTm(struct tm &tm_date)
+    {
+      time_t time_local = mktime(&tm_date);
+
+      if (time_local > kEpochWrap)
+      {
+        time_local -= kEpochWrap;
+      }
+
+      struct timeval time_epoch;
+      time_epoch.tv_sec = time_local;
+      time_epoch.tv_usec = 0;
+
+      settimeofday(&time_epoch, nullptr);
+    }
+  }
+
   /**
    * @brief    Synchronizes ESP32-RTC with Computer clock
    * @details  Wait for StreamDeco StreamDecoMonitor application response to synchronizes ESP32 RTC clock
-   * @param    tryes - number oa ttemps to try sinchron clock with computer
+   * @param    max_attempts - number of attempts to synchronize clock with computer
    */
-  void synchro_clock(int tryes)
+  void sync_clock(int max_attempts)
   {
 
     int attempts = 0;
     struct tm tm_date = {0};
 
-    while (1)
+    while (true)
     {
 
       mutex_serial.take();
 
       if (Serial.available())
       {
-        String cpu_load = Serial.readStringUntil(',');
-        String cpu_temp = Serial.readStringUntil(',');
-        String cpu_freq = Serial.readStringUntil(',');
-
-        String gpu_load = Serial.readStringUntil(',');
-        String gpu_temp = Serial.readStringUntil(',');
-        String gpu_freq = Serial.readStringUntil(',');
-
-        String mem_used = Serial.readStringUntil(',');
-        String mem_max = Serial.readStringUntil(',');
-        String disk_used = Serial.readStringUntil(',');
-        String disk_max = Serial.readStringUntil(',');
-
-        String sec = Serial.readStringUntil(',');
-        String min = Serial.readStringUntil(',');
-        String hour = Serial.readStringUntil(',');
-        String week = Serial.readStringUntil(','); 
-        String day = Serial.readStringUntil(',');
-        String month = Serial.readStringUntil(',');
-        String year = Serial.readStringUntil('/');
-
-        tm_date.tm_sec = sec.toInt();
-        tm_date.tm_min = min.toInt();
-        tm_date.tm_hour = hour.toInt();
-        tm_date.tm_wday = week.toInt();
-        tm_date.tm_mday = day.toInt();
-        tm_date.tm_mon = month.toInt() - 1;
-        tm_date.tm_year = year.toInt() - 1900;
-
-        time_t time_local = mktime(&tm_date);
-
-        struct timeval time_epoch;
-        if (time_local > 2082758399)
-        {
-          time_local = time_local - 2082758399;
-        }
-        time_epoch.tv_sec = time_local;
-        time_epoch.tv_usec = 0;
-        settimeofday(&time_epoch, nullptr);
+        discardMonitorStatsFromSerial();
+        readClockFromSerial(tm_date);
+        updateRtcFromTm(tm_date);
 
         mutex_serial.give();
 
-        return;;
+        return;
 
       } // Serial.avaliable
-      
+
       mutex_serial.give();
 
-      attempts++;
-
-      if (attempts > tryes && tryes != -1)
+      ++attempts;
+      if (max_attempts != -1 && attempts > max_attempts)
+      {
         return;
+      }
+
       rtos::sleep(1s);
 
     } // loop check time
@@ -112,7 +127,7 @@ namespace streamDeco
 
     struct tm tm_date = {0};
 
-    while (1)
+    while (true)
     {
 
       getLocalTime(&tm_date);
@@ -122,17 +137,21 @@ namespace streamDeco
     }
   }
 
-  /* Handle the clock synchro streamDecoTasks,
-   * synchro clock time with streamDeco monitor application */
-  void handleClockSynchro(taskArg_t task_arg) {
+  /* Handle the clock sync streamDecoTasks,
+   * synchronize clock time with streamDeco monitor application */
+  void handleClockSync(taskArg_t task_arg)
+  {
 
-    while(1) {
-  
-      synchro_clock(40);
+    (void)task_arg;
+
+    while (true)
+    {
+
+      sync_clock(40);
       rtos::sleep(5min);
-  
+
     }
-  
+
   }
 
 } // namespace streamDeco

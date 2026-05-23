@@ -30,9 +30,9 @@
 #include "esp_log.h"
 
 /**
- * @brief 0 Disable StreamDeco StreamDecoMonitor first syncro
- *        1 Enable  StreamDeco StreamDecoMonitor first syncro
- * @note  Wainting for computer application syncro is boring
+ * @brief 0 Disable StreamDeco StreamDecoMonitor first sync
+ *        1 Enable  StreamDeco StreamDecoMonitor first sync
+ * @note  Waiting for computer application sync is boring
  */
 #define DEVOSO_TESTING 0
 
@@ -50,10 +50,10 @@ namespace streamDeco
 
   /**
    * @brief    Synchronizes ESP32-RTC with Computer clock
-   * @details  Wait for StreamDeco StreamDecoMonitor application response to synchronizes ESP32 RTC clock
-   * @param    tryes - number of attemps to try sinchron clock with computer, if -1 try forever
+    * @details  Wait for StreamDeco StreamDecoMonitor application response to synchronize ESP32 RTC clock
+    * @param    max_attempts - number of attempts to sync clock with computer, if -1 try forever
    */
-  void synchro_clock(int tryes);
+  void sync_clock(int max_attempts);
 
   /**
    * @brief   Init StreamDeco
@@ -71,7 +71,7 @@ namespace streamDeco
     lvgl::screen::set_rotation(settings::cache.rotation);
     lvgl::screen::set_bg_color(settings::cache.color_background);
 
-    /*  used to temporarily show apresentation screen
+    /*  used to temporarily show presentation screen
      *  the most part of this screens is a delay to show the icons and text
      *  actually useless but still nice to see */
     lvgl::Label startScreen_label;
@@ -120,14 +120,14 @@ namespace streamDeco
     lvgl::screen::refresh();
 
 #if DEVOSO_TESTING == 0
-    /* make 40 tryes to synchro clock with StreamDeco StreamDecoMonitor application */
-    synchro_clock(40);
+    /* make 40 attempts to sync clock with StreamDeco StreamDecoMonitor application */
+    sync_clock(40);
 #endif
 
     /** See more icon =) */
     rtos::sleep(1s);
 
-    /* delete apresentation icons and text, sad =( */
+    /* delete presentation icons and text, sad =( */
     startScreen_icon.del();
     startScreen_label.del();
 
@@ -140,7 +140,7 @@ namespace streamDeco
 
     streamDecoCanvas::init(settings::cache.rotation);
 
-    /* --- APLICATIONS CANVAS BUTTONS --- */
+    /* --- APPLICATIONS CANVAS BUTTONS --- */
 
     /* apps buttons is created on Applications canvas */
     streamDecoButtons::createApplication(streamDecoCanvas::applications, settings::cache);
@@ -177,20 +177,20 @@ namespace streamDeco
 
     lvgl::port::mutex_give();
 
-    /* register ISR to handle with timer_ui::backlight and uiResetTimer event */
-    timer_ui::backlight.attach(timer_callback);
-    timer_ui::uiReset.attach(timer_callback);
+    /* register ISR to handle with timers_idle::backlight_idle and canvas_idle event */
+    timers_idle::backlight_idle.attach(timer_callback);
+    timers_idle::canvas_idle.attach(timer_callback);
 
-    /* start timer_ui::backlight and uiResetTimer */
-    timer_ui::backlight.start();
-    timer_ui::uiReset.start();
+    /* start timers_idle::backlight_idle and canvas_idle */
+    timers_idle::backlight_idle.start();
+    timers_idle::canvas_idle.start();
 
     /* attach tasks handlers and start them */
     streamDecoTasks::buttons.attach(handleButtons);
-    streamDecoTasks::uiReset.attach(handleUIReset);
+    streamDecoTasks::idle.attach(handleIdle);
     streamDecoTasks::monitor.attach(handleMonitor);
     streamDecoTasks::clock.attach(handleClock);
-    streamDecoTasks::clockSynchro.attach(handleClockSynchro);
+    streamDecoTasks::clockSync.attach(handleClockSync);
     streamDecoTasks::updateCache.attach(handleUpdateCache);
 
   } // function init end
@@ -203,10 +203,10 @@ namespace streamDeco
   void print_task_memory_usage()
   {
     ESP_LOGI(log_tag, "Task Buttons mem usage %d kB\n", streamDecoTasks::buttons.memUsage());
-    ESP_LOGI(log_tag, "Task UI Reset mem usage %d kB\n", streamDecoTasks::uiReset.memUsage());
+    ESP_LOGI(log_tag, "Task UI Reset mem usage %d kB\n", streamDecoTasks::idle.memUsage());
     ESP_LOGI(log_tag, "Task Monitor mem usage %d kB\n", streamDecoTasks::monitor.memUsage());
-    ESP_LOGI(log_tag, "Task Ckock mem usage %d kB\n", streamDecoTasks::clock.memUsage());
-    ESP_LOGI(log_tag, "Task Ckock synchro mem usage %d kB\n", streamDecoTasks::clockSynchro.memUsage());
+    ESP_LOGI(log_tag, "Task Clock mem usage %d kB\n", streamDecoTasks::clock.memUsage());
+    ESP_LOGI(log_tag, "Task Clock sync mem usage %d kB\n", streamDecoTasks::clockSync.memUsage());
     ESP_LOGI(log_tag, "Task Cache update mem usage %d kB\n", streamDecoTasks::updateCache.memUsage());
   }
 

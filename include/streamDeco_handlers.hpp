@@ -29,7 +29,7 @@ namespace streamDeco
 
   /**
    * @brief   Handle the buttons streamDecoTasks, made buttons configurations and manager buttons events
-   * @details The events can generate a keyboard code to send to computer throug BLE Bluetooth
+    * @details The events can generate a keyboard code to send to computer through BLE Bluetooth
    *          or change StreamDeco configurations
    */
   void handleButtons(taskArg_t arg);
@@ -37,9 +37,9 @@ namespace streamDeco
   /**
    * @brief   Handle the ui reset streamDecoTasks
    * @details Each 10 seconds a timer will pass a event to this streamDecoTasks
-   *          to hidden additional screens and return to Main screen
+    *          to hide additional screens and return to Main screen
    */
-  void handleUIReset(taskArg_t arg);
+  void handleIdle(taskArg_t arg);
 
   /**
    * @brief   Handle the monitor streamDecoTasks
@@ -53,14 +53,14 @@ namespace streamDeco
    */
   void handleClock(taskArg_t arg);
 
-  /* Handle the clock synchro streamDecoTasks,
-   * synchro clock time with streamDeco monitor application */
-  void handleClockSynchro(taskArg_t task_arg);
+  /* Handle the clock sync streamDecoTasks,
+   * synchronize clock time with streamDeco monitor application */
+  void handleClockSync(taskArg_t task_arg);
 
   /* Handle the update cache streamDecoTasks,
    * update and save the settings cache with flash */
   void handleUpdateCache(taskArg_t task_arg);
 
-} // nasmespasce streamDeco
+} // namespace streamDeco
 
 #endif

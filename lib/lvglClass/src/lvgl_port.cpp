@@ -87,8 +87,8 @@ namespace lvgl
 
     /**
      * @brief    Get backlight PWM resolution
-     * @details  PWM resolution can be configured herer
-     * @return   Maximun PWM value
+      * @details  PWM resolution can be configured here
+      * @return   Maximum PWM value
      */
     constexpr ledc_timer_bit_t backlight_resolution = LEDC_TIMER_8_BIT;
 
@@ -196,7 +196,7 @@ namespace lvgl
 
     /**
      * @brief    Get maximun PWM value based on PWM resolution
-     * @return   Maximun PWM value
+      * @return   Maximum PWM value
      */
     uint32_t backlight_max()
     {
@@ -207,7 +207,7 @@ namespace lvgl
      * @brief    Set backlight bright
      * @details  Set backlight bright for 0 to 1
      * @param    bright   0 to zero bright 1 to maximum bright
-     *                    0.5 mean halfh bright
+      *                    0.5 means half bright
      */
     void backlight_set(float bright)
     {
@@ -225,8 +225,8 @@ namespace lvgl
      * @sa       backlight_max
      * @brief    Set backlight bright
      * @details  Set backlight bright in raw number from 0 to backlight_max()
-     * @param    bright   0 to zero bright and maximun to maximun bright
-     *                    half bright can be achived with backlight_max()/2
+      * @param    bright   0 to zero bright and maximum to maximum bright
+      *                    half bright can be achieved with backlight_max()/2
      */
     void backlight_setRaw(int bright)
     {
@@ -243,13 +243,13 @@ namespace lvgl
      * @brief    take the LVGL mutex
      * @details  this mutex prevents display alterations while
      *           internal timer are processed, changes cant no be done while LVGL handle
-     * @note     Affter take, the mutex must be released as soon as possible
+      * @note     After taking, the mutex must be released as soon as possible
      */
     void mutex_take() { mutex.take(); }
 
     /**
      * @brief    release LVGL mutex
-     * @details  Must be called affter the mutex are taked to release
+      * @details  Must be called after the mutex is taken to release
      *           LVGL interface to do other process
      */
     void mutex_give() { mutex.give(); }

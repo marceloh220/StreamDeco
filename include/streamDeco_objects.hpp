@@ -39,13 +39,13 @@ namespace streamDeco
   constexpr long streamDecoTask_uiReset_stackSize = 1_kB;
   constexpr long streamDecoTask_monitor_stackSize = 2_kB;
   constexpr long streamDecoTask_clock_stackSize = 3_kB;
-  constexpr long streamDecoTask_clockSynchro_stackSize = 4_kB;
+  constexpr long streamDecoTask_clockSync_stackSize = 4_kB;
   constexpr long streamDecoTask_updateCache_stackSize = 3_kB;
 
   /**
    * @enum     event_e
-   * @brief    Events enumerations
-   * @details  events registred on StreamDeco buttons
+    * @brief    Event enumeration
+    * @details  Events registered on StreamDeco buttons
    **/
   enum event_e
   {
@@ -112,7 +112,7 @@ namespace streamDeco
 
     configuration_canvas_colorbackground_event,
     configuration_canvas_colorbutton_event,
-    configuration_canvas_rotate_screen_event, // experimenntal
+    configuration_canvas_rotate_screen_event, // experimental
 
     configuration_canvas_sysmonitor_event,
     configuration_canvas_sysconfig_event,
@@ -142,7 +142,7 @@ namespace streamDeco
      * @var     flash
      * @brief   Use NVS to keep settings safe into flash
      * @details Non-Volatile Storage (NVS) library is designed to store data in flash.
-     * @details The data stored is not lost when SoC is reseted or power off.
+    * @details The data stored is not lost when SoC is reset or powered off.
      * @code
      * #define dataType int
      * marcelino::File<dataType>file_to_keep_data_into_flash("File Name");
@@ -173,9 +173,9 @@ namespace streamDeco
     /**
      * @var      uiReset
      * @brief    Task uiReset
-     * @details  Task to hidde inactivities streamDecoCanvas
+      * @details  Task to hide inactive streamDecoCanvas elements
      **/
-    extern rtos::TaskStatic<streamDecoTask_uiReset_stackSize> uiReset;
+    extern rtos::TaskStatic<streamDecoTask_uiReset_stackSize> idle;
 
     /**
      * @var      monitor
@@ -192,11 +192,11 @@ namespace streamDeco
     extern rtos::TaskStatic<streamDecoTask_clock_stackSize> clock;
 
     /**
-     * @var      clockSynchro
-     * @brief    Task clockSynchro
-     * @details  Task to synchronize clock with stramDeco monitor application
+     * @var      clockSync
+     * @brief    Task clockSync
+     * @details  Task to synchronize clock with StreamDeco monitor application
      **/
-    extern rtos::TaskStatic<streamDecoTask_clockSynchro_stackSize> clockSynchro;
+    extern rtos::TaskStatic<streamDecoTask_clockSync_stackSize> clockSync;
 
     /**
      * @var      updateCache
@@ -210,25 +210,25 @@ namespace streamDeco
    * @namespace  timer_ui
    * @brief      Timers
    **/
-  namespace timer_ui
+  namespace timers_idle
   {
     /**
      * @var      uiReset
      * @brief    uiReset timer
-     * @details  Timer to generate an event to hidden additional streamDecoCanvas
-     * @details  and return to Main screen in inactivitie
-     * @note     The timer value can be change in file streamDeco_objects.cpp
+      * @details  Timer to generate an event to hide additional streamDecoCanvas
+      * @details  and return to Main screen on inactivity
+      * @note     The timer value can be changed in file streamDeco_objects.cpp
      **/
-    extern rtos::TimerStatic uiReset;
+    extern rtos::TimerStatic canvas_idle;
 
     /**
      * @var      backlight
      * @brief    Backlight timer
-     * @details  Timer to reduce screen backlight in inactivitie
-     * @note     The timer value can be change in file streamDeco_objects.cpp
+      * @details  Timer to reduce screen backlight on inactivity
+      * @note     The timer value can be changed in file streamDeco_objects.cpp
      */
-    extern rtos::TimerStatic backlight;
-  } // namespace timer_ui
+    extern rtos::TimerStatic backlight_idle;
+  } // namespace timers_idle
 
   /**
    * @namespace  streamDecoCanvas
@@ -243,7 +243,7 @@ namespace streamDeco
     /**
      * @var     applications
      * @brief   Applications Canvas
-     * @details Canvas to hold addtional apps shortcuts
+      * @details Canvas to hold additional app shortcuts
      **/
     extern lvgl::Canvas applications;
 
@@ -255,7 +255,7 @@ namespace streamDeco
     extern lvgl::Canvas multimedia;
 
     /**
-     * @var     Configutations
+    * @var     configurations
      * @brief   Configurations Canvas
      * @details Canvas to hold configurations shortcuts
      **/
@@ -293,10 +293,10 @@ namespace streamDeco
   {
 
     /**
-     * @brief   Callback registred in buttons
-     * @details Send a notifications with event code to task buttons handler
+      * @brief   Callback registered on buttons
+      * @details Send notifications with event code to the task buttons handler
      * @param   lvglEvent  Event received by the callback
-     * @note    This callback is registred on buttons and streamDecoBrightSlider objects
+      * @note    This callback is registered on buttons and streamDecoBrightSlider objects
      * @note    Each streamDecoButtons and streamDecoBrightSlider send a different event
      **/
     void buttons_callback(lvgl::event::event_t lvglEvent);
@@ -782,7 +782,7 @@ namespace streamDeco
    * @param    button_event  Event generated by streamDecoButtons
    * @param    settings      Reference to StreamDeco settings
    * @details  Called by streamDecoTasks streamDecoButtons to send shortcuts to computer via BLE Bluetooth interface
-   * @note     Each streamDecoButtons send a event code registred during streamDecoButtons configuration
+    * @note     Each streamDecoButtons sends an event code registered during streamDecoButtons configuration
    *
    */
   void process_event(uint32_t button_event);

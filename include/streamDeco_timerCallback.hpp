@@ -29,20 +29,20 @@ namespace streamDeco
 
   /**
    * @brief    Callback function to handle backlight timer
-   * @details  Set backlight bright to 10% affter timer overflow
+   * @details  Set backlight brightness to 10% after timer overflow
    * @param    timerHandle The rtos timer send the timer handler to callback function
    **/
   void timer_callback(TimerHandle_t timerHandle);
 
   /**
-   * @brief   Callback registred in buttons
-   * @details Send a notifications with event code to streamDecoTasks buttons handler
+   * @brief   Callback registered on buttons
+   * @details Send notifications with event code to streamDecoTasks buttons handler
    * @param   event  Event received by the callback
-   * @note    This callback is registred on buttons and streamDecoBrightSlider objects
+   * @note    This callback is registered on buttons and streamDecoBrightSlider objects
    * @note    Each streamDecoButtons and streamDecoBrightSlider send a different event
    **/
   void buttons_callback(lvgl::event::event_t event);
 
-} // nasmespasce streamDeco
+} // namespace streamDeco
 
 #endif

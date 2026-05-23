@@ -79,7 +79,7 @@ namespace lvgl
 
     /**
      * @brief   Set the background color canvas
-     * @param   color Color of background on lvgl paletton
+      * @param   color Color of background on lvgl palette
      */
     void set_bg_color(lvgl::palette::palette_t color)
     {

@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file    streamDeco_HandlerUIReset.cpp
- * @brief   Hidden canvas
- * @details This handler hidden canvas or put backlight brigrht to minimum
- * @details if buttons are not pinned affter receive a notify sended by a timer
+ * @file    streamDeco_HandlerIdle.cpp
+ * @brief   Hide canvas
+ * @details This handler hides canvas or sets backlight brightness to minimum
+ * @details if buttons are not pinned after receiving a notification from a timer
  */
 
 #include "streamDeco_objects.hpp"
@@ -31,13 +31,13 @@ namespace streamDeco
 {
 
   /* Handler of UI reset task,
-   * hidden canvas if they are not pinned or
+    * hide canvas if they are not pinned or
    * put backlight on rest mode reducing the bright to minimum. */
-  void handleUIReset(taskArg_t task_arg)
+  void handleIdle(taskArg_t task_arg)
   {
     while (1)
     {
-      uint32_t e = streamDecoTasks::uiReset.takeNotify();
+      uint32_t e = streamDecoTasks::idle.takeNotify();
       switch (e)
       {
       case hidden_canvas_event:
@@ -49,8 +49,8 @@ namespace streamDeco
         {
           streamDecoCanvas::multimedia.hidden();
         }
-        /* Aways hidden Configurations canvas
-         * and never hidden Monitor canvas */
+        /* Always hide Configurations canvas
+         * and never hide Monitor canvas */
         streamDecoCanvas::configurations.hidden();
         break;
       case rest_backlight_event:

@@ -101,14 +101,14 @@ namespace rtos
     /**
      * @brief    Try to obtain the mutex
      * @details  Block the task until mutex can be taken
-     * @return   This return is not utilizable once the task will wait by the mutex forever,
+      * @return   This return is not usable once the task will wait on the mutex forever,
      * only for legacy  compatibility
      */
     bool take();
 
     /**
      * @brief    Try to obtain the mutex
-     * @details  Block the task until mutex can be obteined
+      * @details  Block the task until mutex can be obtained
      * @param    timeout The time in ticks to wait for the mutex to become available
      * @return   true if the mutex was obtained
      *           false if timeout expired without the mutex becoming available
@@ -136,8 +136,8 @@ namespace rtos
    * @details  Internally, within the FreeRTOS implementation, mutex semaphores use a block
    * of memory, in which the mutex structure is stored. Then the required memory is automatically
    * static allocated inside the object.
-   * @details  Recursive mutexs are indicate to be safety called by functions or methods many times as nedded.
-   *           Once obteined a number of times, the mutex must be released by the same number of times.
+  * @details  Recursive mutexes are safe to call from functions or methods many times as needed.
+  *           Once obtained a number of times, the mutex must be released by the same number of times.
    *           For example, if a task successfully takes the same mutex 5 times then the mutex will
    *           not be available to any other task until it has also given the mutex back exactly five times.
    * @code
@@ -217,14 +217,14 @@ namespace rtos
     /**
      * @brief    Try to obtain the mutex
      * @details  Block the task until mutex can be taken
-     * @return   This return is not utilizable once the task will wait by the mutex forever,
+      * @return   This return is not usable once the task will wait on the mutex forever,
      * only for legacy  compatibility
      */
     bool take();
 
     /**
      * @brief    Try to obtain the mutex
-     * @details  Block the task until mutex can be obteined
+      * @details  Block the task until mutex can be obtained
      * @param    timeout The time in ticks to wait for the mutex to become available
      * @return   true if the mutex was obtained
      *           false if timeout expired without the mutex becoming available

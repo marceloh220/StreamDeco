@@ -58,23 +58,23 @@ namespace streamDeco
   namespace streamDecoTasks
   {
     rtos::TaskStatic<streamDecoTask_buttons_stackSize> buttons("Task Buttons", 1);
-    rtos::TaskStatic<streamDecoTask_uiReset_stackSize> uiReset("Task reset canvas", 2);
+    rtos::TaskStatic<streamDecoTask_uiReset_stackSize> idle("Task idle", 2);
     rtos::TaskStatic<streamDecoTask_monitor_stackSize> monitor("Task Monitor", 1);
     rtos::TaskStatic<streamDecoTask_clock_stackSize> clock("Task Clock", 1);
-    rtos::TaskStatic<streamDecoTask_clockSynchro_stackSize> clockSynchro("Task synchro clock", 2);
+    rtos::TaskStatic<streamDecoTask_clockSync_stackSize> clockSync("Task clock sync", 2);
     rtos::TaskStatic<streamDecoTask_updateCache_stackSize> updateCache("Task update cache", 2);
   } // namespace streamDecoTask
 
   /**
-   * @namespace  timer_ui
-   * @brief      Timers
-   * @details    Time to reset ui canvas or backlight sleep can be changed herer
+   * @namespace  timers_idle
+   * @brief      Timers of idle task
+   * @details    Time to reset ui canvas or backlight sleep can be changed here
    **/
-  namespace timer_ui
+  namespace timers_idle
   {
-    rtos::TimerStatic uiReset("UI reset timer", 10s);
-    rtos::TimerStatic backlight("Backlight timer", 30s);
-  } // namespace timer_ui
+    rtos::TimerStatic canvas_idle("Canvas idle timer", 10s);
+    rtos::TimerStatic backlight_idle("Backlight idle timer", 30s);
+  } // namespace timers_idle
 
   /**
    * @namespace  streamDecoCanvas
@@ -82,6 +82,25 @@ namespace streamDeco
    */
   namespace streamDecoCanvas
   {
+    
+      void setup_canvas_style(lvgl::Style &style, int x, int y, int width, int height)
+      {
+        style.set_pad_all(0);
+        style.set_bg_color(lvgl::color::make(41, 45, 50));
+        style.align(lvgl::alignment::CENTER, x, y);
+        style.set_size(width, height);
+      }
+
+      void apply_canvas_style(lvgl::Style &style)
+      {
+        lvgl::port::mutex_take();
+        applications.add_style(style, lvgl::part::MAIN);
+        multimedia.add_style(style, lvgl::part::MAIN);
+        configurations.add_style(style, lvgl::part::MAIN);
+        monitor.add_style(style, lvgl::part::MAIN);
+        lvgl::port::mutex_give();
+      }
+
     /**
      * @var     applications
      * @brief   Applications Canvas
@@ -125,15 +144,8 @@ namespace streamDeco
     void init(lvgl::screen::rotation_t rotation)
     {
       /* configure style of streamDecoCanvas */
-      style_landscape.set_pad_all(0);
-      style_landscape.set_bg_color(lvgl::color::make(41, 45, 50));
-      style_landscape.align(lvgl::alignment::CENTER, -74, 0);
-      style_landscape.set_size(582, 470);
-
-      style_portrait.set_pad_all(0);
-      style_portrait.set_bg_color(lvgl::color::make(41, 45, 50));
-      style_portrait.align(lvgl::alignment::CENTER, 0, -74);
-      style_portrait.set_size(470, 582);
+      setup_canvas_style(style_landscape, -74, 0, 582, 470);
+      setup_canvas_style(style_portrait, 0, -74, 470, 582);
 
       /* configure Applications streamDecoCanvas */
       applications.create();
@@ -156,29 +168,19 @@ namespace streamDeco
 
     void portrait()
     {
-      lvgl::port::mutex_take();
-      applications.add_style(style_portrait, lvgl::part::MAIN);
-      multimedia.add_style(style_portrait, lvgl::part::MAIN);
-      configurations.add_style(style_portrait, lvgl::part::MAIN);
-      monitor.add_style(style_portrait, lvgl::part::MAIN);
-      lvgl::port::mutex_give();
+      apply_canvas_style(style_portrait);
     }
 
     void landscape()
     {
-      lvgl::port::mutex_take();
-      applications.add_style(style_landscape, lvgl::part::MAIN);
-      multimedia.add_style(style_landscape, lvgl::part::MAIN);
-      configurations.add_style(style_landscape, lvgl::part::MAIN);
-      monitor.add_style(style_landscape, lvgl::part::MAIN);
-      lvgl::port::mutex_give();
+      apply_canvas_style(style_landscape);
     }
   } // namespace streamDecoCanvas
 
   /**
    * @namespace  streamDecoButtons
    * @brief      Buttons of StreamDeco
-   * @details    Buttons's icons can be changed herer
+    * @details    Button icons can be changed here
    *
    * @note    The difference between mainIcon, CanvasButton and ConfigButton
    *          is position map
@@ -193,10 +195,10 @@ namespace streamDeco
   {
 
     /**
-     * @brief   Callback registred in buttons
-     * @details Send a notifications with event code to task buttons handler
+      * @brief   Callback registered on buttons
+      * @details Send notifications with event code to task buttons handler
      * @param   lvglEvent  Event received by the callback
-     * @note    This callback is registred on buttons and streamDecoBrightSlider objects
+      * @note    This callback is registered on buttons and streamDecoBrightSlider objects
      * @note    Each streamDecoButtons and streamDecoBrightSlider send a different event
      **/
     void buttons_callback(lvgl::event::event_t lvglEvent);

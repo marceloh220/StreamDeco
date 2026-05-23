@@ -1,0 +1,16 @@
+{
+    "name": "lvglClass",
+    "version": "1.0.0",
+    "description": "C++ wrapper for LVGL with custom fonts and icons",
+    "frameworks": "*",
+    "platforms": "*",
+    "build": {
+        "includeDir": "include",
+        "srcDir": "src",
+        "srcFilter": [
+            "+<*.cpp>",
+            "+<fonts/*.c>",
+            "+<icons/*.c>"
+        ]
+    }
+}

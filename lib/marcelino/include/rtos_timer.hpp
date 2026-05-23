@@ -62,7 +62,7 @@ namespace rtos
    *    if(xTimer1.verifyID(xTimerArg))
    *    {
    *
-   *      printf("%s: event occour!\n", xTimer1.name());
+  *      printf("%s: event occurs!\n", xTimer1.name());
    *
    *    }
    *
@@ -86,7 +86,7 @@ namespace rtos
 
     /**
      * @brief    Attach the handler callback on timer
-     * @details  Affter instanciate the timer still not running
+      * @details  After instantiating, the timer is still not running
      *           and must have an handler attached to enter in execution and be started
      * @param    callback  Function callback to handler the timer execution
      * @param autoReload If autoReload is set to true then the timer will
@@ -98,7 +98,7 @@ namespace rtos
      *           void timer_callback(TimerHandler_t arg)
      *           {
      *
-     *             printf("Timer periode expire =)\n");
+    *             printf("Timer period expired =)\n");
      *
      *           }
      */
@@ -200,7 +200,7 @@ namespace rtos
      *    if(xTimer1.verifyID(xTimerArg))
      *    {
      *
-     *      printf("%s: event occour!\n", xTimer1.name());
+    *      printf("%s: event occurs!\n", xTimer1.name());
      *
      *    }
      *

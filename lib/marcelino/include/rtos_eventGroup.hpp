@@ -314,8 +314,8 @@ namespace rtos
      *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
      *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
      * @note    This method test and clear the waiting flags.
-     * @return  true if all flags are setted
-     *          false if an error occour
+    * @return  true if all flags are set
+    *          false if an error occurs
      */
     bool waitAllFlags(const EventBits_t flags);
 
@@ -327,8 +327,8 @@ namespace rtos
      *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
      * @param   timeout The maximum amount of time to wait for the bits specified become set.
      * @note    This method test and clear the waiting flags.
-     * @return  true if all flags are setted
-     *          false if an error occour or timeout expire.
+    * @return  true if all flags are set
+    *          false if an error occurs or timeout expires.
      */
     bool waitAllFlags(const EventBits_t flags, milliseconds timeout);
 
@@ -338,8 +338,8 @@ namespace rtos
      *          For example, to set bit 3 only, set flags to 0x08 of (1<<3). To set bit 3
      *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
      * @note    This method test and clear the waiting flags.
-     * @return  true if any flag are setted
-     *          false if an error occour
+    * @return  true if any flag is set
+    *          false if an error occurs
      */
     bool waitAnyFlags(const EventBits_t flags);
 
@@ -351,8 +351,8 @@ namespace rtos
      *          and bit 0 set flags to 0x09 or (1<<0)|(1<<3).
      * @param   timeout The maximum amount of time to wait for the bits specified become set.
      * @note    This method test and clear the waiting flags.
-     * @return  true if any flag are setted
-     *          false if an error occour or timeout expire.
+    * @return  true if any flag is set
+    *          false if an error occurs or timeout expires.
      */
     bool waitAnyFlags(const EventBits_t flags, milliseconds timeout);
 

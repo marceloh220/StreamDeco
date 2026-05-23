@@ -47,7 +47,7 @@ namespace lvgl
          * @details  The bright value is percent unity based
          *           0.0 means 0%   of bright
          *           0.5 means 50%  of bright
-         *           1.0 menas 100% of bright
+         *           1.0 means 100% of bright
          */
         void backlight_set(float bright);
 
@@ -55,7 +55,7 @@ namespace lvgl
          * @brief    set backlight bright
          * @param    bright Backlight bright in raw value
          * @details  PWM bright control is configured to 12-bits resolution
-         *           The miminum value of bright is 0 ans max are 4095
+         *           The minimum value of bright is 0 and max is 4095
          */
         void backlight_setRaw(int bright);
 
@@ -63,13 +63,13 @@ namespace lvgl
          * @brief    take the LVGL mutex
          * @details  this mutex prevents display alterations while
          *           internal timer are processed, changes cant no be done while LVGL handle
-         * @note     Affter take, the mutex must be released as soon as possible
+         * @note     After taking, the mutex must be released as soon as possible
          */
         void mutex_take();
 
         /**
          * @brief    release LVGL mutex
-         * @details  Must be called affter the mutex are taked to release
+         * @details  Must be called after the mutex is taken to release
          *           LVGL interface to do other process
          */
         void mutex_give();

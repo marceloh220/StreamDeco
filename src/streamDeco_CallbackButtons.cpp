@@ -32,10 +32,10 @@ namespace streamDeco
   {
 
     /**
-     * @brief   Callback registred in buttons
-     * @details Send a notifications with event code to task buttons handler
+      * @brief   Callback registered on buttons
+      * @details Send notifications with event code to task buttons handler
      * @param   lvglEvent  Event received by the callback
-     * @note    This callback is registred on buttons and streamDecoBrightSlider objects
+      * @note    This callback is registered on buttons and streamDecoBrightSlider objects
      * @note    Each streamDeco button and streamDeco bright slider send a different event
      **/
     void buttons_callback(lvgl::event::event_t lvglEvent)
