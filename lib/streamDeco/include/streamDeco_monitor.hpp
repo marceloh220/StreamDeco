@@ -49,6 +49,14 @@ namespace streamDeco
             void bar1_set_value(int32_t value, const char *prefix, const char *sufix = "");
             void bar2_set_value(int32_t value, const char *prefix, const char *sufix = "");
         protected:
+            template <typename Action>
+            void with_lock(Action action)
+            {
+                if (object == nullptr) return;
+                lvgl::port::mutex_take();
+                action();
+                lvgl::port::mutex_give();
+            }
             virtual void init_conf(lvgl::palette::palette_t color);
             const char *text_scr;
             lvgl::icon_t icon_scr;
@@ -80,6 +88,14 @@ namespace streamDeco
             void bar1_set_value(int32_t value, const char *prefix, const char *sufix = "");
             void bar2_set_value(int32_t value, int32_t value2, const char *prefix, const char *sufix = "");
         private:
+            template <typename Action>
+            void with_lock(Action action)
+            {
+                if (object == nullptr) return;
+                lvgl::port::mutex_take();
+                action();
+                lvgl::port::mutex_give();
+            }
             void init_conf(lvgl::palette::palette_t color);
             const char *text_scr;
             lvgl::icon_t icon_scr;
@@ -106,6 +122,14 @@ namespace streamDeco
             void color(lvgl::palette::palette_t color);
             void set_time(struct tm &rtc_time);
         private:
+            template <typename Action>
+            void with_lock(Action action)
+            {
+                if (object == nullptr) return;
+                lvgl::port::mutex_take();
+                action();
+                lvgl::port::mutex_give();
+            }
             void init_conf(lvgl::palette::palette_t color);
             const char *text_scr = nullptr;
             lvgl::icon_t icon_scr = nullptr;

@@ -25,8 +25,6 @@
    [esp32_smartdisplay v2.0.9](https://github.com/rzeldent/esp32-smartdisplay)
        
    [platformio-espressif32-sunton](https://github.com/rzeldent/platformio-espressif32-sunton)
-       
-   [GFX Library for Arduino v1.2.8](https://github.com/moononournation/Arduino_GFX)
 
    Touch screen:
    

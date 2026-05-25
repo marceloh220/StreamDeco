@@ -111,28 +111,25 @@ namespace streamDeco
 
         void Complete::set_bg_color(lvgl::color_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Complete::set_bg_color
 
         void Complete::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Complete::set_bg_color
 
         void Complete::color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            setup_metric_indicator_style(metric_indicator_style, color);
-            setup_metric_style(metric_style, color);
-            invalidate();
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                setup_metric_indicator_style(metric_indicator_style, color);
+                setup_metric_style(metric_style, color);
+                invalidate();
+            });
         } // Complete::color
 
         void Complete::arc_set_value(int16_t value)
@@ -254,28 +251,25 @@ namespace streamDeco
 
         void Basic::set_bg_color(lvgl::color_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Basic::set_bg_color
 
         void Basic::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Basic::set_bg_color
 
         void Basic::color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            setup_metric_indicator_style(metric_indicator_style, color);
-            setup_metric_style(metric_style, color);
-            invalidate();
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                setup_metric_indicator_style(metric_indicator_style, color);
+                setup_metric_style(metric_style, color);
+                invalidate();
+            });
         } // Basic::color
 
         void Basic::bar1_set_range(int32_t min, int32_t max)
@@ -374,42 +368,41 @@ namespace streamDeco
 
         void Clock::set_bg_color(lvgl::color_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Clock::set_bg_color
 
         void Clock::set_bg_color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            set_background_and_invalidate(monitor_style, *this, color);
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                set_background_and_invalidate(monitor_style, *this, color);
+            });
         } // Clock::set_bg_color
 
         void Clock::color(lvgl::palette::palette_t color)
         {
-            if (object == nullptr) return;
-            lvgl::port::mutex_take();
-            metric_style.set_bg_color(color);
-            metric_style.set_img_recolor(color);
-            metric_style.set_text_color(color);
-            metric_style.set_arc_color(color);
-            weekActual_style.set_text_color(color);
-            invalidate();
-            lvgl::port::mutex_give();
+            with_lock([&]() {
+                metric_style.set_bg_color(color);
+                metric_style.set_img_recolor(color);
+                metric_style.set_text_color(color);
+                metric_style.set_arc_color(color);
+                weekActual_style.set_text_color(color);
+                invalidate();
+            });
         } // Clock::color
 
         void Clock::set_time(struct tm &rtc_time)
         {
 
-            char buffer[15];
+            constexpr size_t kDateBufferSize = 11; // dd/mm/yyyy + null terminator
+            constexpr size_t kTimeBufferSize = 9;  // hh:mm:ss + null terminator
+            char buffer[kDateBufferSize];
 
-            strftime(buffer, 12, "%d/%m/%Y", &rtc_time);
+            strftime(buffer, kDateBufferSize, "%d/%m/%Y", &rtc_time);
             date.set_text(buffer);
 
-            strftime(buffer, 12, "%H:%M:%S", &rtc_time);
+            strftime(buffer, kTimeBufferSize, "%H:%M:%S", &rtc_time);
             hour.set_text(buffer);
 
             if(wday != rtc_time.tm_wday) {

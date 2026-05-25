@@ -103,7 +103,7 @@ namespace rtos
 
     /**
      * @brief   Post an item on a queue.
-      * @details  Block the task until an item is posted on queue or an error occurs
+     * @details  Block the task until an item is posted on queue or an error occurs
      * @param   data Data to the item that is to be placed on the queue.
      * The size of the items the queue will hold was defined when the queue was created,
      * so this many bytes will be copied from data into the queue storage area.
@@ -120,8 +120,8 @@ namespace rtos
 
     /**
      * @brief   Post an item on a queue.
-      * @details  Block the task until an item is posted on queue,
-      * the timeout expires or an error occurs.
+     * @details  Block the task until an item is posted on queue,
+     * the timeout expires or an error occurs.
      * @param   data Data to the item that is to be placed on the queue.
      * The size of the items the queue will hold was defined when the queue was created,
      * so this many bytes will be copied from data into the queue storage area.
@@ -141,7 +141,7 @@ namespace rtos
 
     /**
      * @brief   Post an item to the back of a queue.
-      * @details  Block the task until an item is posted on queue or an error occurs.
+     * @details  Block the task until an item is posted on queue or an error occurs.
      * @param   data Data to the item that is to be placed on the queue.
      * The size of the items the queue will hold was defined when the queue was created,
      * so this many bytes will be copied from data into the queue storage area.
@@ -158,8 +158,8 @@ namespace rtos
 
     /**
      * @brief   Post an item to the back of a queue.
-      * @details  Block the task until an item is posted on queue,
-      * the timeout expires or an error occurs.
+     * @details  Block the task until an item is posted on queue,
+     * the timeout expires or an error occurs.
      * @param   data Data to the item that is to be placed on the queue.
      * The size of the items the queue will hold was defined when the queue was created,
      * so this many bytes will be copied from data into the queue storage area.
@@ -195,8 +195,8 @@ namespace rtos
 
     /**
      * @brief   Post an item to the front of a queue.
-      * @details  Block the task until an item is posted on queue,
-      * the timeout expires or an error occurs.
+     * @details  Block the task until an item is posted on queue,
+     * the timeout expires or an error occurs.
      * @param   data Data to the item that is to be placed on the queue.
      * The size of the items the queue will hold was defined when the queue was created,
      * so this many bytes will be copied from data into the queue storage area.
@@ -262,8 +262,8 @@ namespace rtos
     /**
      * @brief   Receive an item from a queue. The item is received by copy so a buffer of
      * adequate size must be provided. The number of bytes copied into the buffer
-      * was defined when the queue was instantiated.
-      * @details  Block the task until an item is received from queue or an error occurs.
+     * was defined when the queue was instantiated.
+     * @details  Block the task until an item is received from queue or an error occurs.
      * @param   data Pointer to the buffer into which the received item will be copied.
      * @return  pdTRUE if an item was successfully received from the queue, otherwise pdFALSE.
      * @note    This function must not be called from an interrupt service routine.
@@ -278,9 +278,9 @@ namespace rtos
     /**
      * @brief   Receive an item from a queue. The item is received by copy so a buffer of
      * adequate size must be provided. The number of bytes copied into the buffer
-      * was defined when the queue was instantiated.
-      * @details  Block the task until an item is received from queue,
-      * the timeout expires or an error occurs.
+     * was defined when the queue was instantiated.
+     * @details  Block the task until an item is received from queue,
+     * the timeout expires or an error occurs.
      * @param   data Pointer to the buffer into which the received item will be copied.
      * @param   timeout The maximum amount of time the task should block
      * waiting for space to become available on the queue, should it already

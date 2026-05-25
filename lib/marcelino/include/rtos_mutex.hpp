@@ -100,14 +100,14 @@ namespace rtos
     /**
      * @brief    Try to obtain the mutex
      * @details  Block the task until mutex can be taken
-      * @return   This return is not usable once the task will wait on the mutex forever,
+     * @return   This return is not usable once the task will wait on the mutex forever,
      * only for legacy  compatibility
      */
     bool take();
 
     /**
      * @brief    Try to obtain the mutex
-      * @details  Block the task until mutex can be obtained
+     * @details  Block the task until mutex can be obtained
      * @param    timeout The time in ticks to wait for the mutex to become available
      * @return   true if the mutex was obtained
      *           false if timeout expired without the mutex becoming available
@@ -203,14 +203,14 @@ namespace rtos
     /**
      * @brief    Try to obtain the mutex
      * @details  Block the task until mutex can be taken
-      * @return   This return is not usable once the task will wait on the mutex forever,
+     * @return   This return is not usable once the task will wait on the mutex forever,
      * only for legacy  compatibility
      */
     bool take();
 
     /**
      * @brief    Try to obtain the mutex
-      * @details  Block the task until mutex can be obtained
+     * @details  Block the task until mutex can be obtained
      * @param    timeout The time in ticks to wait for the mutex to become available
      * @return   true if the mutex was obtained
      *           false if timeout expired without the mutex becoming available
@@ -218,7 +218,7 @@ namespace rtos
     bool take(int timeout);
 
     /**
-      * @brief  Release the mutex to be used by other tasks
+     * @brief  Release the mutex to be used by other tasks
      * @return true if the mutex was released.
      *         false if an error occurred.
      *         Mutex are implemented using queues.  An error can occur if there is

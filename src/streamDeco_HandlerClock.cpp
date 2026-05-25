@@ -33,32 +33,57 @@ namespace streamDeco
   {
     constexpr time_t kEpochWrap = 2082758399;
 
-    void discardMonitorStatsFromSerial()
+    String nextFrameToken(const String &frame, int &start)
     {
-      // Discard monitor stats fields that are not used by RTC synchronization.
-      for (int i = 0; i < 10; ++i)
+      if (start < 0 || start >= frame.length())
       {
-        Serial.readStringUntil(',');
+        return "";
       }
+
+      int sep = frame.indexOf(',', start);
+      String token;
+
+      if (sep < 0)
+      {
+        token = frame.substring(start);
+        start = frame.length();
+      }
+      else
+      {
+        token = frame.substring(start, sep);
+        start = sep + 1;
+      }
+
+      token.trim();
+      return token;
     }
 
-    void readClockFromSerial(struct tm &tm_date)
+    bool readClockFromFrame(const String &frame, struct tm &tm_date)
     {
-      String sec = Serial.readStringUntil(',');
-      String min = Serial.readStringUntil(',');
-      String hour = Serial.readStringUntil(',');
-      String week = Serial.readStringUntil(',');
-      String day = Serial.readStringUntil(',');
-      String month = Serial.readStringUntil(',');
-      String year = Serial.readStringUntil('/');
+      int start = 0;
+      String fields[17];
 
-      tm_date.tm_sec = sec.toInt();
-      tm_date.tm_min = min.toInt();
-      tm_date.tm_hour = hour.toInt();
-      tm_date.tm_wday = week.toInt();
-      tm_date.tm_mday = day.toInt();
-      tm_date.tm_mon = month.toInt() - 1;
-      tm_date.tm_year = year.toInt() - 1900;
+      for (int i = 0; i < 17; ++i)
+      {
+        fields[i] = nextFrameToken(frame, start);
+      }
+
+      // Require at least full date payload (sec..year) for RTC sync.
+      if (!fields[10].length() || !fields[11].length() || !fields[12].length() ||
+          !fields[13].length() || !fields[14].length() || !fields[15].length() || !fields[16].length())
+      {
+        return false;
+      }
+
+      tm_date.tm_sec = fields[10].toInt();
+      tm_date.tm_min = fields[11].toInt();
+      tm_date.tm_hour = fields[12].toInt();
+      tm_date.tm_wday = fields[13].toInt();
+      tm_date.tm_mday = fields[14].toInt();
+      tm_date.tm_mon = fields[15].toInt() - 1;
+      tm_date.tm_year = fields[16].toInt() - 1900;
+
+      return true;
     }
 
     void updateRtcFromTm(struct tm &tm_date)
@@ -96,9 +121,13 @@ namespace streamDeco
 
       if (Serial.available())
       {
-        discardMonitorStatsFromSerial();
-        readClockFromSerial(tm_date);
-        updateRtcFromTm(tm_date);
+        String frame = Serial.readStringUntil('/');
+        frame.trim();
+
+        if (frame.length() > 0 && readClockFromFrame(frame, tm_date))
+        {
+          updateRtcFromTm(tm_date);
+        }
 
         mutex_serial.give();
 

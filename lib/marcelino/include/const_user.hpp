@@ -111,7 +111,23 @@ namespace memory
 
     /**
      * @brief   Allocate memory for a single object of type T
-     * @param   caps Memory capabilities flags
+     * @param   caps Memory capabilities flags:
+     *          MALLOC_CAP_EXEC - Memory must be able to run executable code
+     *          MALLOC_CAP_32BIT - Memory must allow for aligned 32-bit data accesses
+     *          MALLOC_CAP_8BIT - Memory must allow for 8/16/...-bit data accesses
+     *          MALLOC_CAP_DMA - Memory must be able to accessed by DMA
+     *          MALLOC_CAP_PID2 - Memory must be mapped to PID2 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID3 - Memory must be mapped to PID3 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID4 - Memory must be mapped to PID4 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID5 - Memory must be mapped to PID5 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID6 - Memory must be mapped to PID6 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID7 - Memory must be mapped to PID7 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_SPIRAM - Memory must be in SPI RAM
+     *          MALLOC_CAP_INTERNAL - Memory must be internal; specifically it should not disappear when flash/spiram cache is switched off
+     *          MALLOC_CAP_DEFAULT - Memory can be returned in a non-capability-specific memory allocation (e.g. malloc(), calloc()) call
+     *          MALLOC_CAP_IRAM_8BIT - Memory must be in IRAM and allow unaligned access
+     *          MALLOC_CAP_RETENTION - Memory must be able to accessed by retention DMA
+     *          MALLOC_CAP_RTCRAM - Memory must be in RTC fast memory
      * @return  Pointer to allocated object of type T
      * @note   Uses heap_caps_malloc from esp_heap_caps.h
      *         Example:
@@ -128,7 +144,23 @@ namespace memory
     /**
      * @brief   Allocate memory for an array of objects of type T
      * @param   size Number of objects to allocate
-     * @param   caps Memory capabilities flags
+     * @param   caps Memory capabilities flags:
+     *          MALLOC_CAP_EXEC - Memory must be able to run executable code
+     *          MALLOC_CAP_32BIT - Memory must allow for aligned 32-bit data accesses
+     *          MALLOC_CAP_8BIT - Memory must allow for 8/16/...-bit data accesses
+     *          MALLOC_CAP_DMA - Memory must be able to accessed by DMA
+     *          MALLOC_CAP_PID2 - Memory must be mapped to PID2 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID3 - Memory must be mapped to PID3 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID4 - Memory must be mapped to PID4 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID5 - Memory must be mapped to PID5 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID6 - Memory must be mapped to PID6 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_PID7 - Memory must be mapped to PID7 memory space (PIDs are not currently used)
+     *          MALLOC_CAP_SPIRAM - Memory must be in SPI RAM
+     *          MALLOC_CAP_INTERNAL - Memory must be internal; specifically it should not disappear when flash/spiram cache is switched off
+     *          MALLOC_CAP_DEFAULT - Memory can be returned in a non-capability-specific memory allocation (e.g. malloc(), calloc()) call
+     *          MALLOC_CAP_IRAM_8BIT - Memory must be in IRAM and allow unaligned access
+     *          MALLOC_CAP_RETENTION - Memory must be able to accessed by retention DMA
+     *          MALLOC_CAP_RTCRAM - Memory must be in RTC fast memory
      * @return  Pointer to allocated array of objects of type T
      * @note   Uses heap_caps_calloc from esp_heap_caps.h
      *         Example:

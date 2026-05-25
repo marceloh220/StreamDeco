@@ -67,18 +67,15 @@ import psutil
 import pyamdgpuinfo
 from datetime import datetime
 from time import sleep
+from typing import Callable
+from multiprocessing.process import BaseProcess as Process
 
-class MetricCPU:
+class MetricProcessBase:
     def __init__(self) -> None:
         self.load:str = ''
         self.temperature:str = ''
         self.frequency:str = ''
-        
-    def read(self) -> None:
-        self.load  = str(psutil.cpu_percent())
-        self.temperature = str(psutil.sensors_temperatures()["coretemp"][0].current)
-        self.frequency = str(psutil.cpu_freq().current)
-            
+
     def decode(self, last:bool = False) -> str:
         _data = f'{self.load}, {self.temperature}, {self.frequency}'
         if last == True:
@@ -86,25 +83,43 @@ class MetricCPU:
         else:
             _data = _data + ','
         return _data
-        
-            
-class MetricGPU(MetricCPU):
+
+class MetricCPU(MetricProcessBase):
     def read(self) -> None:
-        _gpu = pyamdgpuinfo.get_gpu(0)
-        self.load  = str(_gpu.query_load())
-        self.temperature = str(_gpu.query_temperature())
-        self.frequency = str(_gpu.query_sclk()/1000/1000)
+        self.load = str(psutil.cpu_percent())
+        try:
+            temperatures = psutil.sensors_temperatures()
+            if "coretemp" in temperatures and temperatures["coretemp"]:
+                self.temperature = str(temperatures["coretemp"][0].current)
+            elif temperatures:
+                first_group = next(iter(temperatures.values()))
+                self.temperature = str(first_group[0].current) if first_group else self.temperature
+        except Exception:
+            pass
+
+        try:
+            cpu_freq = psutil.cpu_freq()
+            if cpu_freq is not None:
+                self.frequency = str(cpu_freq.current)
+        except Exception:
+            pass
+        
+class MetricGPU(MetricProcessBase):
+    def read(self) -> None:
+        try:
+            _gpu = pyamdgpuinfo.get_gpu(0)
+            self.load = str(_gpu.query_load())
+            self.temperature = str(_gpu.query_temperature())
+            self.frequency = str(_gpu.query_sclk()/1000/1000)
+        except Exception:
+            pass
 
 
-class MetricRAM:
+class MetricMemoryBase:
     def __init__(self) -> None:
         self.used:str = ''
         self.max:str = ''
     
-    def read(self) -> None:
-        self.used  = str(psutil.virtual_memory().used / (1024 ** 2))
-        self.max   = str(psutil.virtual_memory().total / (1024 ** 2))
-        
     def decode(self, last:bool = False) -> str:
         _data = f'{self.used}, {self.max}'
         if last == True:
@@ -114,7 +129,13 @@ class MetricRAM:
         return _data
 
 
-class MetricDISK(MetricRAM):
+class MetricRAM(MetricMemoryBase):
+    def read(self) -> None:
+        self.used  = str(psutil.virtual_memory().used / (1024 ** 2))
+        self.max   = str(psutil.virtual_memory().total / (1024 ** 2))
+
+
+class MetricDISK(MetricMemoryBase):
     def read(self, letterDrive:str) -> None:
         drive = psutil.disk_usage(letterDrive)
         self.used = str(drive.used / (1024.0 ** 3))
@@ -157,7 +178,7 @@ class StreamMonitor:
         self._port:str = 'FAIL'
         self._name:str = boardName
         self._debug:bool = debug
-        self._port:callable = self._initPortConnection()
+        self._port = self._initPortConnection()
         while self._port == 'FAIL':
             self._port = self._initPortConnection()
             if self._debug == True:
@@ -197,12 +218,12 @@ class StreamMonitor:
 
 
 class Task():
-    def __init__(self, target:callable) -> None:
+    def __init__(self, target:Callable) -> None:
         import sys
         import multiprocessing
         if sys.platform.startswith('win'):
             multiprocessing.freeze_support()
-        self._task:object = multiprocessing.Process(target = target)
+        self._task:Process = multiprocessing.Process(target = target)
 
     def start(self) -> None:
         self._task.start()
@@ -223,8 +244,12 @@ def monitor() -> None:
     disk = MetricDISK()
     date = MetricDate()
     while(1):
-        cpu.read()
-        gpu.read()
+        try:
+            cpu.read()
+            gpu.read()
+        except Exception as e:
+            if debugCode:
+                print(e)
         mem.read()
         disk.read('/')
         date.read()

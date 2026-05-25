@@ -64,25 +64,18 @@
 #
 
 from typing import Callable
+import os
 
 updateTime = 1       # monitor update interval
 boardCOM   = 'CH340' # USB/TTL on ESP32 8048s43c Board, check your controller
 debugCode  = False   # Show information in terminal, only to terminal execution
 monitorFull = False  # If true enable all sensors in monitor, else only CPU and GPU sensors are enabled
 
-class MetricCPU:
+class MetricProcessBase:
     def __init__(self) -> None:
         self.load:str = ''
         self.temperature:str = ''
         self.frequency:str = ''
-        
-    def parse(self, sensor) -> None:
-        if str(sensor.SensorType) == 'Load' and sensor.Name == 'CPU Total':
-            self.load = str(int(sensor.Value))
-        if str(sensor.SensorType) == 'Temperature' and sensor.Name == 'CPU Package':
-            self.temperature = str(int(sensor.Value))
-        if str(sensor.SensorType) == 'Clock' and sensor.Name == 'CPU Core #1':
-            self.frequency = str(int(sensor.Value))
             
     def decode(self, last:bool = False) -> str:
         _data = f'{self.load}, {self.temperature}, {self.frequency}'
@@ -91,9 +84,19 @@ class MetricCPU:
         else:
             _data = _data + ','
         return _data
-        
-            
-class MetricGPU(MetricCPU):
+
+
+class MetricCPU(MetricProcessBase):
+    def parse(self, sensor) -> None:
+        if str(sensor.SensorType) == 'Load' and sensor.Name == 'CPU Total':
+            self.load = str(int(sensor.Value))
+        if str(sensor.SensorType) == 'Temperature' and sensor.Name == 'CPU Package':
+            self.temperature = str(int(sensor.Value))
+        if str(sensor.SensorType) == 'Clock' and sensor.Name == 'CPU Core #1':
+            self.frequency = str(int(sensor.Value))
+
+
+class MetricGPU(MetricProcessBase):
     def parse(self, sensor) -> None:
         if str(sensor.SensorType) == 'Load' and sensor.Name == 'GPU Core':
             self.load = str(int(sensor.Value))
@@ -103,17 +106,22 @@ class MetricGPU(MetricCPU):
             self.frequency = str(int(sensor.Value))
 
 
-class MetricRAM:
+def _safe_int_text(value, fallback: str = '') -> str:
+    try:
+        if value is None:
+            return fallback
+        return str(int(value))
+    except Exception:
+        return fallback
+
+
+class MetricMemoryBase:
     def __init__(self) -> None:
         from psutil import virtual_memory, disk_usage
         self.used:str = ''
         self.max:str = ''
         self.memory:Callable = virtual_memory
         self.disk:Callable = disk_usage
-    
-    def read(self) -> None:
-        self.used  = str(self.memory().used / (1024 ** 2))
-        self.max   = str(self.memory().total / (1024 ** 2))
         
     def decode(self, last:bool = False) -> str:
         _data = f'{self.used}, {self.max}'
@@ -124,8 +132,14 @@ class MetricRAM:
         return _data
 
 
-class MetricDISK(MetricRAM):
-    def read(self, letterDrive:str) -> None:
+class MetricRAM(MetricMemoryBase):
+    def read(self) -> None:
+        self.used  = str(self.memory().used / (1024 ** 2))
+        self.max   = str(self.memory().total / (1024 ** 2))
+
+
+class MetricDISK(MetricMemoryBase):
+    def read(self, letterDrive:str) -> None: # pyright: ignore[reportIncompatibleMethodOverride]
         drive = self.disk(f'{letterDrive}:\\') # Drive letter with double \\
         self.used = str(drive.used / (1024.0 ** 3))
         self.max  = str(drive.total / (1024.0 ** 3))
@@ -144,7 +158,7 @@ class MetricDate:
         self.metric:object = datetime
     
     def read(self) -> None:
-        now = self.metric.now()
+        now = self.metric.now() # pyright: ignore[reportAttributeAccessIssue]
         self.sec = str(now.second)
         self.min = str(now.minute)
         self.hour = str(now.hour)
@@ -214,8 +228,10 @@ class LibreHardwareMonitor:
     def __init__(self, debug = False, monitorAll = False) -> None:
         import clr
         fileLib = 'LibreHardwareMonitorLib'
-        clr.AddReference(fileLib)
-        from LibreHardwareMonitor import Hardware
+        if not os.path.isfile(fileLib + '.dll'):
+            raise FileNotFoundError(f'{fileLib}.dll not found. Please, make sure that {fileLib}.dll is in the same folder as this script or the exe program.')
+        clr.AddReference(fileLib) # pyright: ignore[reportAttributeAccessIssue]
+        from LibreHardwareMonitor import Hardware # pyright: ignore[reportMissingImports]
         self._handle = Hardware.Computer()
         self._handle.IsCpuEnabled = True
         self._handle.IsGpuEnabled = True
@@ -230,30 +246,34 @@ class LibreHardwareMonitor:
         self._gpu = MetricGPU()
         self._debug = debug
 
-    def read(self) -> list[MetricCPU, MetricGPU]:
-        for hardware in self._handle.Hardware:
-            hardware.Update()
-            for sensor in hardware.Sensors:
-                if sensor.Value is not None:
-                    self._cpu.parse(sensor)
-                    self._gpu.parse(sensor)
-                    if self._debug == True:
-                        data = f'{str(sensor.SensorType)} : '
-                        data = data + f'{sensor.Name} : ' 
-                        data = data + str(sensor.Value)
-                        print(data)
-            for subHardware in hardware.SubHardware:
-                subHardware.Update()
-                for subsensor in subHardware.Sensors:
-                    if subsensor.Value is not None:
-                        self._cpu.parse(subsensor)
-                        self._gpu.parse(subsensor)
+    def read(self) -> tuple[MetricCPU, MetricGPU]:
+        try:
+            for hardware in self._handle.Hardware:
+                hardware.Update()
+                for sensor in hardware.Sensors:
+                    if sensor.Value is not None:
+                        self._cpu.parse(sensor)
+                        self._gpu.parse(sensor)
                         if self._debug == True:
-                            data = f'{str(subsensor.SensorType)} : '
-                            data = data + f'{subsensor.Name} : '
-                            data = data + str(subsensor.Value)
+                            data = f'{str(sensor.SensorType)} : '
+                            data = data + f'{sensor.Name} : ' 
+                            data = data + str(sensor.Value)
                             print(data)
-        return [self._cpu, self._gpu]
+                for subHardware in hardware.SubHardware:
+                    subHardware.Update()
+                    for subsensor in subHardware.Sensors:
+                        if subsensor.Value is not None:
+                            self._cpu.parse(subsensor)
+                            self._gpu.parse(subsensor)
+                            if self._debug == True:
+                                data = f'{str(subsensor.SensorType)} : '
+                                data = data + f'{subsensor.Name} : '
+                                data = data + str(subsensor.Value)
+                                print(data)
+        except Exception as e:
+            if self._debug == True:
+                print(e)
+        return (self._cpu, self._gpu)
     
     def decode(self, last = False) -> str:
         return self._cpu.decode() + self._gpu.decode(last)
@@ -263,8 +283,10 @@ class OpenHardwareMonitor(LibreHardwareMonitor):
     def __init__(self, debug = False, monitorAll = False) -> None:
         import clr
         fileLib = 'OpenHardwareMonitorLib'
-        clr.AddReference(fileLib)
-        from OpenHardwareMonitor import Hardware
+        if not os.path.isfile(fileLib + '.dll'):
+            raise FileNotFoundError(f'{fileLib}.dll not found. Please, make sure that {fileLib}.dll is in the same folder as this script or the exe program.')
+        clr.AddReference(fileLib) # pyright: ignore[reportAttributeAccessIssue]
+        from OpenHardwareMonitor import Hardware # pyright: ignore[reportMissingImports]
         self._handle = Hardware.Computer()
         self._handle.CPUEnabled = True
         self._handle.GPUEnabled = True
@@ -287,11 +309,11 @@ class Task():
         self._task:object = multiprocessing.Process(target = target)
 
     def start(self) -> None:
-        self._task.start()
+        self._task.start() # type: ignore
 
     def close(self, tray) -> None:
         tray.stop()
-        self._task.terminate()
+        self._task.terminate() # type: ignore
 
 
 def monitor() -> None:
@@ -307,10 +329,14 @@ def monitor() -> None:
     disk = MetricDISK()
     date = MetricDate()
     while(1):
-        if debugCode:
-            print('Hardware read:\t\t', timeit.timeit(hardwareMonitor.read, number=1))
-        else:
-            hardwareMonitor.read()
+        try:
+            if debugCode:
+                print('Hardware read:\t\t', timeit.timeit(hardwareMonitor.read, number=1))
+            else:
+                hardwareMonitor.read()
+        except Exception as e:
+            if debugCode:
+                print(e)
         mem.read()
         disk.read('c')
         date.read()
@@ -326,7 +352,10 @@ if __name__ == '__main__':
     import PIL.Image
     
     task = Task(monitor)
-    iconTray = PIL.Image.open('./streamDeco.ico')
+    if os.path.isfile('./streamDeco.ico'):
+        iconTray = PIL.Image.open('./streamDeco.ico')
+    else:
+        iconTray = None
     tray = pystray.Icon(name = 'StreamDeco', title = 'StreamDeco', icon = iconTray, 
                         menu = pystray.Menu(
                                             pystray.MenuItem('Sair', task.close)
