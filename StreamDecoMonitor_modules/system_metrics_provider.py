@@ -22,23 +22,12 @@ class SystemMetricsProvider:
         self.update_interval_seconds = 1.0
         self._stop_event = threading.Event()
         self._thread = threading.Thread(target=self._run, daemon=True)
-        self.cpu_load = 0.0
-        self.cpu_temp = 0.0
-        self.cpu_freq = 0.0
-        self.gpu_load = 0.0
-        self.gpu_temp = 0.0
-        self.gpu_freq = 0.0
-        self.ram_used = 0.0
-        self.ram_total = 0.0
-        self.disk_used = 0.0
-        self.disk_total = 0.0
-        self.date_sec = 0.0
-        self.date_min = 0.0
-        self.date_hour = 0.0
-        self.date_week = 0.0
-        self.date_day = 0.0
-        self.date_month = 0.0
-        self.date_year = 0.0
+        self.cpu_load, self.cpu_temp, self.cpu_freq = 0.0, 0.0, 0.0
+        self.gpu_load, self.gpu_temp, self.gpu_freq = 0.0, 0.0, 0.0
+        self.ram_used, self.ram_total = 0.0, 0.0
+        self.disk_used, self.disk_total = 0.0, 0.0
+        self.date_sec, self.date_min, self.date_hour = 0.0, 0.0, 0.0
+        self.date_week, self.date_day, self.date_month, self.date_year = 0.0, 0.0, 0.0, 0.0
         self._gpu_mode = "none"
         self._gpu_handle: Any = None
         if self._platform == "linux":
@@ -132,36 +121,19 @@ class SystemMetricsProvider:
 
     def _sync_attributes(
         self,
-        cpu_load: float,
-        cpu_temp: float,
-        cpu_freq: float,
-        gpu_load: float,
-        gpu_temp: float,
-        gpu_freq: float,
-        ram_used: float,
-        ram_total: float,
-        disk_used: float,
-        disk_total: float,
+        cpu_load: float,  cpu_temp: float, cpu_freq: float,
+        gpu_load: float,  gpu_temp: float, gpu_freq: float,
+        ram_used: float,  ram_total: float,
+        disk_used: float, disk_total: float,
         date_values: tuple[float, float, float, float, float, float, float],
     ) -> None:
-        self.cpu_load = cpu_load
-        self.cpu_temp = cpu_temp
-        self.cpu_freq = cpu_freq
-        self.gpu_load = gpu_load
-        self.gpu_temp = gpu_temp
-        self.gpu_freq = gpu_freq
-        self.ram_used = ram_used
-        self.ram_total = ram_total
-        self.disk_used = disk_used
-        self.disk_total = disk_total
+        self.cpu_load, self.cpu_temp, self.cpu_freq = cpu_load, cpu_temp, cpu_freq
+        self.gpu_load, self.gpu_temp, self.gpu_freq = gpu_load, gpu_temp, gpu_freq
+        self.ram_used, self.ram_total = ram_used, ram_total
+        self.disk_used, self.disk_total = disk_used, disk_total
         (
-            self.date_sec,
-            self.date_min,
-            self.date_hour,
-            self.date_week,
-            self.date_day,
-            self.date_month,
-            self.date_year,
+            self.date_sec, self.date_min, self.date_hour,
+            self.date_week, self.date_day, self.date_month, self.date_year,
         ) = date_values
 
     def _cpu_temperature_c(self) -> float:
@@ -256,49 +228,26 @@ class SystemMetricsProvider:
         ram_used, ram_total, disk_used, disk_total = self._read_memory_metrics()
         date_values = self._read_date_metrics()
         self._sync_attributes(
-            cpu_load,
-            cpu_temp,
-            cpu_freq,
-            gpu_load,
-            gpu_temp,
-            gpu_freq,
-            ram_used,
-            ram_total,
-            disk_used,
-            disk_total,
+            cpu_load, cpu_temp, cpu_freq,
+            gpu_load, gpu_temp, gpu_freq,
+            ram_used, ram_total,
+            disk_used, disk_total,
             date_values,
         )
         return {
-            "cpu_load": self.cpu_load,
-            "cpu_temp": self.cpu_temp,
-            "cpu_freq": self.cpu_freq,
-            "gpu_load": self.gpu_load,
-            "gpu_temp": self.gpu_temp,
-            "gpu_freq": self.gpu_freq,
-            "ram_used": self.ram_used,
-            "ram_total": self.ram_total,
-            "disk_used": self.disk_used,
-            "disk_total": self.disk_total,
+            "cpu_load": self.cpu_load, "cpu_temp": self.cpu_temp, "cpu_freq": self.cpu_freq,
+            "gpu_load": self.gpu_load, "gpu_temp": self.gpu_temp, "gpu_freq": self.gpu_freq,
+            "ram_used": self.ram_used, "ram_total": self.ram_total,
+            "disk_used": self.disk_used, "disk_total": self.disk_total,
         }
 
     def decode(self) -> str:
         fields = [
-            int(self.cpu_load),
-            int(self.cpu_temp),
-            int(self.cpu_freq),
-            int(self.gpu_load),
-            int(self.gpu_temp),
-            int(self.gpu_freq),
-            int(self.ram_used),
-            int(self.ram_total),
-            int(self.disk_used),
-            int(self.disk_total),
-            int(self.date_sec),
-            int(self.date_min),
-            int(self.date_hour),
-            int(self.date_week),
-            int(self.date_day),
-            int(self.date_month),
-            int(self.date_year),
+            int(self.cpu_load), int(self.cpu_temp), int(self.cpu_freq),
+            int(self.gpu_load), int(self.gpu_temp), int(self.gpu_freq),
+            int(self.ram_used), int(self.ram_total),
+            int(self.disk_used), int(self.disk_total),
+            int(self.date_sec), int(self.date_min), int(self.date_hour),
+            int(self.date_week), int(self.date_day), int(self.date_month), int(self.date_year),
         ]
         return ", ".join(str(field) for field in fields) + "/"

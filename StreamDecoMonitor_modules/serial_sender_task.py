@@ -16,6 +16,7 @@ class SerialSenderTask:
 
     def start(self) -> None:
         if self._thread.is_alive():
+            report("SerialSenderTask", "WARNING", "SerialSenderTask is already running.")
             return
         self._stop_event.clear()
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -26,6 +27,7 @@ class SerialSenderTask:
         try:
             self._queue_serial_sender.put_nowait("")
         except Full:
+            report("SerialSenderTask", "WARNING", "Failed to send stop signal, queue is full.")
             pass
         if self._thread.is_alive():
             self._thread.join(timeout=1.5)
@@ -36,9 +38,11 @@ class SerialSenderTask:
             try:
                 payload = self._queue_serial_sender.get(timeout=0.5)
             except Empty:
+                report("SerialSenderTask", "WARNING", "No payload to send, queue is empty.")
                 continue
 
             if not payload:
+                report("SerialSenderTask", "WARNING", "Received empty payload, skipping.")
                 continue
 
             self._stream_monitor.send(payload)
