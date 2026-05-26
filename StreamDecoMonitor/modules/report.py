@@ -34,10 +34,21 @@ def get_debug_level() -> str:
             return key
     return "UNKNOWN"
 
-def report(reporter: str, type: str, message: str) -> None:
+def report(reporter: str, type: str, message: str) -> str:
+    """
+    Reports a message with a specified type and reporter.
+    Args:
+        reporter (str): The name of the reporter or module generating the message.
+        type (str): The type of the message ("ERROR", "WARNING", "INFO", "DEBUG").
+        message (str): The message content to report.
+    Returns:
+        str: The formatted report message.
+    """
     global _debugLevel
+    reportmsg = f" {reporter} [{type}] {message}"
     if type in _debugLevels:
         if _debugLevel >= _debugLevels[type]:
-             print(f" {reporter} [{type}] {message}", file=sys.stderr if type == "ERROR" else sys.stdout)
+             print(reportmsg, file=sys.stderr if type == "ERROR" else sys.stdout)
     else:
         print(f" Report [ERROR] Invalid report type: {type}. Message: {message}", file=sys.stderr)
+    return reportmsg

@@ -9,12 +9,10 @@ dist
 build
 *.exe
 *.bin
-*.spec
 *.elf
 *.map
 *.o
 *.d
-StreamDecoMonitor_modules/__pycache__
-StreamDecoMonitor_modules/__init__.py
+__init__.py
 __pycache__
 *.log
