@@ -5,6 +5,7 @@ a = Analysis(
     pathex=[],
     binaries=[
         ('lib/LibreHardwareMonitorLib.dll', 'lib'),
+        ('lib/HidSharp.dll', 'lib'),
     ],
     datas=[
         ('assets', 'assets'),

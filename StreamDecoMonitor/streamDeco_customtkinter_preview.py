@@ -86,7 +86,12 @@ if __name__ == "__main__":
     metrics = SystemMetricsProvider(queue_metrics, queue_serial_sender)
 
     boardCOM = search_com_port()
-    serial_sender = SerialSenderTask(boardCOM, queue_serial_sender) if boardCOM else None
+    serial_sender = SerialSenderTask(
+        boardCOM=boardCOM,
+        queue_serial_sender=queue_serial_sender, 
+        run_task=True,
+        update_interval_seconds=1.0
+        ) if boardCOM else None
     
     app: MonitorPreview
     tray: SystemTrayController

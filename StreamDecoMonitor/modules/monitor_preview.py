@@ -287,9 +287,9 @@ class MonitorPreview(ctk.CTk):
         values of the RAM and disk stat bars based on the provided data.
         """
         self.cpu_gauge.set_value(data["cpu_load"])
-        self.gpu_gauge.set_value(data["gpu_load"])
         self.cpu_temp.set_value(data["cpu_temp"], 120)
         self.cpu_freq.set_value(data["cpu_freq"], 6000)
+        self.gpu_gauge.set_value(data["gpu_load"])
         self.gpu_temp.set_value(data["gpu_temp"], 120)
         self.gpu_freq.set_value(data["gpu_freq"], 4000)
         self.mem_ram.label.configure(text=self._format_ram_text(data["ram_used"], data["ram_total"]))
