@@ -47,6 +47,10 @@ class MonitorPreview(ctk.CTk):
         self.minsize(960, 560)
         self.view_mode = "monitor"
         self.metrics_paused = False
+        self._status_mode_text = "MODE: MONITOR"
+        self._status_default_color = "#25313c"
+        self._status_notice_job = None
+        self._status_notice_active = False
         self._header_icons: dict[str, ctk.CTkImage] = {}
         self.protocol("WM_DELETE_WINDOW", self._on_exit)
         self._build_layout()
@@ -106,7 +110,41 @@ class MonitorPreview(ctk.CTk):
             text (str): The text to display in the status label, indicating the current mode 
             (e.g., "MODE: MONITOR", "MODE: PERFORMANCE", "MODE: CLOCK", "MODE: PAUSED").
         """
-        self.status_label.configure(text=text)
+        self._status_mode_text = text
+        if not self._status_notice_active:
+            self.status_label.configure(text=self._status_mode_text, text_color=self._status_default_color)
+
+    def show_status_notice(self, text: str, severity: str = "info", duration_ms: int = 3200) -> None:
+        """
+        Shows a temporary notice on the side status label and then restores mode text.
+        Args:
+            text (str): Message to display.
+            severity (str): Visual severity level ("info", "success", "warning", "error").
+            duration_ms (int): How long the temporary message should remain visible.
+        """
+        colors = {
+            "info": "#1f2a40",
+            "success": "#1f6f3e",
+            "warning": "#8a6500",
+            "error": "#8a1f2f",
+        }
+        notice_color = colors.get(severity.lower(), colors["info"])
+
+        if self._status_notice_job is not None:
+            self.after_cancel(self._status_notice_job)
+            self._status_notice_job = None
+
+        self._status_notice_active = True
+        self.status_label.configure(text=text, text_color=notice_color)
+        self._status_notice_job = self.after(duration_ms, self._clear_status_notice)
+
+    def _clear_status_notice(self) -> None:
+        """
+        Restores the default mode status after a temporary notice.
+        """
+        self._status_notice_job = None
+        self._status_notice_active = False
+        self.status_label.configure(text=self._status_mode_text, text_color=self._status_default_color)
 
     def _assets_dir(self) -> Path:
         """
@@ -419,8 +457,8 @@ class MonitorPreview(ctk.CTk):
         self.btn_bot.pack(pady=(14, 6))
         self.status_label = ctk.CTkLabel(
             side,
-            text="MODE: MONITOR",
-            text_color="#25313c",
+            text=self._status_mode_text,
+            text_color=self._status_default_color,
             font=("Segoe UI", 14, "bold"),
         )
         self.status_label.pack(pady=(10, 0))

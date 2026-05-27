@@ -14,15 +14,19 @@ class SystemTrayController:
         _app (MonitorPreview): The main application window that this system tray controller manages.
         _on_exit (Callable[[], None]): A callback function that is called when the user chooses 
                                        to exit the application from the system tray menu.
+        _on_reconnect (Callable[[], None] | None): An optional callback function that is called when the user chooses 
+                                       to reconnect the serial device from the system tray menu.
+                                       If None, the reconnect option will not be shown in the menu.
         _icon (Any): The pystray Icon object representing the system tray icon. This
                      is initialized in the constructor and may be None if the system tray 
                      functionality is unavailable.
         _is_running (bool): A flag indicating whether the system tray icon is currently running.
         _can_use_tray (bool): A flag indicating whether the system tray functionality is available and can be used. This is determined during initialization based on whether the pystray library was successfully imported and initialized.
     """
-    def __init__(self, app: MonitorPreview, on_exit: Callable[[], None]) -> None:
+    def __init__(self, app: MonitorPreview, on_exit: Callable[[], None], on_reconnect: Callable[[], None] | None = None) -> None:
         self._app = app          # The main application window that this system tray controller manages.
         self._on_exit = on_exit  # A callback function that is called when the user chooses to exit the application from the system tray menu.
+        self._on_reconnect = on_reconnect
         self._icon: Any = None   # The pystray Icon object representing the system tray icon.
         self._is_running = False
         self._can_use_tray = False
@@ -37,10 +41,13 @@ class SystemTrayController:
                 report("StreamDecoCustomTkinterPreview", "WARNING", f"Icon file not found at {icon_path}. System tray icon will be unavailable.")
                 sys.exit(1)
             icon_image = Image.open(icon_path) if icon_path.exists() else None
-            menu = pystray.Menu(
+            menu_items = [
                 pystray.MenuItem("Restaurar", self._restore_window, default=True),
-                pystray.MenuItem("Sair", self._quit_application),
-            )
+            ]
+            if self._on_reconnect is not None:
+                menu_items.append(pystray.MenuItem("Reconectar dispositivo", self._reconnect_device))
+            menu_items.append(pystray.MenuItem("Sair", self._quit_application))
+            menu = pystray.Menu(*menu_items)
             self._icon = pystray.Icon(name="StreamDecoPreview", title="StreamDeco Preview", icon=icon_image, menu=menu)
             self._can_use_tray = True
         except Exception as exc:
@@ -129,3 +136,17 @@ class SystemTrayController:
             self._on_exit()
 
         self._app.after(0, _quit) # Schedule the quit function to run in the main thread after the current event loop iteration
+
+    def _reconnect_device(self, icon: Any, item: Any) -> None:
+        """
+        Triggers a serial reconnection flow from the system tray menu.
+        """
+        del icon, item
+        if self._on_reconnect is None:
+            return
+
+        def _reconnect() -> None:
+            if self._on_reconnect is not None:
+                self._on_reconnect()
+
+        self._app.after(0, _reconnect)

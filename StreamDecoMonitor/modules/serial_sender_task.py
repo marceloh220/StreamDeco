@@ -31,6 +31,37 @@ class SerialSenderTask:
             self._thread = threading.Thread(target=self._run, daemon=True)
             self._update_interval_seconds = update_interval_seconds
             self._queue_serial_sender = queue_serial_sender
+    
+    def set_port(self, port: str) -> None:
+        """
+        Sets the COM port for the serial device.
+        Args:
+            port (str): The COM port to set for the serial device.
+        """
+        self._port = port
+    
+    def set_queue(self, queue_serial_sender: Queue[str]) -> None:
+        """
+        Sets the queue for sending data to the serial device.
+        Args:
+            queue_serial_sender (Queue[str]): The queue to set for sending data to the serial device.
+        """
+        self._queue_serial_sender = queue_serial_sender
+    
+    def task(self, run_task: bool) -> None:
+        """
+        Enables or disables the SerialSenderTask based on the run_task parameter.
+        Args:
+            run_task (bool): If True, the task will be enabled and ready to start. If False, the task will be disabled.
+        """
+        if run_task:
+            if self._stop_event is None:
+                self._stop_event = threading.Event()
+            if self._thread is None:
+                self._thread = threading.Thread(target=self._run, daemon=True)
+        else:
+            self._stop_event = None
+            self._thread = None
 
     def start(self) -> None:
         """
