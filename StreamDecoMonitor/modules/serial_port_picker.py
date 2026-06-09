@@ -1,0 +1,226 @@
+import customtkinter as ctk
+from typing import Mapping, Protocol
+from modules.report import report
+from modules.sound_notification import play_reconnect_failure_sound
+
+
+class _SerialSenderDiagnostics(Protocol):
+    def diagnostics(self) -> dict[str, str | int | bool]:
+        ...
+
+
+def close_serial_port_picker_if_open(
+    *,
+    app,
+    port_picker_state: dict[str, ctk.CTkToplevel | None],
+    notice_context: str = "",
+) -> bool:
+    """
+    Closes the serial port picker window if it is currently open.
+    """
+    picker = port_picker_state["window"]
+    if picker is None:
+        return False
+    try:
+        if picker.winfo_exists() and picker.grab_current() == picker:
+            picker.grab_release()
+    except Exception:
+        pass
+    if picker.winfo_exists():
+        picker.destroy()
+    port_picker_state["window"] = None
+    if notice_context:
+        report(
+            "StreamDecoCustomTkinterPreview",
+            "INFO",
+            f"Serial picker auto-closed ({notice_context}).",
+        )
+        app.show_status_notice(
+            f"SERIAL: seletor fechado ({notice_context})",
+            severity="info",
+            duration_ms=1300,
+        )
+    return True
+
+
+def open_serial_port_picker(
+    *,
+    app,
+    app_is_admin: bool,
+    port_picker_state: dict[str, ctk.CTkToplevel | None],
+    serial_sender_state: Mapping[str, _SerialSenderDiagnostics | None],
+    list_serial_ports,
+    connect_serial_device,
+) -> None:
+    """
+    Shows a modal with all detected serial ports so the user can pick one.
+    """
+    if not app_is_admin:
+        report(
+            "StreamDecoCustomTkinterPreview",
+            "WARNING",
+            "Serial picker blocked: app is not running with administrator rights.",
+        )
+        play_reconnect_failure_sound()
+        app.show_status_notice("SERIAL: execute como administrador", severity="warning")
+        return
+
+    existing_window = port_picker_state["window"]
+    if existing_window is not None and existing_window.winfo_exists():
+        existing_window.deiconify()
+        existing_window.lift()
+        existing_window.focus_force()
+        return
+
+    ports = list_serial_ports()
+    if not ports:
+        report("StreamDecoCustomTkinterPreview", "WARNING", "No serial ports available for picker.")
+        play_reconnect_failure_sound()
+        app.show_status_notice("SERIAL: nenhuma porta encontrada", severity="warning")
+        return
+
+    picker = ctk.CTkToplevel(app)
+    picker.title("Selecionar porta serial")
+    picker.geometry("520x420")
+    picker.resizable(False, False)
+    picker.transient(app)
+    port_picker_state["window"] = picker
+
+    def close_picker() -> None:
+        try:
+            if picker.winfo_exists() and picker.grab_current() == picker:
+                picker.grab_release()
+        except Exception:
+            pass
+        if picker.winfo_exists():
+            picker.destroy()
+        if port_picker_state["window"] == picker:
+            port_picker_state["window"] = None
+
+    def on_picker_destroy(event) -> None:
+        # <Destroy> is also emitted by child widgets; only clear state for the toplevel itself.
+        if event.widget is picker and port_picker_state["window"] == picker:
+            port_picker_state["window"] = None
+
+    picker.protocol("WM_DELETE_WINDOW", close_picker)
+    picker.bind("<Destroy>", on_picker_destroy)
+
+    container = ctk.CTkFrame(picker, fg_color="#223340", corner_radius=12)
+    container.pack(fill="both", expand=True, padx=14, pady=14)
+
+    title = ctk.CTkLabel(
+        container,
+        text="Portas Seriais Detectadas",
+        text_color="#e8f2ff",
+        font=("Segoe UI", 20, "bold"),
+    )
+    title.pack(anchor="w", padx=12, pady=(12, 6))
+
+    subtitle = ctk.CTkLabel(
+        container,
+        text="Clique para conectar na porta desejada.",
+        text_color="#b9ccdf",
+        font=("Segoe UI", 13),
+    )
+    subtitle.pack(anchor="w", padx=12, pady=(0, 8))
+
+    active_port_label = ctk.CTkLabel(
+        container,
+        text="Em uso: --",
+        text_color="#a7bfd6",
+        font=("Consolas", 12, "bold"),
+    )
+    active_port_label.pack(anchor="w", padx=12, pady=(0, 8))
+
+    ports_frame = ctk.CTkScrollableFrame(container, fg_color="#1d2c37", corner_radius=10)
+    ports_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+    def render_ports() -> None:
+        for child in ports_frame.winfo_children():
+            child.destroy()
+
+        active_port = "--"
+        active_sender = serial_sender_state["task"]
+        if active_sender is not None:
+            active_port = str(active_sender.diagnostics().get("port", "--") or "--")
+        active_port_label.configure(text=f"Em uso: {active_port}")
+
+        current_ports = list_serial_ports()
+        if not current_ports:
+            empty = ctk.CTkLabel(
+                ports_frame,
+                text="Nenhuma porta serial encontrada.",
+                text_color="#d8b3b9",
+                font=("Segoe UI", 13, "bold"),
+            )
+            empty.pack(anchor="w", padx=8, pady=12)
+            return
+
+        # Prioritize current active port at the top, then sort alphabetically.
+        current_ports.sort(
+            key=lambda item: (
+                0 if str(item.get("name", "")) == active_port else 1,
+                str(item.get("name", "")),
+            )
+        )
+
+        for port_info in current_ports:
+            port_name = str(port_info.get("name", ""))
+            description = str(port_info.get("description", ""))
+            compatible = bool(port_info.get("compatible", False))
+            in_use = port_name == active_port
+            compatibility_tag = "(compatível)" if compatible else ""
+            in_use_tag = "[EM USO]" if in_use else ""
+            label = f"{port_name} {compatibility_tag} {in_use_tag}\n{description}".strip()
+            fg_color = "#2f5b42" if compatible else "#2f4352"
+            hover_color = "#397252" if compatible else "#3a5263"
+            if in_use:
+                fg_color = "#6a4f1f"
+                hover_color = "#826128"
+
+            button = ctk.CTkButton(
+                ports_frame,
+                text=label,
+                anchor="w",
+                justify="left",
+                fg_color=fg_color,
+                hover_color=hover_color,
+                text_color="#e8f2ff",
+                height=58,
+                command=lambda selected=port_name: select_port(selected),
+            )
+            button.pack(fill="x", padx=6, pady=4)
+
+    def select_port(selected_port: str) -> None:
+        close_picker()
+        report(
+            "StreamDecoCustomTkinterPreview",
+            "INFO",
+            f"Serial port selected from icon: {selected_port}.",
+        )
+        connect_serial_device(selected_port, source="icon")
+
+    action_row = ctk.CTkFrame(container, fg_color="transparent")
+    action_row.pack(fill="x", padx=10, pady=(0, 10))
+    action_row.grid_columnconfigure(0, weight=1)
+    action_row.grid_columnconfigure(1, weight=0)
+
+    refresh_button = ctk.CTkButton(
+        action_row,
+        text="Atualizar lista",
+        fg_color="#3f5e71",
+        hover_color="#4a6f86",
+        command=render_ports,
+    )
+    refresh_button.grid(row=0, column=0, sticky="w")
+
+    close_button = ctk.CTkButton(
+        action_row,
+        text="Fechar",
+        fg_color="#5b3440",
+        hover_color="#724151",
+        command=close_picker,
+    )
+    close_button.grid(row=0, column=1, sticky="e")
+
+    render_ports()

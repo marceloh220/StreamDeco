@@ -63,6 +63,7 @@ class SystemMetricsProvider:
         self.disk_used, self.disk_total = 0.0, 0.0
         self.date_sec, self.date_min, self.date_hour = 0.0, 0.0, 0.0
         self.date_week, self.date_day, self.date_month, self.date_year = 0.0, 0.0, 0.0, 0.0
+        self._lhm_read_failures = 0
         self._gpu_mode = "none"
         self._gpu_handle: Any = None
         if self._platform == "linux":
@@ -130,7 +131,6 @@ class SystemMetricsProvider:
                 return default
             return float(value)
         except Exception:
-            report("SystemMetricsProvider", "ERROR", f"Failed to convert value to float: {value}")
             return default
 
     def _read_cpu_gpu_metrics(self) -> tuple[float, float, float, float, float, float]:
@@ -148,6 +148,9 @@ class SystemMetricsProvider:
         gpu_load, gpu_temp, gpu_freq = self._gpu_metrics()
         try:
             monitor_info = self.monitor.read()
+            if self._lhm_read_failures > 0:
+                report("SystemMetricsProvider", "INFO", "LibreHardwareMonitor metrics restored.")
+                self._lhm_read_failures = 0
             cpu_data = monitor_info[0] if len(monitor_info) > 0 else None
             gpu_data = monitor_info[1] if len(monitor_info) > 1 else None
             if cpu_data is not None:
@@ -158,10 +161,14 @@ class SystemMetricsProvider:
                 gpu_load = self._safe_float(getattr(gpu_data, "load", None), gpu_load)
                 gpu_temp = self._safe_float(getattr(gpu_data, "temperature", None), gpu_temp)
                 gpu_freq = self._safe_float(getattr(gpu_data, "frequency", None), gpu_freq)
-        except Exception:
-            report("SystemMetricsProvider", "ERROR", 
-                    "Failed to read metrics from LibreHardwareMonitor. Using fallback values.")
-            pass
+        except Exception as exc:
+            self._lhm_read_failures += 1
+            if self._lhm_read_failures in (1, 5) or (self._lhm_read_failures % 30 == 0):
+                report(
+                    "SystemMetricsProvider",
+                    "WARNING",
+                    f"Failed to read metrics from LibreHardwareMonitor ({self._lhm_read_failures} failures): {exc}",
+                )
         return cpu_load, cpu_temp, cpu_freq, gpu_load, gpu_temp, gpu_freq
 
     def _read_memory_metrics(self) -> tuple[float, float, float, float]:
@@ -308,6 +315,21 @@ class SystemMetricsProvider:
                 return 0.0, 0.0, 0.0
         return 0.0, 0.0, 0.0
     
+    @staticmethod
+    def _replace_queue_payload(queue: Queue[Any], payload: Any) -> None:
+        """
+        Replaces queue contents with the latest payload.
+        """
+        while True:
+            try:
+                _ = queue.get_nowait()
+            except Empty:
+                break
+        try:
+            queue.put_nowait(payload)
+        except Full:
+            pass
+
     def _queue_reader_payload(self, payload: dict[str, float]) -> None:
         """
         Attempts to enqueue the latest metrics payload into the queue_metrics. If the queue is full, it will drop
@@ -321,20 +343,7 @@ class SystemMetricsProvider:
         If it still fails to enqueue due to the queue being full, it logs another error message
         indicating that the new payload could not be enqueued even after dropping the oldest one.
         """
-        try:
-            self.queue_metrics.put_nowait(payload)
-        except Full:
-            try:
-                report("SystemMetricsProvider", "WARNING", "Queue metrics is full, dropping oldest payload to enqueue new one.")
-                _ = self.queue_metrics.get_nowait()
-            except Empty:
-                report("SystemMetricsProvider", "ERROR", "Failed to dequeue metrics oldest payload, queue is unexpectedly empty.")
-                pass
-            try:
-                self.queue_metrics.put_nowait(payload)
-            except Full:
-                report("SystemMetricsProvider", "ERROR", "Failed to enqueue metrics payload after dropping oldest one, queue is still full.")
-                pass
+        self._replace_queue_payload(self.queue_metrics, payload)
 
     def _queue_serial_payload(self, payload: str) -> None:
         """
@@ -350,20 +359,7 @@ class SystemMetricsProvider:
         If it still fails to enqueue due to the queue being full, it logs another error message
         indicating that the new payload could not be enqueued even after dropping the oldest one.
         """
-        try:
-            self.queue_serial_sender.put_nowait(payload)
-        except Full:
-            try:
-                report("SystemMetricsProvider", "WARNING", "Queue serial sender is full, dropping oldest payload to enqueue new one.")
-                _ = self.queue_serial_sender.get_nowait()
-            except Empty:
-                report("SystemMetricsProvider", "ERROR", "Failed to dequeue serial sender oldest payload, queue is unexpectedly empty.")
-                pass
-            try:
-                self.queue_serial_sender.put_nowait(payload)
-            except Full:
-                report("SystemMetricsProvider", "ERROR", "Failed to enqueue serial sender payload after dropping oldest one, queue is still full.")
-                pass
+        self._replace_queue_payload(self.queue_serial_sender, payload)
 
     def _run(self) -> None:
         """
@@ -374,10 +370,13 @@ class SystemMetricsProvider:
         parts of the application. The loop runs until the _stop_event is set, at which point it will exit and the thread will terminate.
         """
         while not self._stop_event.is_set():
-            metrics_payload = self.read()
-            serial_payload = self.decode()
-            self._queue_reader_payload(metrics_payload)
-            self._queue_serial_payload(serial_payload)
+            try:
+                metrics_payload = self.read()
+                serial_payload = self.decode()
+                self._queue_reader_payload(metrics_payload)
+                self._queue_serial_payload(serial_payload)
+            except Exception as exc:
+                report("SystemMetricsProvider", "ERROR", f"Unexpected metrics loop error: {exc}")
             if self._stop_event.wait(self.update_interval_seconds):
                 break
 

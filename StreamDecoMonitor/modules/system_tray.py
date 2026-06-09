@@ -23,10 +23,19 @@ class SystemTrayController:
         _is_running (bool): A flag indicating whether the system tray icon is currently running.
         _can_use_tray (bool): A flag indicating whether the system tray functionality is available and can be used. This is determined during initialization based on whether the pystray library was successfully imported and initialized.
     """
-    def __init__(self, app: MonitorPreview, on_exit: Callable[[], None], on_reconnect: Callable[[], None] | None = None) -> None:
+    def __init__(
+        self,
+        app: MonitorPreview,
+        on_exit: Callable[[], None],
+        on_reconnect: Callable[[], None] | None = None,
+        on_before_restore: Callable[[], None] | None = None,
+        on_before_exit: Callable[[], None] | None = None,
+    ) -> None:
         self._app = app          # The main application window that this system tray controller manages.
         self._on_exit = on_exit  # A callback function that is called when the user chooses to exit the application from the system tray menu.
         self._on_reconnect = on_reconnect
+        self._on_before_restore = on_before_restore
+        self._on_before_exit = on_before_exit
         self._icon: Any = None   # The pystray Icon object representing the system tray icon.
         self._is_running = False
         self._can_use_tray = False
@@ -108,6 +117,8 @@ class SystemTrayController:
             This method is intended to be called when the user selects the "Restaurar" option from the system tray menu.
             It will deiconify the main application window, bring it to the front, and set focus to it.
             """
+            if self._on_before_restore is not None:
+                self._on_before_restore()
             self._app.deiconify()
             self._app.lift()
             self._app.focus_force()
@@ -133,6 +144,8 @@ class SystemTrayController:
             This method is intended to be called when the user selects the "Sair" option from the system tray menu. 
             It will call the exit handler to perform any necessary cleanup and then destroy the main application window.
             """
+            if self._on_before_exit is not None:
+                self._on_before_exit()
             self._on_exit()
 
         self._app.after(0, _quit) # Schedule the quit function to run in the main thread after the current event loop iteration

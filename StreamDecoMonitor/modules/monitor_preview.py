@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Mapping
 import sys
 import customtkinter as ctk
 from queue import Empty, Queue
@@ -24,6 +24,7 @@ class MonitorPreview(ctk.CTk):
     """
 
     _ICON_SIZE = (22, 22)
+    _SERIAL_STATUS_ICON_SIZE = (72, 72)
 
     def __init__(self, queue_metrics: Queue[dict[str, float]],
                  on_exit: Callable[[], None], update_interval_milliseconds: float = 500.0) -> None:
@@ -52,6 +53,13 @@ class MonitorPreview(ctk.CTk):
         self._status_notice_job = None
         self._status_notice_active = False
         self._header_icons: dict[str, ctk.CTkImage] = {}
+        self._last_clock_text = ""
+        self._last_date_text = ""
+        self._serial_debug_mode = False
+        self._diagnostics_provider: Callable[[], Mapping[str, object]] | None = None
+        self._last_diag_snapshot: tuple[object, ...] | None = None
+        self._latest_metrics_data: dict[str, float] = {}
+        self._serial_status_icons: dict[str, ctk.CTkImage] = {}
         self.protocol("WM_DELETE_WINDOW", self._on_exit)
         self._build_layout()
         self._build_cards()
@@ -59,6 +67,7 @@ class MonitorPreview(ctk.CTk):
         self._apply_view_mode()
         self._update_metrics()
         self._update_clock()
+        self._update_diagnostics()
 
     def _build_layout(self) -> None:
         """
@@ -95,6 +104,7 @@ class MonitorPreview(ctk.CTk):
         self._build_memory_card()
         self._build_gpu_card()
         self._build_clock_card()
+        self._build_diagnostics_card()
 
     def _build_controls(self) -> None:
         """
@@ -181,6 +191,29 @@ class MonitorPreview(ctk.CTk):
         white.putalpha(alpha)
         icon = ctk.CTkImage(light_image=white, dark_image=white, size=self._ICON_SIZE)
         self._header_icons[icon_name] = icon
+        return icon
+
+    def _load_serial_status_icon(self, connected: bool) -> ctk.CTkImage:
+        """
+        Loads the StreamDeco icon recolored by connection state.
+        """
+        cache_key = "connected" if connected else "disconnected"
+        cached = self._serial_status_icons.get(cache_key)
+        if cached is not None:
+            return cached
+
+        icon_path = self._assets_dir() / "streamDeco.ico"
+        image = Image.open(icon_path).convert("RGBA")
+        alpha = image.getchannel("A")
+        tone = (74, 214, 115, 255) if connected else (225, 84, 84, 255)
+        base = Image.new("RGBA", image.size, tone)
+        base.putalpha(alpha)
+        icon = ctk.CTkImage(
+            light_image=base,
+            dark_image=base,
+            size=self._SERIAL_STATUS_ICON_SIZE,
+        )
+        self._serial_status_icons[cache_key] = icon
         return icon
 
     def _create_card_header(self, parent: ctk.CTkFrame, text: str, icon_name: str) -> ctk.CTkFrame:
@@ -330,10 +363,10 @@ class MonitorPreview(ctk.CTk):
         self.gpu_gauge.set_value(data["gpu_load"])
         self.gpu_temp.set_value(data["gpu_temp"], 120)
         self.gpu_freq.set_value(data["gpu_freq"], 4000)
-        self.mem_ram.label.configure(text=self._format_ram_text(data["ram_used"], data["ram_total"]))
         self.mem_ram.set_value(data["ram_used"], data["ram_total"])
-        self.mem_disk.label.configure(text=self._format_disk_text(data["disk_used"], data["disk_total"]))
         self.mem_disk.set_value(data["disk_used"], data["disk_total"])
+        self._latest_metrics_data = data
+        self.diag_metrics_text.configure(text=self._format_metrics_plain_text(data))
 
     def _build_cpu_card(self):
         """
@@ -397,6 +430,90 @@ class MonitorPreview(ctk.CTk):
             font=("Segoe UI", 32, "bold"),
         )
         self.date_label.pack(anchor="w")
+
+    def _build_diagnostics_card(self) -> None:
+        """
+        Builds the diagnostics panel with serial debug widgets, metrics in plain text,
+        and the last payload transmitted over serial.
+        """
+        self.diagnostics_card = ctk.CTkFrame(self.main_panel, fg_color="transparent")
+        self.diagnostics_card.grid_columnconfigure(0, weight=1)
+        self.diagnostics_card.grid_rowconfigure(1, weight=1)
+
+        header = self._create_card_header(self.diagnostics_card, "DIAGNOSTICS", "diagnostic_22_simp.png")
+        header.grid(row=0, column=0, sticky="w", pady=(0, 12))
+
+        self.diagnostics_body = ctk.CTkFrame(self.diagnostics_card, fg_color="#20303c", corner_radius=10)
+        self.diagnostics_body.grid(row=1, column=0, sticky="nsew")
+        self.diagnostics_body.grid_columnconfigure(0, weight=1)
+
+        self.diag_serial_title = ctk.CTkLabel(
+            self.diagnostics_body,
+            text="SERIAL DEBUG",
+            text_color="#e8f2ff",
+            font=("Segoe UI", 16, "bold"),
+        )
+        self.diag_serial_title.grid(row=0, column=0, sticky="w", padx=14, pady=(12, 6))
+
+        self.diag_serial_text = ctk.CTkLabel(
+            self.diagnostics_body,
+            text="status: idle\nport: --\nattempts: 0  failures: 0\nlast error: none",
+            text_color="#c9d8e9",
+            font=("Consolas", 13),
+            justify="left",
+            anchor="w",
+        )
+        self.diag_serial_text.grid(row=1, column=0, sticky="ew", padx=14)
+
+        self.diag_metrics_title = ctk.CTkLabel(
+            self.diagnostics_body,
+            text="METRICS (TEXT)",
+            text_color="#e8f2ff",
+            font=("Segoe UI", 16, "bold"),
+        )
+        self.diag_metrics_title.grid(row=2, column=0, sticky="w", padx=14, pady=(12, 6))
+
+        self.diag_metrics_text = ctk.CTkLabel(
+            self.diagnostics_body,
+            text=self._format_metrics_plain_text({}),
+            text_color="#b8cde4",
+            font=("Consolas", 13),
+            justify="left",
+            anchor="w",
+        )
+        self.diag_metrics_text.grid(row=3, column=0, sticky="ew", padx=14)
+
+        self.diag_payload_title = ctk.CTkLabel(
+            self.diagnostics_body,
+            text="SERIAL PAYLOAD",
+            text_color="#e8f2ff",
+            font=("Segoe UI", 16, "bold"),
+        )
+        self.diag_payload_title.grid(row=4, column=0, sticky="w", padx=14, pady=(12, 6))
+
+        self.diag_payload_text = ctk.CTkLabel(
+            self.diagnostics_body,
+            text="last sent @ --:--:--\n(no payload yet)",
+            text_color="#d8e4f2",
+            font=("Consolas", 13),
+            justify="left",
+            anchor="w",
+            wraplength=760,
+        )
+        self.diag_payload_text.grid(row=5, column=0, sticky="ew", padx=14, pady=(0, 12))
+
+    def _format_metrics_plain_text(self, data: Mapping[str, float]) -> str:
+        """
+        Builds a compact plain-text representation of current metrics.
+        """
+        if not data:
+            return "cpu: 0%  temp: 0C  freq: 0MHz\ngpu: 0%  temp: 0C  freq: 0MHz\nram: 0/0 MB\ndisk: 0/0 GB"
+        return (
+            f"cpu: {int(data.get('cpu_load', 0.0))}%  temp: {int(data.get('cpu_temp', 0.0))}C  freq: {int(data.get('cpu_freq', 0.0))}MHz\n"
+            f"gpu: {int(data.get('gpu_load', 0.0))}%  temp: {int(data.get('gpu_temp', 0.0))}C  freq: {int(data.get('gpu_freq', 0.0))}MHz\n"
+            f"ram: {int(data.get('ram_used', 0.0))}/{int(data.get('ram_total', 0.0))} MB\n"
+            f"disk: {int(data.get('disk_used', 0.0))}/{int(data.get('disk_total', 0.0))} GB"
+        )
 
     def _set_clock_centered(self, centered: bool) -> None:
         """
@@ -462,6 +579,173 @@ class MonitorPreview(ctk.CTk):
             font=("Segoe UI", 14, "bold"),
         )
         self.status_label.pack(pady=(10, 0))
+        self.serial_status_icon_button = ctk.CTkButton(
+            side,
+            text="",
+            image=self._load_serial_status_icon(False),
+            width=self._SERIAL_STATUS_ICON_SIZE[0],
+            height=self._SERIAL_STATUS_ICON_SIZE[1],
+            fg_color="transparent",
+            hover_color="#3a5668",
+            corner_radius=12,
+            command=None,
+        )
+        self.serial_status_icon_button.pack(pady=(12, 0))
+        self.serial_diag_frame = ctk.CTkFrame(side, fg_color="#20303c", corner_radius=8)
+        self.serial_diag_frame.pack(fill="x", padx=4, pady=(12, 0))
+        self.serial_diag_title = ctk.CTkLabel(
+            self.serial_diag_frame,
+            text="SERIAL",
+            text_color="#eef6ff",
+            font=("Segoe UI", 13, "bold"),
+        )
+        self.serial_diag_title.pack(anchor="w", padx=10, pady=(8, 2))
+        self.serial_diag_state = ctk.CTkLabel(
+            self.serial_diag_frame,
+            text="status: idle",
+            text_color="#cfdceb",
+            font=("Consolas", 12, "bold"),
+            justify="left",
+        )
+        self.serial_diag_state.pack(anchor="w", padx=10)
+        self.serial_diag_counts = ctk.CTkLabel(
+            self.serial_diag_frame,
+            text="port: --\nattempts: 0  failures: 0",
+            text_color="#b5c5d7",
+            font=("Consolas", 11),
+            justify="left",
+        )
+        self.serial_diag_counts.pack(anchor="w", padx=10, pady=(4, 0))
+        self.serial_diag_error = ctk.CTkLabel(
+            self.serial_diag_frame,
+            text="last error: none",
+            text_color="#d9b1b7",
+            font=("Consolas", 11),
+            justify="left",
+            wraplength=140,
+        )
+        self.serial_diag_error.pack(anchor="w", padx=10, pady=(4, 8))
+        self._sync_serial_debug_widgets()
+
+    def set_serial_debug_mode(self, enabled: bool) -> None:
+        """
+        Enables or disables the detailed serial diagnostics panel.
+        """
+        self._serial_debug_mode = bool(enabled)
+        self._sync_serial_debug_widgets()
+
+    def _sync_serial_debug_widgets(self) -> None:
+        """
+        Toggles the serial diagnostics panel/icon visibility by mode.
+        """
+        if not hasattr(self, "serial_diag_frame") or not hasattr(self, "serial_status_icon_button"):
+            return
+        if self._serial_debug_mode:
+            self.serial_status_icon_button.pack_forget()
+            if not self.serial_diag_frame.winfo_ismapped():
+                self.serial_diag_frame.pack(fill="x", padx=4, pady=(12, 0))
+            return
+        self.serial_diag_frame.pack_forget()
+        if not self.serial_status_icon_button.winfo_ismapped():
+            self.serial_status_icon_button.pack(pady=(12, 0))
+
+    def serial_status_icon_command(self, function: Callable[[], None] | None) -> None:
+        """
+        Sets the command for the serial status icon button.
+        """
+        self.serial_status_icon_button.configure(command=function)
+
+    def set_diagnostics_provider(self, provider: Callable[[], Mapping[str, object]]) -> None:
+        """
+        Registers a diagnostics provider polled by the UI thread.
+        """
+        self._diagnostics_provider = provider
+
+    def _apply_diagnostics_snapshot(self, snapshot: Mapping[str, object]) -> None:
+        """
+        Renders the current serial diagnostics state.
+        """
+        snapshot_key = (
+            snapshot.get("port"),
+            snapshot.get("connected"),
+            snapshot.get("running"),
+            snapshot.get("connect_attempts"),
+            snapshot.get("send_failures"),
+            snapshot.get("last_event"),
+            snapshot.get("last_event_time"),
+            snapshot.get("last_error"),
+            snapshot.get("last_payload"),
+            snapshot.get("last_payload_time"),
+        )
+        if snapshot_key == self._last_diag_snapshot:
+            return
+        self._last_diag_snapshot = snapshot_key
+
+        connected = bool(snapshot.get("connected", False))
+        running = bool(snapshot.get("running", False))
+        self.serial_status_icon_button.configure(image=self._load_serial_status_icon(connected))
+        if connected:
+            state_text = "connected"
+            state_color = "#9fe3b0"
+        elif running:
+            state_text = "waiting"
+            state_color = "#f4d27b"
+        else:
+            state_text = "stopped"
+            state_color = "#d0d7e2"
+
+        self.serial_diag_state.configure(
+            text=f"status: {state_text}\nevent: {snapshot.get('last_event', 'idle')} @ {snapshot.get('last_event_time', '--:--:--')}",
+            text_color=state_color,
+        )
+        self.serial_diag_counts.configure(
+            text=(
+                f"port: {snapshot.get('port', '--')}\n"
+                f"attempts: {snapshot.get('connect_attempts', 0)}  failures: {snapshot.get('send_failures', 0)}"
+            )
+        )
+        self.serial_diag_error.configure(text=f"last error: {snapshot.get('last_error', 'none')}")
+        self.diag_serial_text.configure(
+            text=(
+                f"status: {state_text}\n"
+                f"event: {snapshot.get('last_event', 'idle')} @ {snapshot.get('last_event_time', '--:--:--')}\n"
+                f"port: {snapshot.get('port', '--')}\n"
+                f"attempts: {snapshot.get('connect_attempts', 0)}  failures: {snapshot.get('send_failures', 0)}\n"
+                f"last error: {snapshot.get('last_error', 'none')}"
+            ),
+            text_color=state_color,
+        )
+        payload_text = str(snapshot.get("last_payload", "") or "")
+        payload_time = str(snapshot.get("last_payload_time", "--:--:--"))
+        if payload_text:
+            self.diag_payload_text.configure(text=f"last sent @ {payload_time}\n{payload_text}")
+        else:
+            self.diag_payload_text.configure(text=f"last sent @ {payload_time}\n(no payload yet)")
+
+    def _update_diagnostics(self) -> None:
+        """
+        Polls and refreshes the diagnostics panel from the UI thread.
+        """
+        if self._diagnostics_provider is None:
+            self.after(500, self._update_diagnostics)
+            return
+        try:
+            snapshot = self._diagnostics_provider()
+        except Exception:
+            snapshot = {
+                "port": "--",
+                "connected": False,
+                "running": False,
+                "connect_attempts": 0,
+                "send_failures": 0,
+                "last_event": "diagnostics unavailable",
+                "last_event_time": "--:--:--",
+                "last_error": "provider error",
+                "last_payload": "",
+                "last_payload_time": "--:--:--",
+            }
+        self._apply_diagnostics_snapshot(snapshot)
+        self.after(500, self._update_diagnostics)
 
     def btn_top_command(self, function) -> None:
         """
@@ -503,6 +787,7 @@ class MonitorPreview(ctk.CTk):
         self.mem_card.grid_remove()
         self.gpu_card.grid_remove()
         self.clock_card.grid_remove()
+        self.diagnostics_card.grid_remove()
         self.center_separator.grid_remove()
         if self.view_mode == "monitor":
             self.cpu_card.grid(row=0, column=0, sticky="nsew", padx=24, pady=(18, 12))
@@ -522,10 +807,14 @@ class MonitorPreview(ctk.CTk):
             self.gpu_card.grid(row=2, column=0, columnspan=2, sticky="nsew", padx=24, pady=(14, 18))
             self._set_clock_centered(False)
             self._set_status_mode("MODE: PERFORMANCE")
-        else:
+        elif self.view_mode == "clock":
             self.clock_card.grid(row=0, column=0, columnspan=2, rowspan=3, sticky="nsew", padx=28, pady=28)
             self._set_clock_centered(True)
             self._set_status_mode("MODE: CLOCK")
+        else:
+            self.diagnostics_card.grid(row=0, column=0, columnspan=2, rowspan=3, sticky="nsew", padx=24, pady=24)
+            self._set_clock_centered(False)
+            self._set_status_mode("MODE: DIAGNOSTICS")
 
     def cycle_view_mode(self) -> None:
         """
@@ -537,8 +826,9 @@ class MonitorPreview(ctk.CTk):
             2. Performance Mode: Shows CPU and Memory cards in the top row and a combined 
                GPU card in the bottom row.
             3. Clock Mode: Shows only the Clock card, centered in the window.
+            4. Diagnostics Mode: Shows diagnostic information.
         """
-        order = ["monitor", "performance", "clock"]
+        order = ["monitor", "performance", "clock", "diagnostics"]
         idx = order.index(self.view_mode)
         self.view_mode = order[(idx + 1) % len(order)]
         self._apply_view_mode()
@@ -635,6 +925,12 @@ class MonitorPreview(ctk.CTk):
             time and date information.
         """
         now = datetime.now()
-        self.clock_label.configure(text=now.strftime("%H:%M:%S"))
-        self.date_label.configure(text=now.strftime("%d/%m/%Y"))
-        self.after(500, self._update_clock)
+        clock_text = now.strftime("%H:%M:%S")
+        date_text = now.strftime("%d/%m/%Y")
+        if clock_text != self._last_clock_text:
+            self.clock_label.configure(text=clock_text)
+            self._last_clock_text = clock_text
+        if date_text != self._last_date_text:
+            self.date_label.configure(text=date_text)
+            self._last_date_text = date_text
+        self.after(250, self._update_clock)
