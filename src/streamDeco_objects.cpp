@@ -740,8 +740,15 @@ namespace streamDeco
    *          "Marcelino Inc", // device manufactory
    *          100              // battery level
    * );
+   * 
+   * @note  Testing an simplyfied library for Bluetooth keyboard
+   * 
    **/
+  #if BLE_KEYBOARD_TESTING == 1
+  blekeyboard::Device bleKeyboard("StreamDeco", "Marcelino Inc", 100);
+  #else
   BleKeyboard bleKeyboard("StreamDeco", "Marcelino Inc", 100);
+  #endif
 
   /**
    * @var  mutex_serial

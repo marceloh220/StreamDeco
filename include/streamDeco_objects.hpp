@@ -23,14 +23,22 @@
 #ifndef _STREAMDECO_OBJECTS_HPP_
 #define _STREAMDECO_OBJECTS_HPP_
 
-#include <Arduino.h>
+/**
+ * BLE_KEYBOARD_TESTING is a flag to test an alternative library for Bluetooth keyboard
+ * comunications, using Nimble stak and less features than Arduino BleKeyboard library 
+ */
+
+#if BLE_KEYBOARD_TESTING == 1
+#include "streamDeco_ble_hid.hpp"
+#else
 #include <BleKeyboard.h>
+#endif
 
 #include "marcelino.hpp"
-
 #include "streamDeco_settings.hpp"
 #include "streamDeco_buttons.hpp"
 #include "streamDeco_monitor.hpp"
+//#include "streamDeco_ble_hid.hpp"
 
 namespace streamDeco
 {
@@ -767,8 +775,12 @@ namespace streamDeco
    * @var    bleKeyboard
    * @brief  Reference to blekeyboard object
    * @brief  Interface to send keyboard codes to Bluetooth
-   */
+   **/
+  #if BLE_KEYBOARD_TESTING == 1
+  extern blekeyboard::Device bleKeyboard;
+  #else
   extern BleKeyboard bleKeyboard;
+  #endif
 
   /**
    * @var    mutex_serial

@@ -31,6 +31,9 @@
 #include "freertos/semphr.h"
 #include "freertos/task.h"
 #include "freertos/timers.h"
+#if CONFIG_BT_NIMBLE_USE_ESP_TIMER
+#include "esp_timer.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {

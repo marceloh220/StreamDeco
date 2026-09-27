@@ -8,7 +8,7 @@
  * @param   x Value in Herts
  * @return  Value in Herts
  */
-constexpr unsigned long long operator"" _Hz(unsigned long long x)
+constexpr unsigned long long operator""_Hz(unsigned long long x)
 {
     return x * 1;
 }
@@ -18,7 +18,7 @@ constexpr unsigned long long operator"" _Hz(unsigned long long x)
  * @param   x Value in kiloHerts
  * @return  Value in Herts
  */
-constexpr unsigned long long operator"" _kHz(unsigned long long x)
+constexpr unsigned long long operator""_kHz(unsigned long long x)
 {
     return x * 1000;
 }
@@ -28,7 +28,7 @@ constexpr unsigned long long operator"" _kHz(unsigned long long x)
  * @param   x Value in megaHerts
  * @return  Value in Herts
  */
-constexpr unsigned long long operator"" _MHz(unsigned long long x)
+constexpr unsigned long long operator""_MHz(unsigned long long x)
 {
     return x * 1000 * 1000;
 }
@@ -38,7 +38,7 @@ constexpr unsigned long long operator"" _MHz(unsigned long long x)
  * @param   x Value in gigaHerts
  * @return  Value in Herts
  */
-constexpr unsigned long long operator"" _GHz(unsigned long long x)
+constexpr unsigned long long operator""_GHz(unsigned long long x)
 {
     return x * 1000 * 1000 * 1000;
 }
@@ -48,7 +48,7 @@ constexpr unsigned long long operator"" _GHz(unsigned long long x)
  * @param   x Value in kiloBits
  * @return  Value in Bits
  */
-constexpr unsigned long long operator"" _kBit(unsigned long long x)
+constexpr unsigned long long operator""_kBit(unsigned long long x)
 {
     return x * 1024;
 }
@@ -58,7 +58,7 @@ constexpr unsigned long long operator"" _kBit(unsigned long long x)
  * @param   x Value in megaBits
  * @return  Value in Bits
  */
-constexpr unsigned long long operator"" _MBit(unsigned long long x)
+constexpr unsigned long long operator""_MBit(unsigned long long x)
 {
     return x * 1024 * 1024;
 }
@@ -68,7 +68,7 @@ constexpr unsigned long long operator"" _MBit(unsigned long long x)
  * @param   x Value in gigaBits
  * @return  Value in Bits
  */
-constexpr unsigned long long operator"" _GBit(unsigned long long x)
+constexpr unsigned long long operator""_GBit(unsigned long long x)
 {
     return x * 1024 * 1024 * 1024;
 }
@@ -78,7 +78,7 @@ constexpr unsigned long long operator"" _GBit(unsigned long long x)
  * @param   x Value in kiloBytes
  * @return  Value in Bytes
  */
-constexpr unsigned long long operator"" _kB(unsigned long long x)
+constexpr unsigned long long operator""_kB(unsigned long long x)
 {
     return x * 1024;
 }
@@ -88,7 +88,7 @@ constexpr unsigned long long operator"" _kB(unsigned long long x)
  * @param   x Value in megaBytes
  * @return  Value in Bytes
  */
-constexpr unsigned long long operator"" _MB(unsigned long long x)
+constexpr unsigned long long operator""_MB(unsigned long long x)
 {
     return x * 1024 * 1024;
 }
@@ -98,7 +98,7 @@ constexpr unsigned long long operator"" _MB(unsigned long long x)
  * @param   x Value in gigaBytes
  * @return  Value in Bytes
  */
-constexpr unsigned long long operator"" _GB(unsigned long long x)
+constexpr unsigned long long operator""_GB(unsigned long long x)
 {
     return x * 1024 * 1024 * 1024;
 }

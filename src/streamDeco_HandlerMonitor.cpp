@@ -24,129 +24,11 @@
  */
 
 #include "streamDeco_objects.hpp"
-
+#include "streamDeco_serial.hpp"
+#include "streamDeco_string.hpp"
 
 namespace streamDeco
 {
-
-  static String cpu_load;
-  static String cpu_temp;
-  static String cpu_freq;
-
-  static String gpu_load;
-  static String gpu_temp;
-  static String gpu_freq;
-
-  static String mem_used;
-  static String mem_max;
-  static String disk_used;
-  static String disk_max;
-
-  static String sec;
-  static String min;
-  static String hour;
-  static String day;
-  static String month;
-  static String year;
-
-  namespace
-  {
-    String nextFrameToken(const String &frame, int &start)
-    {
-      if (start < 0 || start >= frame.length())
-      {
-        return "";
-      }
-
-      int sep = frame.indexOf(',', start);
-      String token;
-
-      if (sep < 0)
-      {
-        token = frame.substring(start);
-        start = frame.length();
-      }
-      else
-      {
-        token = frame.substring(start, sep);
-        start = sep + 1;
-      }
-
-      token.trim();
-      return token;
-    }
-
-    bool parseMonitorFrame(const String &frame)
-    {
-      int start = 0;
-
-      String token = nextFrameToken(frame, start);
-      if (token.length())
-        cpu_load = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        cpu_temp = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        cpu_freq = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        gpu_load = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        gpu_temp = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        gpu_freq = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        mem_used = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        mem_max = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        disk_used = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        disk_max = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        sec = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        min = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        hour = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        day = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        month = token;
-
-      token = nextFrameToken(frame, start);
-      if (token.length())
-        year = token;
-
-      return true;
-    }
-  }
 
   /* Handle the StreamDecoMonitor streamDecoTasks,
    * show computer metrics on configure pinned streamDecoCanvas */
@@ -157,29 +39,24 @@ namespace streamDeco
     {
 
       mutex_serial.take();
-      if (Serial.available())
+      monitor::string frame;
+      if (serial::read_frame(frame))
       {
-        String frame = Serial.readStringUntil('/');
-        frame.trim();
+        monitor::parseMonitorFrame(frame);
 
-        if (frame.length() > 0)
-        {
-          parseMonitorFrame(frame);
+        streamDecoMonitor::cpu.arc_set_value(monitor::getMonitorParam(monitor::CPU_LOAD));
+        streamDecoMonitor::cpu.bar1_set_value(monitor::getMonitorParam(monitor::CPU_TEMP), "", " °C");
+        streamDecoMonitor::cpu.bar2_set_value(monitor::getMonitorParam(monitor::CPU_FREQ), "", " MHz");
 
-          streamDecoMonitor::cpu.arc_set_value(cpu_load.toInt());
-          streamDecoMonitor::cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");
-          streamDecoMonitor::cpu.bar2_set_value(cpu_freq.toInt(), "", " MHz");
+        streamDecoMonitor::gpu.arc_set_value(monitor::getMonitorParam(monitor::GPU_LOAD));
+        streamDecoMonitor::gpu.bar1_set_value(monitor::getMonitorParam(monitor::GPU_TEMP), "", " °C");
+        streamDecoMonitor::gpu.bar2_set_value(monitor::getMonitorParam(monitor::GPU_FREQ), "", " MHz");
 
-          streamDecoMonitor::gpu.arc_set_value(gpu_load.toInt());
-          streamDecoMonitor::gpu.bar1_set_value(gpu_temp.toInt(), "", " °C");
-          streamDecoMonitor::gpu.bar2_set_value(gpu_freq.toInt(), "", " MHz");
+        streamDecoMonitor::system.bar1_set_range(0, monitor::getMonitorParam(monitor::MEM_MAX));
+        streamDecoMonitor::system.bar2_set_range(0, monitor::getMonitorParam(monitor::DISK_MAX));
 
-          streamDecoMonitor::system.bar1_set_range(0, mem_max.toInt());
-          streamDecoMonitor::system.bar2_set_range(0, disk_max.toInt());
-
-          streamDecoMonitor::system.bar1_set_value(mem_used.toInt(), "RAM: ", " MB");
-          streamDecoMonitor::system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C: ", " GB");
-        }
+        streamDecoMonitor::system.bar1_set_value(monitor::getMonitorParam(monitor::MEM_USED), "RAM: ", " MB");
+        streamDecoMonitor::system.bar2_set_value(monitor::getMonitorParam(monitor::DISK_USED), monitor::getMonitorParam(monitor::DISK_MAX), "C: ", " GB");
       }
       mutex_serial.give();
 

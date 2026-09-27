@@ -12,6 +12,30 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"label": "PlatformIO Build",
+			"type": "shell",
+			"command": "C:\\Users\\marce\\.platformio\\penv\\Scripts\\platformio.exe run",
+			"group": "build"
+		},
+		{
+			"label": "PlatformIO Build 2",
+			"type": "shell",
+			"command": "C:\\Users\\marce\\.platformio\\penv\\Scripts\\platformio.exe run",
+			"group": "build"
+		},
+		{
+			"label": "PlatformIO Build 3",
+			"type": "shell",
+			"command": "C:\\Users\\marce\\.platformio\\penv\\Scripts\\platformio.exe run",
+			"group": "build"
+		},
+		{
+			"label": "PlatformIO Build 4",
+			"type": "shell",
+			"command": "C:\\Users\\marce\\.platformio\\penv\\Scripts\\platformio.exe run",
+			"group": "build"
 		}
 	]
 }

@@ -53,6 +53,6 @@
         "typeinfo": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python",
-    "cmake.sourceDirectory": "D:/Documentos/PlatformIO/Projects/StreamDeco/lib/esp_lcd_touch",
+    "cmake.sourceDirectory": "C:/Users/marce/StreamDeco",
     "C_Cpp.errorSquiggles": "disabled"
 }

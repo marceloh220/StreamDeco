@@ -36,7 +36,7 @@ namespace streamDeco
         lvgl::screen::rotation_t rotation;
 
         /** @brief  Each code does different things in this switch case
-         *          the keyboard code sent by bleKeyboard is configured here
+         *          the keyboard code sent by bluetooth is configured here
          **/
         switch (button_event)
         {
@@ -62,9 +62,9 @@ namespace streamDeco
              * @note     Need configuration on application or system
              **/
         case terminal_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
-            bleKeyboard.press(KEY_RETURN);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::RETURN);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -74,7 +74,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case files_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
             bleKeyboard.press('e');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -86,8 +86,8 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case web_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('w');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -98,7 +98,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows 11 and Linux KDE Plasma
          **/
         case search_event:
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press(' ');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -155,7 +155,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case multimedia_prev_event:
-            bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+            bleKeyboard.write(blekeyboard::key::MEDIA_PREVIOUS_TRACK);
             break;
 
         /** @brief    Multimedia_play button is pressed
@@ -167,7 +167,7 @@ namespace streamDeco
          *            but has no feedback from computer music player to identify if media is playing or paused
          */
         case multimedia_play_event:
-            bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+            bleKeyboard.write(blekeyboard::key::MEDIA_PLAY_PAUSE);
             lvgl::port::mutex_take();
             streamDecoButtons::multimedia_play.iconSwap();
             if (streamDecoButtons::multimedia_play.pinned())
@@ -182,7 +182,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case multimedia_next_event:
-            bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
+            bleKeyboard.write(blekeyboard::key::MEDIA_NEXT_TRACK);
             break;
 
         /** @brief    Multimedia_mic button is pressed
@@ -194,9 +194,9 @@ namespace streamDeco
          *            but has no feedback from computer to identify the microphone state
          */
         case multimedia_mic_event: /*  */
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_F2);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::F2);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             lvgl::port::mutex_take();
@@ -260,8 +260,8 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case left_workspace_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_ARROW);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -272,8 +272,8 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case right_workspace_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_RIGHT_ARROW);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::RIGHT_ARROW);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -285,8 +285,8 @@ namespace streamDeco
          *            but has no feedback from computer to identify a pinned window
          **/
         case pin_window_event:
-            bleKeyboard.press(KEY_LEFT_ALT);
-            bleKeyboard.press(KEY_LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -301,7 +301,7 @@ namespace streamDeco
          *  @note     This shortcut may work by default on Windows and Linux
          **/
         case lock_computer_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
             bleKeyboard.press('l');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -316,9 +316,9 @@ namespace streamDeco
          *            but has no feedback from computer to identify the desktop state
          */
         case ruler_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('m');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -382,8 +382,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app1_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('9');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -394,8 +394,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app2_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('0');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -406,8 +406,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app3_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('o');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -418,8 +418,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app4_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('c');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -430,8 +430,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case applications_canvas_app5_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -442,7 +442,7 @@ namespace streamDeco
          *  @note     This shortcut may work by default on Windows and Linux
          **/
         case applications_canvas_app6_event:
-            bleKeyboard.write(KEY_MEDIA_CALCULATOR);
+            bleKeyboard.write(blekeyboard::key::MEDIA_CALCULATOR);
             break;
 
         /** @brief    App7 button is pressed
@@ -450,8 +450,8 @@ namespace streamDeco
          *  @note     This shortcut may work by default on VSCode PlatformIO extension
          **/
         case applications_canvas_app7_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('b');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -462,8 +462,8 @@ namespace streamDeco
          *  @note     This shortcut may work by default on VSCode PlatformIO extension
          **/
         case applications_canvas_app8_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('u');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -474,8 +474,8 @@ namespace streamDeco
          *  @note     This shortcut may work by default on VSCode PlatformIO extension
          **/
         case applications_canvas_app9_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('s');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -488,8 +488,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult1_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('r');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -504,8 +504,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult2_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('m');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -520,9 +520,9 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult3_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
-            bleKeyboard.press(KEY_LEFT_ALT);
-            bleKeyboard.press(KEY_PRTSC);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::PRTSC);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -532,8 +532,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult4_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('r');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -544,8 +544,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult5_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -556,8 +556,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult6_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('y');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -568,8 +568,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult7_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('t');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -580,8 +580,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult8_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('1');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -592,8 +592,8 @@ namespace streamDeco
          *  @note     Need configuration on application or system
          **/
         case multimedia_canvas_mult9_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
             bleKeyboard.press('p');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -606,7 +606,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case configuration_canvas_volmut_event:
-            bleKeyboard.write(KEY_MEDIA_MUTE);
+            bleKeyboard.write(blekeyboard::key::MEDIA_MUTE);
             break;
 
         /** @brief    Voldown button is pressed
@@ -614,7 +614,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case configuration_canvas_voldown_event:
-            bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
+            bleKeyboard.write(blekeyboard::key::MEDIA_VOLUME_DOWN);
             streamDecoTasks::buttons.takeNotify();
             break;
 
@@ -623,7 +623,7 @@ namespace streamDeco
          *  @note     This media shortcut may work by default on Windows and Linux
          **/
         case configuration_canvas_volup_event:
-            bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
+            bleKeyboard.write(blekeyboard::key::MEDIA_VOLUME_UP);
             streamDecoTasks::buttons.takeNotify();
             break;
 
@@ -684,9 +684,9 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case configuration_canvas_sysmonitor_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_SHIFT);
-            bleKeyboard.press(KEY_ESC);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_SHIFT);
+            bleKeyboard.press(blekeyboard::key::ESC_KEY);
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
             break;
@@ -697,7 +697,7 @@ namespace streamDeco
          *            On Linux need configuration on system
          **/
         case configuration_canvas_sysconfig_event:
-            bleKeyboard.press(KEY_LEFT_GUI);
+            bleKeyboard.press(blekeyboard::key::LEFT_GUI);
             bleKeyboard.press('i');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();
@@ -723,8 +723,8 @@ namespace streamDeco
          *  @note     Need configuration on system or application
          **/
         case configuration_canvas_shutdown_event:
-            bleKeyboard.press(KEY_LEFT_CTRL);
-            bleKeyboard.press(KEY_LEFT_ALT);
+            bleKeyboard.press(blekeyboard::key::LEFT_CTRL);
+            bleKeyboard.press(blekeyboard::key::LEFT_ALT);
             bleKeyboard.press('k');
             rtos::sleep(10ms);
             bleKeyboard.releaseAll();

@@ -22,6 +22,7 @@
 #include "marcelino.hpp"
 #include "streamDeco_init.hpp"
 #include "streamDeco_objects.hpp"
+#include "streamDeco_serial.hpp"
 
 #include <iostream>
 
@@ -41,36 +42,33 @@
   void storage_init();
 #endif
 
-void setup()
+void app_main ()
 {
 
 #if STORAGE_TEST
   storage_init();
-#else
-  Serial.begin(115200);
-  while(!Serial) {
-    rtos::sleep(100ms);
-  }
 #endif
 
+  streamDeco::serial::init_console(115200);
   lvgl::port::init();
   streamDeco::init();
-}
 
-void loop()
-{
-#if 0
-  static int test_count = 0;
+  for (;;)
+  {
+  #if 0
+    static int test_count = 0;
 
-  streamDeco::mutex_serial.take();
-  lvgl::port::print_task_memory_usage();
-  streamDeco::print_task_memory_usage();
-  ESP_LOGI("Test Cycle", "%d", test_count++);
-  streamDeco::mutex_serial.give();
-#endif
+    streamDeco::mutex_serial.take();
+    lvgl::port::print_task_memory_usage();
+    streamDeco::print_task_memory_usage();
+    ESP_LOGI("Test Cycle", "%d", test_count++);
+    streamDeco::mutex_serial.give();
+  #endif
 
-  rtos::sleep(10s);
-}
+    rtos::sleep(10s);
+  } // loop
+
+} // function app_main
 
 #if STORAGE_TEST == 1
 void storage_init()

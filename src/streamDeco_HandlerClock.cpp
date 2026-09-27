@@ -24,6 +24,8 @@
  */
 
 #include "streamDeco_objects.hpp"
+#include "streamDeco_serial.hpp"
+#include "streamDeco_string.hpp"
 #include <time.h>
 
 namespace streamDeco
@@ -33,55 +35,17 @@ namespace streamDeco
   {
     constexpr time_t kEpochWrap = 2082758399;
 
-    String nextFrameToken(const String &frame, int &start)
+    bool readClockFromFrame(const monitor::string &frame, struct tm &tm_date)
     {
-      if (start < 0 || start >= frame.length())
-      {
-        return "";
-      }
+      monitor::parseMonitorFrame(frame);
 
-      int sep = frame.indexOf(',', start);
-      String token;
-
-      if (sep < 0)
-      {
-        token = frame.substring(start);
-        start = frame.length();
-      }
-      else
-      {
-        token = frame.substring(start, sep);
-        start = sep + 1;
-      }
-
-      token.trim();
-      return token;
-    }
-
-    bool readClockFromFrame(const String &frame, struct tm &tm_date)
-    {
-      int start = 0;
-      String fields[17];
-
-      for (int i = 0; i < 17; ++i)
-      {
-        fields[i] = nextFrameToken(frame, start);
-      }
-
-      // Require at least full date payload (sec..year) for RTC sync.
-      if (!fields[10].length() || !fields[11].length() || !fields[12].length() ||
-          !fields[13].length() || !fields[14].length() || !fields[15].length() || !fields[16].length())
-      {
-        return false;
-      }
-
-      tm_date.tm_sec = fields[10].toInt();
-      tm_date.tm_min = fields[11].toInt();
-      tm_date.tm_hour = fields[12].toInt();
-      tm_date.tm_wday = fields[13].toInt();
-      tm_date.tm_mday = fields[14].toInt();
-      tm_date.tm_mon = fields[15].toInt() - 1;
-      tm_date.tm_year = fields[16].toInt() - 1900;
+      tm_date.tm_sec = monitor::getMonitorParam(monitor::SEC);
+      tm_date.tm_min = monitor::getMonitorParam(monitor::MIN);
+      tm_date.tm_hour = monitor::getMonitorParam(monitor::HOUR);
+      tm_date.tm_wday = monitor::getMonitorParam(monitor::WEEK_DAY);
+      tm_date.tm_mday = monitor::getMonitorParam(monitor::DAY);
+      tm_date.tm_mon = monitor::getMonitorParam(monitor::MONTH) - 1;
+      tm_date.tm_year = monitor::getMonitorParam(monitor::YEAR) - 1900;
 
       return true;
     }
@@ -112,19 +76,17 @@ namespace streamDeco
   {
 
     int attempts = 0;
-    struct tm tm_date = {0};
+    struct tm tm_date = {};
 
     while (true)
     {
 
       mutex_serial.take();
 
-      if (Serial.available())
+      monitor::string frame;
+      if (serial::read_frame(frame))
       {
-        String frame = Serial.readStringUntil('/');
-        frame.trim();
-
-        if (frame.length() > 0 && readClockFromFrame(frame, tm_date))
+        if (readClockFromFrame(frame, tm_date))
         {
           updateRtcFromTm(tm_date);
         }
@@ -133,7 +95,7 @@ namespace streamDeco
 
         return;
 
-      } // Serial.avaliable
+      } // serial::read_frame
 
       mutex_serial.give();
 
@@ -154,12 +116,13 @@ namespace streamDeco
   void handleClock(taskArg_t task_arg)
   {
 
-    struct tm tm_date = {0};
+    struct tm tm_date = {};
 
     while (true)
     {
 
-      getLocalTime(&tm_date);
+      time_t now = time(nullptr);
+      localtime_r(&now, &tm_date);
       streamDecoMonitor::clock.set_time(tm_date);
 
       rtos::sleep(500ms);

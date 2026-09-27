@@ -183,15 +183,6 @@ namespace marcelino
      * @sa     read
      * @brief  Read data from file
      */
-    [[nodiscard]] inline operator File<T>()
-    {
-      return read();
-    }
-
-    /**
-     * @sa     read
-     * @brief  Read data from file
-     */
     [[nodiscard]] inline operator T()
     {
       return read();

@@ -151,19 +151,27 @@
 
 /* This section should not be altered */
 #ifndef CONFIG_BT_NIMBLE_ROLE_CENTRAL_DISABLED
+#ifndef CONFIG_BT_NIMBLE_ROLE_CENTRAL
 #define CONFIG_BT_NIMBLE_ROLE_CENTRAL
+#endif
 #endif
 
 #ifndef CONFIG_BT_NIMBLE_ROLE_OBSERVER_DISABLED
+#ifndef CONFIG_BT_NIMBLE_ROLE_OBSERVER
 #define CONFIG_BT_NIMBLE_ROLE_OBSERVER
+#endif
 #endif
 
 #ifndef CONFIG_BT_NIMBLE_ROLE_PERIPHERAL_DISABLED
+#ifndef CONFIG_BT_NIMBLE_ROLE_PERIPHERAL
 #define CONFIG_BT_NIMBLE_ROLE_PERIPHERAL
+#endif
 #endif
 
 #ifndef CONFIG_BT_NIMBLE_ROLE_BROADCASTER_DISABLED
+#ifndef CONFIG_BT_NIMBLE_ROLE_BROADCASTER
 #define CONFIG_BT_NIMBLE_ROLE_BROADCASTER
+#endif
 #endif
 
 #ifndef CONFIG_BT_NIMBLE_PINNED_TO_CORE
@@ -231,23 +239,33 @@
 #define CONFIG_BT_NIMBLE_GAP_DEVICE_NAME_MAX_LEN 31
 
 /** @brief ACL Buffer count */
+#ifndef CONFIG_BT_NIMBLE_ACL_BUF_COUNT
 #define CONFIG_BT_NIMBLE_ACL_BUF_COUNT 12
+#endif
 
 /** @brief ACL Buffer size */
+#ifndef CONFIG_BT_NIMBLE_ACL_BUF_SIZE
 #define CONFIG_BT_NIMBLE_ACL_BUF_SIZE 255
+#endif
 
 /** @brief HCI Event Buffer size */
+#ifndef CONFIG_BT_NIMBLE_HCI_EVT_BUF_SIZE
 #if CONFIG_BT_NIMBLE_EXT_ADV || CONFIG_BT_NIMBLE_ENABLE_PERIODIC_ADV
 #  define CONFIG_BT_NIMBLE_HCI_EVT_BUF_SIZE 257
 #else
 #  define CONFIG_BT_NIMBLE_HCI_EVT_BUF_SIZE 70
 #endif
+#endif
 
 /** @brief Number of high priority HCI event buffers */
+#ifndef CONFIG_BT_NIMBLE_HCI_EVT_HI_BUF_COUNT
 #define CONFIG_BT_NIMBLE_HCI_EVT_HI_BUF_COUNT 30
+#endif
 
 /** @brief Number of low priority HCI event buffers */
+#ifndef CONFIG_BT_NIMBLE_HCI_EVT_LO_BUF_COUNT
 #define CONFIG_BT_NIMBLE_HCI_EVT_LO_BUF_COUNT 8
+#endif
 
 /** @brief Maximum number of connection oriented channels */
 #define CONFIG_BT_NIMBLE_L2CAP_COC_MAX_NUM 0

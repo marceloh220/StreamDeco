@@ -340,14 +340,14 @@ namespace esp
 		 *          that increments every CPU clock cycle.
 		 * @return  Current CPU's cycle count, 0 if not supported.
 		 */
-		esp_cycle_count_t get_cycle_count(void);
+		esp_cpu_cycle_count_t get_cycle_count(void);
 
 		/**
 		 * @brief   Set the current CPU core's cycle count.
 		 * @details Set the given value into the internal counter that increments every CPU clock cycle.
 		 * @param   cycle_count -- CPU cycle count
 		 */
-		void set_cycle_count(esp_cycle_count_t cycle_count);
+		void set_cycle_count(esp_cpu_cycle_count_t cycle_count);
 
 		/**
 		 * @brief   Convert a program counter (PC) value to address.
@@ -366,7 +366,7 @@ namespace esp
 		 * @param   intr_num -- [in] Interrupt number
 		 * @param   intr_desc_ret -- [out] The interrupt's descriptor
 		 */
-		void intr_get_desc(int core_id, int intr_num, esp_intr_desc_t *intr_desc_ret);
+		void intr_get_desc(int core_id, int intr_num, esp_cpu_intr_desc_t *intr_desc_ret);
 
 		/**
 		 * @brief   Set the base address of the current CPU's Interrupt Vector Table (IVT)
@@ -391,7 +391,7 @@ namespace esp
 		 * @param   handler -- Handler function
 		 * @param   handler_arg -- Argument passed to the handler function
 		 */
-		void intr_set_handler(int intr_num, esp_intr_handler_t handler, void *handler_arg);
+		void intr_set_handler(int intr_num, esp_cpu_intr_handler_t handler, void *handler_arg);
 
 		/**
 		 * @brief   Get a handler function's argument of.
@@ -464,7 +464,7 @@ namespace esp
 		 * @param   trigger -- Trigger type
 		 * @return  ESP_ERR_INVALID_ARG on invalid arg, ESP_OK otherwise
 		 */
-		esp_err_t set_watchpoint(int wp_num, const void *wp_addr, size_t size, esp_watchpoint_trigger_t trigger);
+		esp_err_t set_watchpoint(int wp_num, const void *wp_addr, size_t size, esp_cpu_watchpoint_trigger_t trigger);
 
 		/**
 		 * @brief   Clear a hardware watchpoint on the current CPU.

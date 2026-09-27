@@ -22,8 +22,6 @@
 #ifndef _MARCELINO_HPP_
 #define _MARCELINO_HPP_
 
-#include <Arduino.h>
-
 #include <stdio.h>
 #include "esp_err.h"
 #include "esp_log.h"
