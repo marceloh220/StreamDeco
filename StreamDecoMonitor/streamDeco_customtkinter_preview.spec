@@ -1,23 +1,30 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import collect_all
+
+customtkinter_datas, customtkinter_binaries, customtkinter_hiddenimports = collect_all('customtkinter')
+pythonnet_datas, pythonnet_binaries, pythonnet_hiddenimports = collect_all('pythonnet')
+
 a = Analysis(
     ['streamDeco_customtkinter_preview.py'],
     pathex=[],
     binaries=[
         ('lib/LibreHardwareMonitorLib.dll', 'lib'),
         ('lib/HidSharp.dll', 'lib'),
-    ],
+    ] + customtkinter_binaries + pythonnet_binaries,
     datas=[
         ('assets', 'assets'),
         ('modules', 'modules'),
-    ],
+    ] + customtkinter_datas + pythonnet_datas,
     hiddenimports=[
         'customtkinter',
         'pystray',
         'PIL',
-        'pyserial',
+        'serial.tools.list_ports',
         'psutil',
-    ],
+        'GPUtil',
+        'clr',
+    ] + customtkinter_hiddenimports + pythonnet_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
