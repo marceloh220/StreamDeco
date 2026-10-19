@@ -206,11 +206,19 @@ if __name__ == "__main__":
             notice_context="sair",
         )
 
+    def on_before_minimize_tray() -> None:
+        close_serial_port_picker_if_open(
+            app=app,
+            port_picker_state=port_picker_state,
+            notice_context="minimizar",
+        )
+
     tray = SystemTrayController(
         app,
         stop_tasks,
         reconnect_device,
         on_before_restore=on_before_restore_tray,
+        on_before_minimize=on_before_minimize_tray,
         on_before_exit=on_before_exit_tray,
     )
 
@@ -218,11 +226,6 @@ if __name__ == "__main__":
         """
         Closes transient dialogs before minimizing to tray.
         """
-        close_serial_port_picker_if_open(
-            app=app,
-            port_picker_state=port_picker_state,
-            notice_context="minimizar",
-        )
         tray.minimize_to_tray()
 
     app.btn_top_command(lambda: btn_top_action_impl(app)) # Connect the top button to its callback

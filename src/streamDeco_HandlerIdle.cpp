@@ -37,7 +37,7 @@ namespace streamDeco
   {
     while (1)
     {
-      uint32_t events = streamDecoTasks::idle.takeNotify();
+      uint32_t events = streamDecoTasks::idle.waitNotify(idle_hidden_canvas_notify | idle_rest_backlight_notify);
       if (events & idle_hidden_canvas_notify)
       {
         if (!streamDecoButtons::applications_canvas.pinned())
@@ -51,18 +51,16 @@ namespace streamDeco
         /* Always hide Configurations canvas
          * and never hide Monitor canvas */
         streamDecoCanvas::configurations.hidden();
-      }
-      if (events & idle_rest_backlight_notify)
+      } // end if idle_hidden_canvas_notify
+      if ((events & idle_rest_backlight_notify) && 
+          !streamDecoButtons::applications_canvas.pinned() &&
+          !streamDecoButtons::multimedia_canvas.pinned() &&
+          !streamDecoButtons::configurations_canvas.pinned())
       {
         // only change backlight bright if are no pinned canvas
-        if (!streamDecoButtons::applications_canvas.pinned() &&
-            !streamDecoButtons::multimedia_canvas.pinned() &&
-            !streamDecoButtons::configurations_canvas.pinned())
-        {
-          lvgl::port::backlight_set(.1);
-        }
-      }
-    }
-  }
+        lvgl::port::backlight_set(.1);
+      } // end if idle_rest_backlight_notify
+    } // end while (1)
+  } // end handleIdle
 
 } // namespace streamDeco

@@ -45,7 +45,7 @@ class MonitorPreview(ctk.CTk):
         self._metrics_update_ms = int(update_interval_milliseconds)
         self.title("StreamDeco Monitor - CustomTkinter")
         self.geometry("1024x600")
-        self.minsize(960, 560)
+        self.minsize(960, 640)
         self.view_mode = "monitor"
         self.metrics_paused = False
         self._status_mode_text = "MODE: MONITOR"
@@ -65,9 +65,18 @@ class MonitorPreview(ctk.CTk):
         self._build_cards()
         self._build_controls()
         self._apply_view_mode()
+        self._center_window()
         self._update_metrics()
         self._update_clock()
         self._update_diagnostics()
+
+    def _center_window(self) -> None:
+        self.update_idletasks()
+        width = self.winfo_width()
+        height = self.winfo_height()
+        x = max(0, (self.winfo_screenwidth() - width) // 2)
+        y = max(0, (self.winfo_screenheight() - height) // 2)
+        self.geometry(f"{width}x{height}+{x}+{y}")
 
     def _build_layout(self) -> None:
         """

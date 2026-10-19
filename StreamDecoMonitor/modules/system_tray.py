@@ -29,12 +29,14 @@ class SystemTrayController:
         on_exit: Callable[[], None],
         on_reconnect: Callable[[], None] | None = None,
         on_before_restore: Callable[[], None] | None = None,
+        on_before_minimize: Callable[[], None] | None = None,
         on_before_exit: Callable[[], None] | None = None,
     ) -> None:
         self._app = app          # The main application window that this system tray controller manages.
         self._on_exit = on_exit  # A callback function that is called when the user chooses to exit the application from the system tray menu.
         self._on_reconnect = on_reconnect
         self._on_before_restore = on_before_restore
+        self._on_before_minimize = on_before_minimize
         self._on_before_exit = on_before_exit
         self._icon: Any = None   # The pystray Icon object representing the system tray icon.
         self._is_running = False
@@ -51,7 +53,8 @@ class SystemTrayController:
                 sys.exit(1)
             icon_image = Image.open(icon_path) if icon_path.exists() else None
             menu_items = [
-                pystray.MenuItem("Restaurar", self._restore_window, default=True),
+                pystray.MenuItem("Mostrar / minimizar", self._toggle_window, default=True),
+                pystray.MenuItem("Restaurar", self._restore_window),
             ]
             if self._on_reconnect is not None:
                 menu_items.append(pystray.MenuItem("Reconectar dispositivo", self._reconnect_device))
@@ -98,7 +101,16 @@ class SystemTrayController:
         if not self._can_use_tray:
             self._quit_application(None)
             return
+        if self._on_before_minimize is not None:
+            self._on_before_minimize()
         self._app.withdraw()
+
+    def _toggle_window(self, icon: Any, item: Any) -> None:
+        """Toggles the window when the tray icon's default action is clicked."""
+        if self._app.state() in ("withdrawn", "iconic"):
+            self._restore_window(icon, item)
+        else:
+            self.minimize_to_tray()
 
     def _restore_window(self, icon: Any, item: Any) -> None:
         """
