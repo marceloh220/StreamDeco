@@ -135,6 +135,15 @@ namespace streamDeco
 
   };
 
+  /**
+   * @brief   Notification for idle task events
+   * @details  These notifications are used by the idle task to determine when to hide 
+   * the canvas or reduce the backlight brightness.
+   * @note     These notifications should be used with care to avoid blocking the idle task.
+   **/
+  constexpr uint32_t idle_hidden_canvas_notify = 1u << 0;
+  constexpr uint32_t idle_rest_backlight_notify = 1u << 1;
+
   namespace settings
   {
 

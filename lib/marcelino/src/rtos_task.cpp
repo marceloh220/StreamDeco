@@ -71,6 +71,24 @@ namespace rtos
     return ulTaskNotifyTake(true, chronoToTick(time));
   }
 
+  uint32_t Task::waitNotify(uint32_t flags)
+  {
+    if (_handle == nullptr)
+      return 0;
+    uint32_t notification;
+    xTaskNotifyWait(0, flags, &notification, portMAX_DELAY);
+    return notification;
+  }
+
+  uint32_t Task::waitNotify(uint32_t flags, milliseconds time)
+  {
+    if (_handle == nullptr)
+      return 0;
+    uint32_t notification;
+    xTaskNotifyWait(0, flags, &notification, chronoToTick(time));
+    return notification;
+  }
+
   void Task::sleepUntil(milliseconds time)
   {
     if (_handle == nullptr)

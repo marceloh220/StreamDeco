@@ -38,6 +38,12 @@ namespace lvgl
             return (screen::rotation_t)port::get_screen_rotation();
         }
 
+        bool land_or_portrait()
+        {
+            screen::rotation_t rotation = get_rotation();
+            return (rotation == screen::LANDSCAPE || rotation == screen::MIRROR_LANDSCAPE);
+        }
+
         void set_bg_color(color_t color)
         {
             port::mutex_take();

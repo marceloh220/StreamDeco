@@ -45,11 +45,11 @@ namespace streamDeco
     // verify what timer generated the event by ID
     if (timers_idle::backlight_idle.verifyID(timerHandle))
     {
-      streamDecoTasks::idle.sendNotify(rest_backlight_event);
+      streamDecoTasks::idle.sendNotify(idle_rest_backlight_notify);
     }
     if (timers_idle::canvas_idle.verifyID(timerHandle))
     {
-      streamDecoTasks::idle.sendNotify(hidden_canvas_event);
+      streamDecoTasks::idle.sendNotify(idle_hidden_canvas_notify);
     }
   }
 

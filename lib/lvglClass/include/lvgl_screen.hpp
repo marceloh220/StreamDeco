@@ -53,6 +53,12 @@ namespace lvgl
         screen::rotation_t get_rotation();
 
         /**
+         * @brief   Check if the screen is in landscape or portrait mode
+         * @return  true if landscape, false if portrait
+         */
+        bool land_or_portrait();
+
+        /**
          * @brief   Set the background color
          * @param   color Color of background in display format
          */

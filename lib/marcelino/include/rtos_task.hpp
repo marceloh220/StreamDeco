@@ -191,6 +191,26 @@ namespace rtos
     uint32_t takeNotify(milliseconds time);
 
     /**
+     * @brief    Wait until task receive a notification with specific flags
+     * @param    flags  Flags to wait for notification
+     * @return   Unsigned integer number with notification passed
+     * @note     Similar to waiting for a counter semaphore
+     */
+    uint32_t waitNotify(uint32_t flags);
+
+    /**
+     * @brief    Wait until task receive a notification with specific flags until the passed time
+     * @param    flags  Flags to wait for notification
+     * @param    time  Time to wait notification be received
+     * @return   Unsigned integer number with notification passed
+     *           Return 0 in the end of block time
+     * @note     Similar to waiting for a counter semaphore
+     *           The task will not consume any processing time while
+     *           it is in the Blocked state, run in the end of this time
+     */
+    uint32_t waitNotify(uint32_t flags, milliseconds time);
+
+    /**
      * @brief   Put task in Blocked until a specified time.
      * @details This method can be used by periodic
      *          tasks to ensure a constant execution frequency.

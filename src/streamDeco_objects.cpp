@@ -163,8 +163,9 @@ namespace streamDeco
       monitor.create();
       monitor.hidden();
 
-      rotation == lvgl::screen::LANDSCAPE ? landscape() : portrait();
-    }
+      rotation == lvgl::screen::LANDSCAPE || rotation == lvgl::screen::MIRROR_LANDSCAPE ? landscape() : portrait();
+    
+    } // function init end
 
     void portrait()
     {
@@ -601,7 +602,7 @@ namespace streamDeco
       icon.add_style(icon_style, lvgl::part::MAIN);
       icon.set_src(&brightness_simp);
       lvgl::port::backlight_setRaw(settings.lcd_bright);
-      settings.rotation == lvgl::screen::LANDSCAPE ? landscape() : portrait();
+      settings.rotation == lvgl::screen::LANDSCAPE || settings.rotation == lvgl::screen::MIRROR_LANDSCAPE ? landscape() : portrait();
     }
 
     /**
