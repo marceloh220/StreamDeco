@@ -26,6 +26,7 @@ INSTALL_DIR = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Stre
 APPDATA = os.environ.get("APPDATA", "")
 START_MENU_LNK = os.path.join(APPDATA, "Microsoft", "Windows", "Start Menu", "Programs", f"{APP_NAME}.lnk")
 STARTUP_LNK = os.path.join(APPDATA, "Microsoft", "Windows", "Start Menu", "Programs", "Startup", f"{APP_NAME}.lnk")
+TASK_NAME = APP_NAME
 
 
 def build_exe():
@@ -55,6 +56,30 @@ def create_shortcut(lnk_path, target, icon):
     subprocess.run(["powershell", "-NoProfile", "-Command", ps], check=True)
 
 
+def register_logon_task(target):
+    subprocess.run(
+        [
+            "schtasks",
+            "/Create",
+            "/SC", "ONLOGON",
+            "/TN", TASK_NAME,
+            "/TR", f'"{target}"',
+            "/RL", "HIGHEST",
+            "/IT",
+            "/F",
+        ],
+        check=True,
+    )
+
+
+def remove_logon_task():
+    subprocess.run(
+        ["schtasks", "/Delete", "/TN", TASK_NAME, "/F"],
+        check=False,
+        capture_output=True,
+    )
+
+
 def install():
     build_exe()
     os.makedirs(INSTALL_DIR, exist_ok=True)
@@ -66,13 +91,16 @@ def install():
     else:
         icon = target
     create_shortcut(START_MENU_LNK, target, icon)
-    create_shortcut(STARTUP_LNK, target, icon)
+    register_logon_task(target)
+    if os.path.exists(STARTUP_LNK):
+        os.remove(STARTUP_LNK)
     print(f"Installed to {INSTALL_DIR}")
-    print("Start Menu shortcut and autostart created.")
+    print("Start Menu shortcut and elevated logon task created.")
 
 
 def uninstall():
     subprocess.run(["taskkill", "/F", "/IM", EXE_NAME], capture_output=True)
+    remove_logon_task()
     for lnk in (START_MENU_LNK, STARTUP_LNK):
         if os.path.exists(lnk):
             os.remove(lnk)
