@@ -40,6 +40,8 @@ namespace streamDeco
       uint32_t events = streamDecoTasks::idle.waitNotify(idle_hidden_canvas_notify | idle_rest_backlight_notify);
       if (events & idle_hidden_canvas_notify)
       {
+        lvgl::port::mutex_take();
+        streamDecoCanvas::calendar.hidden();
         if (!streamDecoButtons::applications_canvas.pinned())
         {
           streamDecoCanvas::applications.hidden();
@@ -51,6 +53,7 @@ namespace streamDeco
         /* Always hide Configurations canvas
          * and never hide Monitor canvas */
         streamDecoCanvas::configurations.hidden();
+        lvgl::port::mutex_give();
       } // end if idle_hidden_canvas_notify
       if ((events & idle_rest_backlight_notify) && 
           !streamDecoButtons::applications_canvas.pinned() &&

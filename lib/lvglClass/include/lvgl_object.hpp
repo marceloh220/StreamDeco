@@ -950,6 +950,32 @@ namespace lvgl
     }
 
     /**
+     * Increase the clickable area by the given number of pixels in all directions.
+     * @param pixels    number of pixels to increase the clickable area
+     */
+    void increase_click_area(coordinates_t pixels)
+    {
+      set_ext_click_area(pixels);
+    }
+
+    /**
+     * Reduce the clickable area by the given number of pixels in all directions.
+     * @param pixels    number of pixels to reduce the clickable area
+     */
+    void reduce_click_area(coordinates_t pixels)
+    {
+      set_ext_click_area(-pixels);
+    }
+
+    /**
+     * Reset the extended clickable area to its default value (0).
+     */
+    void reset_ext_click_area()
+    {
+      set_ext_click_area(0);
+    }
+
+    /**
      * Get the an area where to object can be clicked.
      * It's the object's normal area plus the extended click area.
      * @param area      store the result area here

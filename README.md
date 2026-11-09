@@ -86,6 +86,12 @@ Do not confuse this with a Microsoft Defender SmartScreen reputation warning. Sm
 
 # How to USE
 
+ Press Calendar (the former Ruler button) to open the current month. The arrows
+ change months, and weeks start on Sunday. Today's highlight follows the selected
+ background color. Touch outside the calendar, press Calendar again, or leave it
+ inactive for 10 seconds to close it. Unpin other layers before opening Calendar.
+ The date uses the existing clock synchronization with StreamDeco Monitor.
+
  Windows desktop monitor in C# / .NET (WPF), preserving the Python preview widgets and serial protocol: [StreamDeco Monitor .NET](StreamDecoMonitor.DotNet/README.md).
 
  Short click on Application button open Application layer, 

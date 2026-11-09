@@ -26,6 +26,7 @@
 
 #include "streamDeco_objects.hpp"
 #include "streamDeco_monitor.hpp"
+#include <array>
 
 namespace streamDeco
 {
@@ -98,6 +99,7 @@ namespace streamDeco
         multimedia.add_style(style, lvgl::part::MAIN);
         configurations.add_style(style, lvgl::part::MAIN);
         monitor.add_style(style, lvgl::part::MAIN);
+        calendar.add_style(style, lvgl::part::MAIN);
         lvgl::port::mutex_give();
       }
 
@@ -128,6 +130,19 @@ namespace streamDeco
      * @details Canvas to monitor computer stats
      **/
     lvgl::Canvas monitor;
+    /**
+     * @var     calendar
+     * @brief   Calendar Canvas
+     * @details Canvas to hold calendar shortcuts
+     **/
+    lvgl::Canvas calendar;
+    
+    /**
+     * @var     calendar_sheet
+     * @brief   Calendar Sheet
+     * @details Calendar widget for the calendar canvas
+     **/
+    lvgl::Calendar calendar_sheet;
 
     /**
      * @var     style_landscape
@@ -163,6 +178,12 @@ namespace streamDeco
       monitor.create();
       monitor.hidden();
 
+      /* Calendar streamDecoCanvas */
+      calendar.create();
+      calendar.hidden();
+      calendar_sheet.create(calendar, settings::cache.color_background);
+      calendar_sheet.set_button_color(settings::cache.color_buttons);
+
       rotation == lvgl::screen::LANDSCAPE || rotation == lvgl::screen::MIRROR_LANDSCAPE ? landscape() : portrait();
     
     } // function init end
@@ -194,7 +215,6 @@ namespace streamDeco
    **/
   namespace streamDecoButtons
   {
-
     /**
       * @brief   Callback registered on buttons
       * @details Send notifications with event code to task buttons handler
@@ -224,7 +244,7 @@ namespace streamDeco
     streamDeco::MainButton left_workspace("Left Workspace", &previous_workspace_simp, nullptr);
     streamDeco::MainButton right_workspace("Right Workspace", &next_workspace_simp, nullptr);
     streamDeco::MainButton pin("Pin", &pin_simp, &unpin_simp);
-    streamDeco::MainButton ruler("Ruler", &ruler_simp, nullptr);
+    streamDeco::MainButton calendar_canvas("Calendar", &calendar_simp, nullptr);
     streamDeco::MainButton configurations_canvas("Config", &config_simp, nullptr);
 
     /* ---   Applications canvas buttons   --- */
@@ -301,7 +321,7 @@ namespace streamDeco
       left_workspace.create(10, settings.color_buttons);
       right_workspace.create(11, settings.color_buttons);
       pin.create(12, settings.color_buttons);
-      ruler.create(13, settings.color_buttons);
+      calendar_canvas.create(13, settings.color_buttons);
       configurations_canvas.create(14, settings.color_buttons);
 
       /* register buttons event */
@@ -322,7 +342,7 @@ namespace streamDeco
       left_workspace.callback(buttons_callback, lvgl::event::PRESSED, left_workspace_event);
       right_workspace.callback(buttons_callback, lvgl::event::PRESSED, right_workspace_event);
       pin.callback(buttons_callback, lvgl::event::PRESSED, pin_window_event);
-      ruler.callback(buttons_callback, lvgl::event::PRESSED, ruler_event);
+      calendar_canvas.callback(buttons_callback, lvgl::event::PRESSED, calendar_canvas_event);
       configurations_canvas.callback(buttons_callback, lvgl::event::SHORT_CLICKED, configurations_canvas_event);
       configurations_canvas.callback(buttons_callback, lvgl::event::LONG_PRESSED, configurations_canvas_fix_event);
     }
@@ -452,7 +472,7 @@ namespace streamDeco
       left_workspace.buttonColor(color);
       right_workspace.buttonColor(color);
       pin.buttonColor(color);
-      ruler.buttonColor(color);
+      calendar_canvas.buttonColor(color);
       configurations_canvas.buttonColor(color);
       app1.buttonColor(color);
       app2.buttonColor(color);
@@ -501,7 +521,7 @@ namespace streamDeco
       left_workspace.position(2);
       right_workspace.position(5);
       pin.position(8);
-      ruler.position(11);
+      calendar_canvas.position(11);
       configurations_canvas.position(14);
       volmut.position(0);
       voldown.position(1);
@@ -532,7 +552,7 @@ namespace streamDeco
       left_workspace.position(10);
       right_workspace.position(11);
       pin.position(12);
-      ruler.position(13);
+      calendar_canvas.position(13);
       configurations_canvas.position(14);
       volmut.position(0);
       voldown.position(1);

@@ -484,7 +484,7 @@
 /*-----------
  * Widgets
  *----------*/
-#define LV_USE_CALENDAR   0
+#define LV_USE_CALENDAR   1
 #if LV_USE_CALENDAR
     #define LV_CALENDAR_WEEK_STARTS_MONDAY 0
     #if LV_CALENDAR_WEEK_STARTS_MONDAY
@@ -495,7 +495,7 @@
 
     #define LV_CALENDAR_DEFAULT_MONTH_NAMES {"January", "February", "March",  "April", "May",  "June", "July", "August", "September", "October", "November", "December"}
     #define LV_USE_CALENDAR_HEADER_ARROW 1
-    #define LV_USE_CALENDAR_HEADER_DROPDOWN 1
+    #define LV_USE_CALENDAR_HEADER_DROPDOWN 0
 #endif  /*LV_USE_CALENDAR*/
 
 #define LV_USE_CHART      0

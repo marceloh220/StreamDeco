@@ -10,7 +10,8 @@
         "srcFilter": [
             "+<*.cpp>",
             "+<fonts/*.c>",
-            "+<icons/*.c>"
+            "+<icons/*.c>",
+            "+<icons/*.cpp>"
         ]
     }
 }

@@ -162,6 +162,8 @@ namespace streamDeco
 
     streamDecoMonitor::init(streamDecoCanvas::monitor, settings::cache.color_buttons);
 
+    streamDecoCanvas::register_calendar_events();
+
     if (settings::cache.rotation == lvgl::screen::LANDSCAPE || settings::cache.rotation == lvgl::screen::MIRROR_LANDSCAPE)
     {
       streamDecoCanvas::landscape();

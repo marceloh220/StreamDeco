@@ -31,6 +31,7 @@
 #include "streamDeco_settings.hpp"
 #include "streamDeco_buttons.hpp"
 #include "streamDeco_monitor.hpp"
+#include "lvgl_calendar.hpp"
 
 namespace streamDeco
 {
@@ -71,7 +72,7 @@ namespace streamDeco
     right_workspace_event,
     pin_window_event,
     lock_computer_event,
-    ruler_event,
+    calendar_canvas_event,
     desktop_mode_event,
     configurations_canvas_event,
     configurations_canvas_fix_event,
@@ -278,6 +279,26 @@ namespace streamDeco
     extern lvgl::Canvas monitor;
 
     /**
+     * @var     calendar
+     * @brief   Calendar Canvas
+     * @details Canvas to hold calendar shortcuts
+     **/
+    extern lvgl::Canvas calendar;
+    
+    /**
+     * @var     calendar_sheet
+     * @brief   Calendar Sheet
+     * @details Calendar widget for the calendar canvas
+     **/
+    extern lvgl::Calendar calendar_sheet;
+
+    /**
+     * @brief   Register calendar events
+     * @details This function registers the necessary events for the calendar widget
+     **/
+    void register_calendar_events();
+
+    /**
      * @var     style_landscape
      * @brief   Style Canvas in landscape
      * @details Style for streamDecoCanvas in landscape */
@@ -289,8 +310,23 @@ namespace streamDeco
      * @details Style for streamDecoCanvas in portrait */
     extern lvgl::Style style_portrait;
 
+    /**
+     * @brief   Initialize streamDecoCanvas
+     * @details This function initializes all the canvases and applies the appropriate style based on the screen rotation
+     * @param   rotation  The current screen rotation
+     **/
     void init(lvgl::screen::rotation_t rotation);
+    
+    /**
+     * @brief   Apply portrait style to streamDecoCanvas
+     * @details This function applies the portrait style to all the canvases
+     **/
     void portrait();
+
+    /**
+     * @brief   Apply landscape style to streamDecoCanvas
+     * @details This function applies the landscape style to all the canvases
+     **/
     void landscape();
   } // namespace streamDecoCanvas
 
@@ -404,11 +440,11 @@ namespace streamDeco
     extern MainButton pin;
 
     /**
-     * @var      ruler
-     * @brief    Lock streamDecoButtons
-     * @details  This streamDecoButtons is supposed to show ruler on screem
+    * @var      calendar_canvas
+    * @brief    Calendar streamDecoButtons
+    * @details  Open or close the current month calendar
      **/
-    extern MainButton ruler;
+      extern MainButton calendar_canvas;
 
     /**
      * @var      configurations_canvas
@@ -794,7 +830,7 @@ namespace streamDeco
     * @note     Each streamDecoButtons sends an event code registered during streamDecoButtons configuration
    *
    */
-  void process_event(uint32_t button_event);
+  void process_shortcuts(uint32_t button_event);
 
 } // namespace streamDeco
 

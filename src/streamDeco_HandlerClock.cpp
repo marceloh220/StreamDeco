@@ -161,6 +161,7 @@ namespace streamDeco
 
       getLocalTime(&tm_date);
       streamDecoMonitor::clock.set_time(tm_date);
+      streamDecoCanvas::calendar_sheet.refresh_date();
 
       rtos::sleep(500ms);
     }

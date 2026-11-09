@@ -46,6 +46,8 @@ extern const lv_img_dsc_t applications_simp;
 
 extern const lv_img_dsc_t calc_simp;
 extern const lv_img_dsc_t calculator_simp;
+extern const lv_img_dsc_t calendar_icon;
+extern const lv_img_dsc_t calendar_simp;
 extern const lv_img_dsc_t mail_simp;
 extern const lv_img_dsc_t search_simp;
 extern const lv_img_dsc_t code_simp;
