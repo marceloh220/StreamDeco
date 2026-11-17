@@ -45,12 +45,14 @@ namespace lvgl
      * @param  parent The parent object to attach the calendar to.
      * @param  background The background color for today's date.
      */
-    void create(Object &parent = nullptr, color_t background)
+    void create(object_t *parent = nullptr, color_t background = lv_color_white())
     {
       if (object != nullptr)
         return;
       port::mutex_take();
-      object = lv_calendar_create(parent.get_object());
+      if (parent == nullptr)
+        parent = lv_scr_act();
+      object = lv_calendar_create(parent);
       lv_obj_set_size(object, lv_pct(100), lv_pct(100));
       lv_obj_center(object);
       lv_obj_set_style_pad_all(object, 8, LV_PART_MAIN);
@@ -73,6 +75,16 @@ namespace lvgl
       refresh_date(true);
       port::mutex_give();
     } // end of create()
+
+    /**
+     * @brief  Create the calendar widget with an Object as the parent.
+     * @param  parent The parent Object to attach the calendar to.
+     * @param  background The background color for today's date.
+     */
+    void create(Object &parent, color_t background = lv_color_white()) 
+    { 
+      create(parent.get_object(), background);
+    }
 
     /**
      * @brief  Refresh the displayed date on the calendar.
