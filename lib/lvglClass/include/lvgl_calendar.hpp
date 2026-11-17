@@ -1,3 +1,24 @@
+/**
+ * Copyright © 2024 Marcelo H Moraes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the “Software”), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #ifndef _LVGL_CALENDAR_HPP_
 #define _LVGL_CALENDAR_HPP_
 
@@ -6,10 +27,25 @@
 
 namespace lvgl
 {
+    /** 
+     * @class  Calendar
+     * @brief  Calendar widget class 
+     * @details This class provides an interface to create and manage a calendar widget using LVGL.
+     * It allows setting the background color for today's date, customizing button colors,
+     * and refreshing the displayed date.
+     * @endcode
+     * @note   The calendar widget relies on the LVGL library for rendering and event handling.
+     * 
+    */
   class Calendar : public Object
   {
   public:
-    void create(Object &parent, color_t background)
+    /**
+     * @brief  Create the calendar widget.
+     * @param  parent The parent object to attach the calendar to.
+     * @param  background The background color for today's date.
+     */
+    void create(Object &parent = nullptr, color_t background)
     {
       if (object != nullptr)
         return;
@@ -36,8 +72,12 @@ namespace lvgl
       lv_obj_add_event_cb(matrix, draw_today, LV_EVENT_DRAW_PART_BEGIN, this);
       refresh_date(true);
       port::mutex_give();
-    }
+    } // end of create()
 
+    /**
+     * @brief  Refresh the displayed date on the calendar.
+     * @param  show_current_month If true, the calendar will show the current month.
+     */
     void refresh_date(bool show_current_month = false)
     {
       if (object == nullptr)
@@ -53,8 +93,12 @@ namespace lvgl
       if (show_current_month)
         lv_calendar_set_showed_date(object, date.tm_year + 1900, date.tm_mon + 1);
       port::mutex_give();
-    }
+    } // end of refresh_date()
 
+    /**
+     * @brief  Set the color of the calendar buttons.
+     * @param  color The color to set for the buttons.
+     */
     void set_button_color(palette::palette_t color)
     {
       if (object == nullptr)
@@ -68,8 +112,12 @@ namespace lvgl
         lv_obj_set_style_bg_color(button, palette::darken(color, 2), LV_PART_MAIN | LV_STATE_PRESSED);
       }
       port::mutex_give();
-    }
+    } // end of set_button_color()
 
+    /**
+     * @brief  Set the color of today's date on the calendar.
+     * @param  background The background color to set for today's date.
+     */
     void set_today_color(color_t background)
     {
       if (object == nullptr)
@@ -78,11 +126,18 @@ namespace lvgl
       today_style.set_bg_color(background);
       lv_obj_invalidate(object);
       port::mutex_give();
-    }
+    } // end of set_today_color()
 
   private:
+    /**
+     * @brief  Style for today's date on the calendar.
+     */
     Style today_style;
 
+    /**
+     * @brief  Draw callback for today's date on the calendar.
+     * @param  event The LVGL event containing draw information.
+     */
     static void draw_today(lv_event_t *event)
     {
       auto *descriptor = static_cast<lv_obj_draw_part_dsc_t *>(lv_event_get_param(event));
@@ -97,7 +152,9 @@ namespace lvgl
       descriptor->rect_dsc->bg_opa = LV_OPA_COVER;
       descriptor->label_dsc->color = lv_color_brightness(color.color) > 128 ? lv_color_black() : lv_color_white();
     }
-  };
-}
+
+  }; // end of class Calendar
+
+} // end of namespace lvgl
 
 #endif

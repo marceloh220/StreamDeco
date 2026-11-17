@@ -250,14 +250,14 @@ namespace streamDeco
     /* ---   Applications canvas buttons   --- */
 
     /* First line */
-    streamDeco::CanvasButton app1("app1", &gogcom_simp, nullptr);
-    streamDeco::CanvasButton app2("app2", &discord_simp, nullptr);
+    streamDeco::CanvasButton app1("Steam", &steam_simp, nullptr);
+    streamDeco::CanvasButton app2("WhatsApp", &whatsapp_simp, nullptr);
     streamDeco::CanvasButton app3("app3", &fps_simp, nullptr);
 
     /* Second line */
-    streamDeco::CanvasButton app4("app4", &code_simp, nullptr);
-    streamDeco::CanvasButton app5("app5", &texcompiler_simp, nullptr);
-    streamDeco::CanvasButton app6("app6", &calculator_simp, nullptr);
+    streamDeco::CanvasButton app4("VS Code", &code_simp, nullptr);
+    streamDeco::CanvasButton app5("Word", &document_simp, nullptr);
+    streamDeco::CanvasButton app6("IPython", &terminal_simp, nullptr);
 
     /* Third line */
     streamDeco::CanvasButton app7("app7", &build_simp, nullptr);

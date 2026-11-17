@@ -131,6 +131,42 @@ Do not confuse this with a Microsoft Defender SmartScreen reputation warning. Sm
 
 Working on Linux monitor version.
 
+## Windows Shortcuts
+
+| Button | Windows command |
+| --- | --- |
+| Terminal | Win+R, then `cmd` and Enter |
+| Files | Win+E |
+| Web | Browser Home consumer key, handled by Windows and the browser |
+| Search | Win+S |
+| Left / Right Workspace | Win+Ctrl+Left / Right |
+| Pin | Win+Ctrl+T; requires PowerToys Always On Top with its default shortcut |
+| Mic | Win+Alt+K; supported apps on Windows 11 only, not a global microphone mute |
+| Lock | Win+L |
+| App1: Steam | Win+R, then `steam://open/main` and Enter |
+| App2: WhatsApp | Win+R, then `whatsapp:` and Enter |
+| App4: VS Code | Win+R, then `code` and Enter |
+| App5: Word | Win+R, then `winword` and Enter |
+| App6: IPython | Win+R, then `cmd /k ipython` and Enter |
+| System Monitor | Ctrl+Shift+Esc (Task Manager) |
+| System Config | Win+I |
+| Recording / Recording Mic / Screenshot | Win+Alt+R / Win+Alt+M / Win+Alt+PrtScn (Xbox Game Bar) |
+
+Media playback and volume buttons use standard HID consumer keys. Game Bar
+capture requires a supported application and does not capture every desktop
+surface. Steam and WhatsApp must be installed with their URI handlers registered;
+Word must be the installed desktop application. VS Code's `code` command and the
+`ipython` command must be on Windows PATH. Install IPython into the desired Python
+environment and expose that environment's Scripts directory on PATH. The terminal
+stays open if IPython cannot start. These buttons only send keystrokes: the ESP32
+cannot detect installed applications or confirm that they opened. If an application
+is missing, Windows may show an error. The Run-dialog command sender targets the
+Brazilian ABNT2 layout: colons use Shift plus the physical US slash key, and
+slashes use AltGr+Q. Keep ABNT2 selected on the PC when using these launchers.
+Other application launchers, editing commands and the shutdown shortcut keep their
+custom mappings. Icon highlights reflect button presses, not confirmed application
+state.
+
 # Some buttons may work without configurations, but the most part need be configured on operational system.
  
 Work on every system?

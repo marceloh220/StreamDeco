@@ -136,6 +136,7 @@ extern const lv_img_dsc_t serialport_simp;
 extern const lv_img_dsc_t cpu_simp;
 extern const lv_img_dsc_t fps_simp;
 extern const lv_img_dsc_t steam_simp;
+extern const lv_img_dsc_t whatsapp_simp;
 extern const lv_img_dsc_t discord_simp;
 extern const lv_img_dsc_t gogcom_simp;
 extern const lv_img_dsc_t origin_simp;
