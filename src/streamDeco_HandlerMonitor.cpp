@@ -24,6 +24,7 @@
  */
 
 #include "streamDeco_objects.hpp"
+#include <time.h>
 
 
 namespace streamDeco
@@ -45,9 +46,11 @@ namespace streamDeco
   static String sec;
   static String min;
   static String hour;
+  static String week_day;
   static String day;
   static String month;
   static String year;
+  static bool monitor_time_valid = false;
 
   namespace
   {
@@ -134,6 +137,10 @@ namespace streamDeco
 
       token = nextFrameToken(frame, start);
       if (token.length())
+        week_day = token;
+
+      token = nextFrameToken(frame, start);
+      if (token.length())
         day = token;
 
       token = nextFrameToken(frame, start);
@@ -144,6 +151,8 @@ namespace streamDeco
       if (token.length())
         year = token;
 
+      monitor_time_valid = day.length() && month.length() && year.length() &&
+        hour.length() && min.length() && sec.length();
       return true;
     }
   }
@@ -152,39 +161,78 @@ namespace streamDeco
    * show computer metrics on configure pinned streamDecoCanvas */
   void handleMonitor(taskArg_t task_arg)
   {
+    static String pending_frame;
 
     while (1)
     {
-
+      String frame;
+      bool frame_parsed = false;
       mutex_serial.take();
-      if (Serial.available())
+      while (Serial.available())
       {
-        String frame = Serial.readStringUntil('/');
-        frame.trim();
-
-        if (frame.length() > 0)
+        char value = static_cast<char>(Serial.read());
+        if (value == '/')
         {
-          parseMonitorFrame(frame);
-
-          streamDecoMonitor::cpu.arc_set_value(cpu_load.toInt());
-          streamDecoMonitor::cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");
-          streamDecoMonitor::cpu.bar2_set_value(cpu_freq.toInt(), "", " MHz");
-
-          streamDecoMonitor::gpu.arc_set_value(gpu_load.toInt());
-          streamDecoMonitor::gpu.bar1_set_value(gpu_temp.toInt(), "", " °C");
-          streamDecoMonitor::gpu.bar2_set_value(gpu_freq.toInt(), "", " MHz");
-
-          streamDecoMonitor::system.bar1_set_range(0, mem_max.toInt());
-          streamDecoMonitor::system.bar2_set_range(0, disk_max.toInt());
-
-          streamDecoMonitor::system.bar1_set_value(mem_used.toInt(), "RAM: ", " MB");
-          streamDecoMonitor::system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C: ", " GB");
+          pending_frame.trim();
+          if (pending_frame.length() > 0)
+          {
+            frame = pending_frame;
+          }
+          pending_frame = "";
+          break;
         }
+        if (pending_frame.length() < 512)
+        {
+          pending_frame += value;
+        }
+        else
+        {
+          pending_frame = "";
+        }
+      }
+      if (frame.length() > 0)
+      {
+        frame_parsed = parseMonitorFrame(frame);
       }
       mutex_serial.give();
 
-      rtos::sleep(1s);
+      if (frame_parsed)
+      {
+        streamDecoMonitor::cpu.arc_set_value(cpu_load.toInt());
+        streamDecoMonitor::cpu.bar1_set_value(cpu_temp.toInt(), "", " °C");
+        streamDecoMonitor::cpu.bar2_set_value(cpu_freq.toInt(), "", " MHz");
+
+        streamDecoMonitor::gpu.arc_set_value(gpu_load.toInt());
+        streamDecoMonitor::gpu.bar1_set_value(gpu_temp.toInt(), "", " °C");
+        streamDecoMonitor::gpu.bar2_set_value(gpu_freq.toInt(), "", " MHz");
+
+        streamDecoMonitor::system.bar1_set_range(0, mem_max.toInt());
+        streamDecoMonitor::system.bar2_set_range(0, disk_max.toInt());
+
+        streamDecoMonitor::system.bar1_set_value(mem_used.toInt(), "RAM: ", " MB");
+        streamDecoMonitor::system.bar2_set_value(disk_used.toInt(), disk_max.toInt(), "C: ", " GB");
+      }
+
+      rtos::sleep(50ms);
     }
+  }
+
+  bool read_monitor_clock(struct tm &tm_date)
+  {
+    mutex_serial.take();
+    bool available = monitor_time_valid;
+    if (available)
+    {
+      tm_date.tm_sec = sec.toInt();
+      tm_date.tm_min = min.toInt();
+      tm_date.tm_hour = hour.toInt();
+      tm_date.tm_wday = week_day.toInt();
+      tm_date.tm_mday = day.toInt();
+      tm_date.tm_mon = month.toInt() - 1;
+      tm_date.tm_year = year.toInt() - 1900;
+    }
+    mutex_serial.give();
+    return available;
   }
 
 } // namespace streamDeco

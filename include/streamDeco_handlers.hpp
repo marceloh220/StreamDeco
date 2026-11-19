@@ -57,6 +57,8 @@ namespace streamDeco
    * synchronize clock time with streamDeco monitor application */
   void handleClockSync(taskArg_t task_arg);
 
+  bool read_monitor_clock(struct tm &tm_date);
+
   /* Handle the update cache streamDecoTasks,
    * update and save the settings cache with flash */
   void handleUpdateCache(taskArg_t task_arg);

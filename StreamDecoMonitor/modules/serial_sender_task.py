@@ -249,7 +249,23 @@ class SerialSenderTask:
         Args:
             data (str): The string of data to send to the external device.
         """
-        self._transmit(data)
+        queue = getattr(self, "_queue_serial_sender", None)
+        if queue is None or not self.is_running():
+            self._transmit(data)
+            return
+        while queue.qsize() > 1:
+            try:
+                queue.get_nowait()
+            except Empty:
+                break
+        try:
+            queue.put_nowait(data)
+        except Full:
+            try:
+                queue.get_nowait()
+                queue.put_nowait(data)
+            except Empty:
+                self._record_event("queue full", "Serial payload queue is full")
 
     def _run(self) -> None:
         """

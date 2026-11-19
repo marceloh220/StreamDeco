@@ -20,18 +20,27 @@ BUILT_EXE = os.path.join(BASE_DIR, "dist", EXE_NAME)
 ICON_FILE = os.path.join(BASE_DIR, "assets", "streamDeco.ico")
 VENV_PYTHON = os.path.join(BASE_DIR, ".venv", "Scripts", "python.exe")
 PYTHON = VENV_PYTHON if os.path.isfile(VENV_PYTHON) else sys.executable
-REQUIRED_PACKAGES = ["customtkinter", "pystray", "pillow", "pyserial", "psutil", "pythonnet", "GPUtil"]
+REQUIREMENTS_FILE = os.path.join(BASE_DIR, "requirements.txt")
 
 INSTALL_DIR = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "StreamDecoMonitor")
 APPDATA = os.environ.get("APPDATA", "")
 START_MENU_LNK = os.path.join(APPDATA, "Microsoft", "Windows", "Start Menu", "Programs", f"{APP_NAME}.lnk")
 STARTUP_LNK = os.path.join(APPDATA, "Microsoft", "Windows", "Start Menu", "Programs", "Startup", f"{APP_NAME}.lnk")
-TASK_NAME = APP_NAME
-
-
 def build_exe():
-    print("Installing application dependencies...")
-    subprocess.run([PYTHON, "-m", "pip", "install", *REQUIRED_PACKAGES], check=True, cwd=BASE_DIR)
+    print("Installing verified application dependencies...")
+    subprocess.run(
+        [
+            PYTHON,
+            "-m",
+            "pip",
+            "install",
+            "--require-hashes",
+            "--requirement",
+            REQUIREMENTS_FILE,
+        ],
+        check=True,
+        cwd=BASE_DIR,
+    )
     print("Building executable with PyInstaller...")
     subprocess.run(
         [PYTHON, "-m", "PyInstaller", "--clean", "--noconfirm", SPEC_FILE],
@@ -56,31 +65,28 @@ def create_shortcut(lnk_path, target, icon):
     subprocess.run(["powershell", "-NoProfile", "-Command", ps], check=True)
 
 
-def register_logon_task(target):
-    subprocess.run(
-        [
-            "schtasks",
-            "/Create",
-            "/SC", "ONLOGON",
-            "/TN", TASK_NAME,
-            "/TR", f'"{target}"',
-            "/RL", "HIGHEST",
-            "/IT",
-            "/F",
-        ],
-        check=True,
-    )
-
-
-def remove_logon_task():
-    subprocess.run(
-        ["schtasks", "/Delete", "/TN", TASK_NAME, "/F"],
+def remove_logon_task(required=False):
+    query = subprocess.run(
+        ["schtasks", "/Query", "/TN", APP_NAME],
         check=False,
         capture_output=True,
     )
+    if query.returncode != 0:
+        return
+    result = subprocess.run(
+        ["schtasks", "/Delete", "/TN", APP_NAME, "/F"],
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0 and required:
+        raise RuntimeError(
+            "A legacy elevated StreamDeco Monitor task could not be removed. "
+            "Remove it from Task Scheduler, then rerun the installer."
+        )
 
 
 def install():
+    remove_logon_task(required=True)
     build_exe()
     os.makedirs(INSTALL_DIR, exist_ok=True)
     target = os.path.join(INSTALL_DIR, EXE_NAME)
@@ -91,11 +97,9 @@ def install():
     else:
         icon = target
     create_shortcut(START_MENU_LNK, target, icon)
-    register_logon_task(target)
-    if os.path.exists(STARTUP_LNK):
-        os.remove(STARTUP_LNK)
+    create_shortcut(STARTUP_LNK, target, icon)
     print(f"Installed to {INSTALL_DIR}")
-    print("Start Menu shortcut and elevated logon task created.")
+    print("Start Menu and non-elevated logon shortcuts created.")
 
 
 def uninstall():

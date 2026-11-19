@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 $projectDirectory = Split-Path -Parent $PSScriptRoot
 $repositoryDirectory = Split-Path -Parent $projectDirectory
 $publishDirectory = Join-Path $projectDirectory 'publish'
+$servicePublishDirectory = Join-Path $projectDirectory 'service-publish'
 $artifactDirectory = Join-Path $repositoryDirectory 'artifacts'
 $compiler = (Get-Command ISCC.exe -ErrorAction SilentlyContinue | Select-Object -First 1).Source
 
@@ -24,6 +25,11 @@ New-Item -ItemType Directory -Force -Path $artifactDirectory | Out-Null
     -c Release -r win-x64 --self-contained true -o $publishDirectory
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish falhou com codigo $LASTEXITCODE."
+}
+& dotnet publish (Join-Path $repositoryDirectory 'StreamDecoMonitor.TemperatureService\StreamDecoMonitor.TemperatureService.csproj') `
+    -c Release -r win-x64 --self-contained true -o $servicePublishDirectory
+if ($LASTEXITCODE -ne 0) {
+    throw "dotnet publish do servico falhou com codigo $LASTEXITCODE."
 }
 
 Push-Location $PSScriptRoot

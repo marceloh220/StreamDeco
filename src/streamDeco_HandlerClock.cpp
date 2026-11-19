@@ -24,6 +24,7 @@
  */
 
 #include "streamDeco_objects.hpp"
+#include "streamDeco_handlers.hpp"
 #include <time.h>
 
 namespace streamDeco
@@ -171,17 +172,17 @@ namespace streamDeco
    * synchronize clock time with streamDeco monitor application */
   void handleClockSync(taskArg_t task_arg)
   {
-
     (void)task_arg;
 
     while (true)
     {
-
-      sync_clock(40);
+      struct tm tm_date = {0};
+      if (read_monitor_clock(tm_date))
+      {
+        updateRtcFromTm(tm_date);
+      }
       rtos::sleep(5min);
-
     }
-
   }
 
 } // namespace streamDeco

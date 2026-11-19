@@ -26,13 +26,26 @@ def create_exe():
         if not os.path.exists(spec_file):
             report("install_streamDecoMonitor", "ERROR", f"Spec file '{spec_file}' not found. Please ensure it is in the current directory.")
             return
-        packages = ["customtkinter", "pystray", "pillow", "pyserial", "psutil", "pythonnet", "GPUtil"]
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        requirements_file = os.path.join(base_dir, "requirements.txt")
         try:
-            subprocess.run([sys.executable, "-m", "pip", "install", *packages], check=True)
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--require-hashes",
+                    "--requirement",
+                    requirements_file,
+                ],
+                check=True,
+                cwd=base_dir,
+            )
             subprocess.run(
                 [sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", spec_file],
                 check=True,
-                cwd=os.path.dirname(os.path.abspath(__file__)),
+                cwd=base_dir,
             )
             report("install_streamDecoMonitor", "INFO", "Executable created successfully in the 'dist' directory.")
         except subprocess.CalledProcessError as e:

@@ -2,12 +2,14 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Text;
 using LibreHardwareMonitor.Hardware;
 
 namespace StreamDecoMonitor;
 
 internal sealed class MetricsCollector : IAsyncDisposable
 {
+    private static readonly string? NvidiaSmiPath = FindNvidiaSmi();
     private readonly CancellationTokenSource stop = new();
     private readonly bool debug;
     private readonly Action<Metrics> publish;
@@ -17,6 +19,9 @@ internal sealed class MetricsCollector : IAsyncDisposable
     private ulong previousIdle;
     private ulong previousTotal;
     private double fallbackFrequency;
+    private DateTime nextNvidiaQuery;
+    private (double Load, double Temp, double Freq) cachedNvidiaMetrics;
+    private readonly TemperatureServiceClient temperatureService = new();
 
     public Metrics? Latest => Volatile.Read(ref latest);
     public string Status => Volatile.Read(ref status);
@@ -31,7 +36,7 @@ internal sealed class MetricsCollector : IAsyncDisposable
 
     private async Task RunAsync()
     {
-        var computer = new Computer { IsCpuEnabled = true, IsGpuEnabled = true,
+        var computer = new Computer { IsCpuEnabled = true, IsGpuEnabled = false,
             IsMemoryEnabled = debug, IsMotherboardEnabled = debug, IsControllerEnabled = debug,
             IsNetworkEnabled = debug, IsStorageEnabled = debug };
         bool hardwareAvailable = false;
@@ -86,12 +91,13 @@ internal sealed class MetricsCollector : IAsyncDisposable
         double? sensorCpuTemp = null, sensorGpuTemp = null, sensorGpuFreq = null;
         double? sensorCpuLoad = null, sensorCpuFreq = null, sensorGpuLoad = null, d3d = null;
         string? hardwareError = null;
+        StringBuilder? debugLines = debug ? new StringBuilder() : null;
         if (hardwareAvailable)
         {
             try
             {
                 foreach (var hardware in computer.Hardware)
-                    ReadHardware(hardware);
+                    ReadHardware(hardware, debugLines);
             }
             catch (Exception exception)
             {
@@ -99,12 +105,17 @@ internal sealed class MetricsCollector : IAsyncDisposable
                 Log.Write($"Hardware read: {exception.Message}");
             }
         }
+        temperatureService.Refresh();
+        if (debugLines is { Length: > 0 }) Log.Write(debugLines.ToString());
         cpuLoad = sensorCpuLoad ?? cpuLoad;
-        cpuTemp = sensorCpuTemp ?? cpuTemp;
+        cpuTemp = sensorCpuTemp ?? temperatureService.Temperatures.Cpu ?? cpuTemp;
         cpuFreq = sensorCpuFreq ?? cpuFreq;
-        var gpuFallback = ReadNvidiaFallback();
+        var gpuFallback = (sensorGpuLoad is not null || d3d is not null) &&
+            sensorGpuTemp is not null && sensorGpuFreq is not null
+                ? default
+                : ReadNvidiaFallback();
         gpuLoad = sensorGpuLoad ?? d3d ?? gpuFallback.Load;
-        gpuTemp = sensorGpuTemp ?? gpuFallback.Temp;
+        gpuTemp = sensorGpuTemp ?? temperatureService.Temperatures.Gpu ?? gpuFallback.Temp;
         gpuFreq = sensorGpuFreq ?? gpuFallback.Freq;
         if (sensorGpuTemp is null && sensorGpuFreq is null && (sensorGpuLoad is not null || d3d is not null))
         {
@@ -117,19 +128,20 @@ internal sealed class MetricsCollector : IAsyncDisposable
             throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
         var drive = new DriveInfo("C:\\");
         Volatile.Write(ref status, hardwareError is not null ? $"Sensores: {hardwareError}" :
-            sensorCpuTemp is null ? "Temperatura CPU indisponivel; verifique permissoes de administrador." :
+            sensorCpuTemp is null && temperatureService.Temperatures.Cpu is null ?
+                "Temperatura CPU indisponivel; instale o servico auxiliar." :
             "Sensores ativos");
         return new Metrics(cpuLoad, cpuTemp, cpuFreq, gpuLoad, gpuTemp, gpuFreq,
             (memory.TotalPhysical - memory.AvailablePhysical) / 1048576d, memory.TotalPhysical / 1048576d,
             (drive.TotalSize - drive.TotalFreeSpace) / 1073741824d, drive.TotalSize / 1073741824d, DateTime.Now);
 
-        void ReadHardware(IHardware hardware)
+        void ReadHardware(IHardware hardware, StringBuilder? lines)
         {
             hardware.Update();
             foreach (var sensor in hardware.Sensors)
             {
                 if (sensor.Value is not float value || !float.IsFinite(value)) continue;
-                if (debug) Log.Write($"{hardware.Name}: {sensor.SensorType} {sensor.Name} = {value}");
+                lines?.AppendLine($"{hardware.Name}: {sensor.SensorType} {sensor.Name} = {value}");
                 switch (sensor.SensorType, sensor.Name)
                 {
                     case (SensorType.Load, "CPU Total"): sensorCpuLoad = value; break;
@@ -141,7 +153,7 @@ internal sealed class MetricsCollector : IAsyncDisposable
                     case (SensorType.Clock, "GPU Core"): sensorGpuFreq = value; break;
                 }
             }
-            foreach (var child in hardware.SubHardware) ReadHardware(child);
+            foreach (var child in hardware.SubHardware) ReadHardware(child, lines);
         }
     }
 
@@ -157,11 +169,15 @@ internal sealed class MetricsCollector : IAsyncDisposable
         return load;
     }
 
-    private static (double Load, double Temp, double Freq) ReadNvidiaFallback()
+    private (double Load, double Temp, double Freq) ReadNvidiaFallback()
     {
+        if (NvidiaSmiPath is null) return default;
+        var now = DateTime.UtcNow;
+        if (now < nextNvidiaQuery) return cachedNvidiaMetrics;
+        nextNvidiaQuery = now.AddSeconds(5);
         try
         {
-            var start = new ProcessStartInfo("nvidia-smi",
+            var start = new ProcessStartInfo(NvidiaSmiPath,
                 "--query-gpu=utilization.gpu,temperature.gpu,clocks.mem --format=csv,noheader,nounits")
             { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
             using var process = Process.Start(start);
@@ -176,12 +192,22 @@ internal sealed class MetricsCollector : IAsyncDisposable
             }
             if (process.ExitCode != 0) return default;
             var fields = output.GetAwaiter().GetResult().Split('\n')[0].Split(',');
-            return fields.Length >= 3 ? (Parse(fields[0]), Parse(fields[1]), Parse(fields[2])) : default;
+            cachedNvidiaMetrics = fields.Length >= 3
+                ? (Parse(fields[0]), Parse(fields[1]), Parse(fields[2]))
+                : default;
+            return cachedNvidiaMetrics;
         }
         catch (Exception) { return default; }
 
         static double Parse(string text) => double.TryParse(text.Trim(), NumberStyles.Float,
             CultureInfo.InvariantCulture, out var value) ? value : 0;
+    }
+
+    private static string? FindNvidiaSmi()
+    {
+        var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+        var candidate = Path.Combine(programFiles, "NVIDIA Corporation", "NVSMI", "nvidia-smi.exe");
+        return File.Exists(candidate) ? candidate : null;
     }
 
     public async ValueTask DisposeAsync()

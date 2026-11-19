@@ -26,13 +26,14 @@ dotnet publish .\StreamDecoMonitor.DotNet\StreamDecoMonitor.DotNet.csproj -c Rel
 & "$env:LOCALAPPDATA\StreamDecoMonitor\app\StreamDecoMonitor.DotNet.exe"
 ```
 
-Para diagnosticos detalhados na lateral e registro de todos os sensores, acrescente `--debug` ao comando de execucao. O executavel solicita direitos administrativos ao abrir para permitir que o LibreHardwareMonitor acesse sensores protegidos. Sem esses sensores, carga CPU, RAM e disco continuam sendo coletados.
+Para diagnosticos detalhados na lateral e registro de todos os sensores habilitados, acrescente `--debug` ao comando de execucao. O executavel nao solicita direitos administrativos. Sensores protegidos podem ficar indisponiveis, mas carga CPU, RAM e disco continuam sendo coletados.
 
 ## Comportamento
 
 - Coleta em segundo plano a cada segundo: carga, temperatura e frequencia CPU/GPU, RAM em MiB, disco C: em GiB, hora e data locais.
-- LibreHardwareMonitor fornece os sensores CPU/GPU. A carga CPU tem fallback em GetSystemTimes, frequencia CPU em WMI, memoria em GlobalMemoryStatusEx e disco em DriveInfo. NVIDIA tem fallback via nvidia-smi, quando disponivel.
-- Mantem os sensores CPU Total, CPU Package, CPU Core #1, GPU Core e D3D 3D do original, incluindo fallback de temperatura/frequencia para GPU integrada. Sensores indisponiveis usam zero ou os fallbacks, sem dados simulados.
+- LibreHardwareMonitor fornece os sensores de CPU. A carga CPU tem fallback em GetSystemTimes, frequencia CPU em WMI, memoria em GlobalMemoryStatusEx e disco em DriveInfo. NVIDIA tem fallback via nvidia-smi, quando disponivel.
+- O instalador registra e inicia o `StreamDecoTemperatureService`, executado como LocalSystem somente para coletar a temperatura da CPU. O aplicativo recebe o valor por Named Pipe local e continua sem elevacao. A consulta direta da GPU pelo LibreHardwareMonitor fica desabilitada para evitar falhas nativas de drivers AMD.
+- Mantem os sensores CPU Total, CPU Package e CPU Core #1 do original. Para GPU NVIDIA, usa nvidia-smi; sensores indisponiveis usam zero ou os fallbacks, sem dados simulados.
 - Tela com indicadores circulares CPU/GPU, barras de temperatura/frequencia, barras RAM/disco, relogio e data, usando os assets existentes.
 - Botao superior alterna Monitor, Performance, Clock e Diagnostics; o central pausa/retoma somente os widgets de metricas; o inferior retorna a Monitor. Relogio, coleta e serial continuam durante a pausa.
 - Na inicializacao e em cada tentativa de reconexao pelo icone do dispositivo ou pelo menu da bandeja, o app procura portas compativeis e conecta automaticamente quando encontra um adaptador cadastrado. O seletor manual abre somente quando nenhum compativel e localizado (ou a busca falha); nele, a ausencia de um adaptador compativel e informada e qualquer porta pode ser escolhida. O comando explicito "Selecionar porta serial" continua abrindo o seletor sob demanda.
@@ -97,7 +98,7 @@ Distribua a pasta inteira, incluindo assets e bibliotecas/drivers. Politicas de 
 
 Instale o Inno Setup 6 e execute `.\StreamDecoMonitor.DotNet\Installer\build-installer.ps1` no PowerShell a partir da raiz do repositorio. O script publica a versao autocontida x64 e gera `artifacts/StreamDecoMonitor-Setup.exe`.
 
-O instalador requer direitos administrativos, cria um atalho no menu Iniciar e oferece um atalho opcional na area de trabalho. A opcao de inicializacao com o Windows cria uma tarefa agendada para executar com privilegios mais altos. O executavel tambem solicita elevacao quando iniciado manualmente. Para a tarefa de logon iniciar elevada, a conta interativa precisa ser administradora; uma conta padrao nao pode obter esses direitos por meio de um atalho ou tarefa.
+O instalador requer direitos administrativos para gravar em Program Files, instalar e iniciar o servico `StreamDecoTemperatureService`. O servico roda com privilegio minimo de coleta e o executavel manual roda sem elevacao. O instalador cria um atalho no menu Iniciar e oferece atalhos opcionais na area de trabalho e na pasta Startup do usuario.
 
 ## Smart App Control do Windows
 

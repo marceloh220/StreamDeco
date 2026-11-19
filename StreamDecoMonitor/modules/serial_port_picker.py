@@ -46,7 +46,6 @@ def close_serial_port_picker_if_open(
 def open_serial_port_picker(
     *,
     app,
-    app_is_admin: bool,
     port_picker_state: dict[str, ctk.CTkToplevel | None],
     serial_sender_state: Mapping[str, _SerialSenderDiagnostics | None],
     list_serial_ports,
@@ -55,16 +54,6 @@ def open_serial_port_picker(
     """
     Shows a modal with all detected serial ports so the user can pick one.
     """
-    if not app_is_admin:
-        report(
-            "StreamDecoCustomTkinterPreview",
-            "WARNING",
-            "Serial picker blocked: app is not running with administrator rights.",
-        )
-        play_reconnect_failure_sound()
-        app.show_status_notice("SERIAL: execute como administrador", severity="warning")
-        return
-
     existing_window = port_picker_state["window"]
     if existing_window is not None and existing_window.winfo_exists():
         existing_window.deiconify()

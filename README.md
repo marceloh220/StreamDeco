@@ -48,19 +48,18 @@
 
 Requirements: Windows, Python, the Python packages below, and a CH340 or CP210x USB-to-serial driver for the board. Download Python from the [official Windows downloads page](https://www.python.org/downloads/windows/) or install Python 3.14 with `winget install --id Python.Python.3.14 -e`.
 
-The Python packages are hosted on the official [PyPI index](https://pypi.org/): [customtkinter](https://pypi.org/project/customtkinter/), [pystray](https://pypi.org/project/pystray/), [Pillow](https://pypi.org/project/pillow/), [pyserial](https://pypi.org/project/pyserial/), [psutil](https://pypi.org/project/psutil/), [pythonnet](https://pypi.org/project/pythonnet/), [GPUtil](https://pypi.org/project/GPUtil/), and [PyInstaller](https://pypi.org/project/pyinstaller/). Install them with `pip` as shown below so transitive dependencies are resolved automatically.
+The Python packages are hosted on the official [PyPI index](https://pypi.org/). Versions and artifact hashes are locked in `StreamDecoMonitor/requirements.txt`.
 
 Install the packages and application from PowerShell at the repository root:
 
 ```powershell
-py -m pip install --upgrade pip
-py -m pip install customtkinter pystray pillow pyserial psutil pythonnet GPUtil pyinstaller
+py -m pip install --require-hashes -r .\StreamDecoMonitor\requirements.txt
 py .\StreamDecoMonitor\install_app.py
 ```
 
-The installer builds the Windows executable, installs it under `%LOCALAPPDATA%`, creates a Start Menu shortcut, and registers a logon task with highest available privileges. Run PowerShell as an administrator to register the elevated task. The Python monitor needs administrative privileges to access hardware sensors; without them, some temperatures may be unavailable.
+The installer builds the Windows executable, installs it under `%LOCALAPPDATA%`, and creates Start Menu and per-user Startup shortcuts. It does not require or request administrator privileges. Hardware temperatures that require elevated sensor access are reported as unavailable.
 
-To run the Python preview from source instead, use `py .\StreamDecoMonitor\streamDeco_customtkinter_preview.py` after installing the same packages.
+To run the Python preview from source instead, use `py .\StreamDecoMonitor\streamDeco_customtkinter_preview.py` after installing the locked packages.
 
 ## .NET
 
@@ -76,7 +75,7 @@ Build the self-contained installer from PowerShell at the repository root:
 .\StreamDecoMonitor.DotNet\Installer\build-installer.ps1
 ```
 
-Run `artifacts\StreamDecoMonitor-Setup.exe` and approve the administrator prompt. The installer creates a Start Menu shortcut and offers optional desktop and Windows startup shortcuts. The app requests administrator privileges when opened so LibreHardwareMonitor can access protected sensors. The self-contained install does not require the .NET runtime on the target computer. The elevated startup task requires an administrator account.
+Run `artifacts\StreamDecoMonitor-Setup.exe` and approve the administrator prompt to install the protected temperature service. The installer creates a Start Menu shortcut and offers optional desktop and Windows startup shortcuts. The application runs without elevation; the service supplies CPU/GPU temperatures through a local Named Pipe. The self-contained install does not require the .NET runtime on the target computer.
 
 ### Windows Smart App Control
 

@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -528,9 +527,6 @@ public sealed class MainWindow : Window
             Background = Theme.Panel, Foreground = Theme.Text };
         portPicker = picker;
         var body = new StackPanel { Margin = new Thickness(20) };
-        using var identity = WindowsIdentity.GetCurrent();
-        bool admin = new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
-        body.Children.Add(Theme.Label(admin ? "Administrador: sim" : "Administrador: nao", 14));
         var selection = new ComboBox { Margin = new Thickness(0, 16, 0, 16), Height = 32 };
         body.Children.Add(selection);
         var message = Theme.Label("Buscando portas...", 14);

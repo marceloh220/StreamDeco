@@ -18,7 +18,6 @@ Run:
 """
 
 from queue import Queue
-import ctypes
 import customtkinter as ctk
 from modules.report import *
 from modules.monitor_preview import MonitorPreview
@@ -81,16 +80,6 @@ def list_serial_ports() -> list[dict[str, str | bool]]:
     return ports
 
 
-def has_admin_rights() -> bool:
-    """
-    Returns True when the current process is running with administrator rights on Windows.
-    """
-    try:
-        return bool(ctypes.windll.shell32.IsUserAnAdmin())
-    except Exception:
-        return False
-
-
 if __name__ == "__main__":
 
     # Mutex to ensure only one instance of the app is running on Windows
@@ -137,8 +126,6 @@ if __name__ == "__main__":
     # Flag to indicate if the app is exiting
     # Prevent multiple stop calls from different sources (window close, tray exit, etc.)
     is_exiting = {"value": False}
-    app_is_admin = has_admin_rights()
-
     def stop_tasks() -> None:
         """Callback to stop all running tasks and exit the application"""
         if is_exiting["value"]:
@@ -177,7 +164,6 @@ if __name__ == "__main__":
     def open_serial_port_picker_modal() -> None:
         open_serial_port_picker(
             app=app,
-            app_is_admin=app_is_admin,
             port_picker_state=port_picker_state,
             serial_sender_state=serial_sender_state,
             list_serial_ports=list_serial_ports,

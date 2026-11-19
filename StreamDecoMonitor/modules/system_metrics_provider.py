@@ -141,11 +141,10 @@ class SystemMetricsProvider:
             CPU temperature, CPU frequency, GPU load, GPU temperature, and GPU frequency.
             This method first retrieves the CPU load, temperature, and frequency using psutil as a fallback.
         """
-        cpu_load = float(psutil.cpu_percent(interval=None))
-        cpu_freq_obj = psutil.cpu_freq()
-        cpu_freq = float(cpu_freq_obj.current if cpu_freq_obj else 0.0)
-        cpu_temp = self._cpu_temperature_c()
-        gpu_load, gpu_temp, gpu_freq = self._gpu_metrics()
+        cpu_data = None
+        gpu_data = None
+        cpu_load = cpu_temp = cpu_freq = 0.0
+        gpu_load = gpu_temp = gpu_freq = 0.0
         try:
             monitor_info = self.monitor.read()
             if self._lhm_read_failures > 0:
@@ -153,14 +152,6 @@ class SystemMetricsProvider:
                 self._lhm_read_failures = 0
             cpu_data = monitor_info[0] if len(monitor_info) > 0 else None
             gpu_data = monitor_info[1] if len(monitor_info) > 1 else None
-            if cpu_data is not None:
-                cpu_load = self._safe_float(getattr(cpu_data, "load", None), cpu_load)
-                cpu_temp = self._safe_float(getattr(cpu_data, "temperature", None), cpu_temp)
-                cpu_freq = self._safe_float(getattr(cpu_data, "frequency", None), cpu_freq)
-            if gpu_data is not None:
-                gpu_load = self._safe_float(getattr(gpu_data, "load", None), gpu_load)
-                gpu_temp = self._safe_float(getattr(gpu_data, "temperature", None), gpu_temp)
-                gpu_freq = self._safe_float(getattr(gpu_data, "frequency", None), gpu_freq)
         except Exception as exc:
             self._lhm_read_failures += 1
             if self._lhm_read_failures in (1, 5) or (self._lhm_read_failures % 30 == 0):
@@ -169,7 +160,39 @@ class SystemMetricsProvider:
                     "WARNING",
                     f"Failed to read metrics from LibreHardwareMonitor ({self._lhm_read_failures} failures): {exc}",
                 )
+        cpu_values = self._metrics_values(cpu_data)
+        gpu_values = self._metrics_values(gpu_data)
+        cpu_load = float(cpu_values[0] if cpu_values[0] is not None else psutil.cpu_percent(interval=None))
+        if cpu_values[1] is None:
+            cpu_temp = self._cpu_temperature_c()
+        else:
+            cpu_temp = float(cpu_values[1])
+        if cpu_values[2] is None:
+            cpu_freq_obj = psutil.cpu_freq()
+            cpu_freq = float(cpu_freq_obj.current if cpu_freq_obj else 0.0)
+        else:
+            cpu_freq = float(cpu_values[2])
+        if any(value is None for value in gpu_values):
+            fallback_gpu = self._gpu_metrics()
+            gpu_load = float(gpu_values[0] if gpu_values[0] is not None else fallback_gpu[0])
+            gpu_temp = float(gpu_values[1] if gpu_values[1] is not None else fallback_gpu[1])
+            gpu_freq = float(gpu_values[2] if gpu_values[2] is not None else fallback_gpu[2])
+        else:
+            gpu_load, gpu_temp, gpu_freq = (float(value) for value in gpu_values)
         return cpu_load, cpu_temp, cpu_freq, gpu_load, gpu_temp, gpu_freq
+
+    @classmethod
+    def _metrics_values(cls, data: Any) -> tuple[float | None, float | None, float | None]:
+        if data is None:
+            return None, None, None
+        values: list[float | None] = []
+        for name in ("load", "temperature", "frequency"):
+            raw = getattr(data, name, None)
+            try:
+                values.append(float(raw) if raw is not None else None)
+            except (TypeError, ValueError):
+                values.append(None)
+        return values[0], values[1], values[2]
 
     def _read_memory_metrics(self) -> tuple[float, float, float, float]:
         """
